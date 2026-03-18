@@ -2,672 +2,630 @@
   {
     "subject": "case",
     "relation": "set_in",
-    "object": "A classic closed-circle manor mystery set in rural England in the late 1920s. On a stormy autumn evening, a select group of guests has gathered at an old country estate for a formal masquerade and private supper. By nightfall, the roads are flooded, the grounds are impassable, and the household is sealed off from the outside world until morning.\n\nThe story should feel like a traditional fair-play whodunit: atmospheric, elegant, and deduction-centered. It must be historically and technologically consistent with the late 1920s. No modern communications, digital devices, surveillance systems, database searches, or advanced forensic procedures may be used. The mystery must unfold through interviews, conflicting testimony, timing discrepancies, room access, physical traces, written documents, household objects, and careful reasoning.\n\nThe estate should provide a rich but finite investigative space, including rooms such as a library, study, ballroom, conservatory, dining room, guest wing, servant corridors, and private chambers. The characters should be socially plausible for the period and setting: aristocratic family members, family friends, staff, professional associates, or dependents, each carrying secrets, anxieties, and conflicting interests. Themes may include inheritance, scandal, debt, blackmail, jealousy, class tension, and fear of public disgrace.\n\nThe crime should be designed as a layered but fair mystery with one true culprit, one victim, at least four serious suspects, at least eight evidence items, at least one red herring arc, at least two alibi checks, and at least one deliberate attempt to mislead the investigation. The hidden truth must support a long-form investigation with at least fifteen substantial plot beats, culminating in a final confrontation grounded in a clear and coherent chain of evidence.",
+    "object": "A classic closed-circle manor mystery set in rural England in the late 1920s. On a stormy autumn evening, a select group of guests has gathered at an old country estate for a formal masquerade and private supper. By nightfall, the roads are flooded, the grounds are impassable, and the household is sealed off from the outside world until morning. The lead investigator must already be present inside the estate before the isolation begins, having been specifically invited by the eventual victim to witness or advise on a planned private revelation, accusation, or reckoning later that evening.\n\nThe story should feel like a traditional fair-play whodunit: atmospheric, elegant, and deduction-centered. It must be historically and technologically consistent with the late 1920s. No modern communications, digital devices, surveillance systems, database searches, or advanced forensic procedures may be used. The mystery must unfold through interviews, conflicting testimony, timing discrepancies, room access, physical traces, written documents, household objects, and careful reasoning. The investigator's presence must be narratively justified as part of the evening's social arrangement, not as someone who conveniently arrives from outside after the murder.\n\nThe estate should provide a rich but finite investigative space, including rooms such as a library, study, ballroom, conservatory, dining room, guest wing, servant corridors, and private chambers. The characters should be socially plausible for the period and setting: aristocratic family members, family friends, staff, professional associates, or dependents, each carrying secrets, anxieties, and conflicting interests. Themes may include inheritance, scandal, debt, blackmail, jealousy, class tension, and fear of public disgrace.\n\nThe crime should be designed as a layered but fair mystery with one true culprit, one victim, at least four serious suspects, at least eight evidence items, at least one red herring arc, at least two alibi checks, and at least one deliberate attempt to mislead the investigation. The hidden truth must support a long-form investigation with at least fifteen substantial plot beats, culminating in a final confrontation grounded in a clear and coherent chain of evidence.",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Sir Alistair Thorne",
+    "subject": "Sir Alistair Sterling",
     "relation": "is_victim",
     "object": "true",
-    "time": "21:40",
+    "time": "9:10 PM",
     "source": "case_bible"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Arthur Sterling",
     "relation": "is_culprit",
     "object": "true",
-    "time": "21:40",
+    "time": "8:20 PM",
     "source": "case_bible"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Arthur Sterling",
     "relation": "has_motive",
-    "object": "Evelyn sought retribution for the systematic destruction of her father's reputation and life by Alistair Thorne. She waited for the masquerade, knowing the chaos and costumes would provide cover for her movements.",
+    "object": "Arthur discovered that Sir Alistair was rewriting his will to leave the entire Sterling fortune to Eleanor Vance. Facing immediate ruin from London debt collectors, Arthur needed to ensure his uncle died before the new will was signed at midnight.",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Arthur Sterling",
     "relation": "used_method",
-    "object": "Potassium cyanide poisoning. Evelyn substituted Alistair's nightly glass of vintage port with a pre-poisoned glass she brought under her harlequin cloak.",
-    "time": "21:40",
+    "object": "Arthur extracted Digitalis (foxglove) concentrate from the conservatory and spiked Alistair's private decanter of brandy. The poison, combined with Alistair's existing heart condition, triggered a fatal cardiac arrest that appeared at first glance to be natural causes.",
+    "time": "8:20 PM",
     "source": "case_bible"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Arthur Sterling",
     "relation": "role",
     "object": "culprit",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Arthur Sterling",
     "relation": "relationship_to_victim",
-    "object": "Niece and ward",
+    "object": "Nephew and primary heir",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Arthur Sterling",
     "relation": "means",
-    "object": "Knowledge of toxins and access to her late father's chemical supplies.",
+    "object": "Access to the estate's conservatory and knowledge of the heart medication Alistair already took, allowing for a lethal interaction.",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Arthur Sterling",
     "relation": "motive",
-    "object": "Revenge for her father's financial ruin and subsequent suicide, orchestrated by Alistair.",
+    "object": "Alistair intended to sign a new will tonight disinheriting Arthur in favor of a newly discovered illegitimate daughter.",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Arthur Sterling",
     "relation": "opportunity",
-    "object": "Entered the library at 21:30 under the guise of bringing Alistair his evening port.",
-    "time": "21:30 to 21:50",
+    "object": "He slipped away during the masquerade while everyone was in the ballroom, using the servant corridors to reach the study.",
+    "time": "7:45 PM to 8:20 PM",
     "source": "case_bible"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Arthur Sterling",
     "relation": "alibi",
-    "object": "Claims she was in the conservatory reading a book on orchids from 21:00 until 22:30.",
-    "time": "21:30 to 21:50",
+    "object": "Claims he was in the smoking room alone, but no one can verify his presence for a crucial forty-minute window.",
+    "time": "7:45 PM to 8:20 PM",
     "source": "case_bible"
   },
   {
-    "subject": "Major Julian Sterling",
+    "subject": "Eleanor Vance",
     "relation": "role",
     "object": "suspect",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Major Julian Sterling",
+    "subject": "Eleanor Vance",
     "relation": "relationship_to_victim",
-    "object": "Close friend and business associate",
+    "object": "Secret daughter and employee",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Major Julian Sterling",
+    "subject": "Eleanor Vance",
     "relation": "means",
-    "object": "A heavy brass paperweight located on the library desk.",
+    "object": "Constant access to Alistair's personal items and drinks.",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Major Julian Sterling",
+    "subject": "Eleanor Vance",
     "relation": "motive",
-    "object": "Alistair refused to bail him out of his massive gambling debts and threatened to inform the War Office.",
+    "object": "Resentment for years of neglect, though she truly desired a relationship rather than his money.",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Major Julian Sterling",
+    "subject": "Eleanor Vance",
     "relation": "opportunity",
-    "object": "Slipped into the library at 22:00 to plead for a loan; found Alistair already dead and stole a promissory note.",
-    "time": "19:30 to 22:00",
+    "object": "Was seen near the study shortly before the body was discovered, delivering correspondence.",
+    "time": "6:00 PM",
     "source": "case_bible"
   },
   {
-    "subject": "Major Julian Sterling",
+    "subject": "Eleanor Vance",
     "relation": "alibi",
-    "object": "Claims he was in the billiard room alone practicing his trick shots from 21:30 to 22:15.",
-    "time": "19:30 to 22:00",
+    "object": "Claims to have been in the library preparing the new will documents, but the library was empty when the investigator checked.",
+    "time": "6:00 PM",
     "source": "case_bible"
   },
   {
-    "subject": "Eleanor Thorne",
+    "subject": "Colonel Reginald Thorne",
     "relation": "role",
     "object": "suspect",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Eleanor Thorne",
+    "subject": "Colonel Reginald Thorne",
     "relation": "relationship_to_victim",
-    "object": "Wife",
+    "object": "Lifelong friend and debtor",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Eleanor Thorne",
+    "subject": "Colonel Reginald Thorne",
     "relation": "means",
-    "object": "Access to Alistair's heart medication, which could be lethal in high doses.",
+    "object": "Carries a ceremonial dagger and has knowledge of poisons from his time in the colonies.",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Eleanor Thorne",
+    "subject": "Colonel Reginald Thorne",
     "relation": "motive",
-    "object": "She discovered Alistair was planning to divorce her for her infidelity, which would leave her penniless.",
+    "object": "Alistair was calling in a massive personal debt that would have bankrupted the Colonel and stripped him of his honors.",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Eleanor Thorne",
+    "subject": "Colonel Reginald Thorne",
     "relation": "opportunity",
-    "object": "Attempted to enter the library at 21:15 but was turned away by Alistair through the locked door.",
-    "time": "21:15",
+    "object": "Left the ballroom for 'fresh air' on the covered veranda, which has a window leading into the study.",
+    "time": "6:00 PM",
     "source": "case_bible"
   },
   {
-    "subject": "Eleanor Thorne",
+    "subject": "Colonel Reginald Thorne",
     "relation": "alibi",
-    "object": "Claims she retired to her chambers with a migraine at 21:00 and did not leave until the body was found.",
-    "time": "21:15",
+    "object": "States he was on the veranda, but his boots are suspiciously dry for someone out in a storm.",
+    "time": "6:00 PM",
     "source": "case_bible"
   },
   {
-    "subject": "Arthur Penhaligon",
+    "subject": "Martha Gable",
     "relation": "role",
     "object": "suspect",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Arthur Penhaligon",
+    "subject": "Martha Gable",
     "relation": "relationship_to_victim",
-    "object": "Employee",
+    "object": "Long-term servant",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Arthur Penhaligon",
+    "subject": "Martha Gable",
     "relation": "means",
-    "object": "Strangulation using his silk necktie.",
+    "object": "Full run of the house and knowledge of the household rhythms.",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Arthur Penhaligon",
+    "subject": "Martha Gable",
     "relation": "motive",
-    "object": "Alistair discovered Arthur had been embezzling funds and was planning to turn him over to the police that evening.",
+    "object": "She had been systematically stealing and selling family heirlooms; Alistair had discovered the missing items that morning.",
     "time": null,
     "source": "case_bible"
   },
   {
-    "subject": "Arthur Penhaligon",
+    "subject": "Martha Gable",
     "relation": "opportunity",
-    "object": "Had keys to the servant's entrance of the library and was seen arguing with Alistair earlier in the night.",
-    "time": "19:30 to 22:10",
+    "object": "She was moving between the kitchens and the dining hall, passing the study multiple times.",
+    "time": "10:00 PM",
     "source": "case_bible"
   },
   {
-    "subject": "Arthur Penhaligon",
+    "subject": "Martha Gable",
     "relation": "alibi",
-    "object": "Claims he was in the small study typing letters for the morning post from 21:00 to 23:00.",
-    "time": "19:30 to 22:10",
+    "object": "Assisted by the kitchen staff, though they admit she was 'unaccounted for' during the heavy rain peak.",
+    "time": "10:00 PM",
     "source": "case_bible"
   },
   {
     "subject": "T01",
     "relation": "timeline_event",
-    "object": "Supper begins. Sir Alistair publicly berates Arthur Penhaligon for a 'discrepancy' in the accounts.",
-    "time": "19:30",
+    "object": "Guests arrive at Blackwood Manor as the storm begins to intensify.",
+    "time": "6:00 PM",
     "source": "timeline"
   },
   {
-    "subject": "Sir Alistair Thorne",
+    "subject": "Sir Alistair",
     "relation": "present_at",
-    "object": "Dining Room",
-    "time": "19:30",
+    "object": "Main Entrance Hall",
+    "time": "6:00 PM",
     "source": "timeline"
   },
   {
-    "subject": "Arthur Penhaligon",
+    "subject": "Arthur",
     "relation": "present_at",
-    "object": "Dining Room",
-    "time": "19:30",
+    "object": "Main Entrance Hall",
+    "time": "6:00 PM",
     "source": "timeline"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Eleanor",
     "relation": "present_at",
-    "object": "Dining Room",
-    "time": "19:30",
+    "object": "Main Entrance Hall",
+    "time": "6:00 PM",
     "source": "timeline"
   },
   {
-    "subject": "Eleanor Thorne",
+    "subject": "Reginald",
     "relation": "present_at",
-    "object": "Dining Room",
-    "time": "19:30",
+    "object": "Main Entrance Hall",
+    "time": "6:00 PM",
     "source": "timeline"
   },
   {
-    "subject": "Major Julian Sterling",
+    "subject": "Inspector Vane",
     "relation": "present_at",
-    "object": "Dining Room",
-    "time": "19:30",
+    "object": "Main Entrance Hall",
+    "time": "6:00 PM",
     "source": "timeline"
   },
   {
     "subject": "T02",
     "relation": "timeline_event",
-    "object": "Alistair retreats to the library with a bottle of port, locking the main door and demanding not to be disturbed.",
-    "time": "20:45",
+    "object": "Sir Alistair privately reveals to Inspector Vane that he will sign the new will at midnight and expects a 'troublesome reaction'.",
+    "time": "6:30 PM",
     "source": "timeline"
   },
   {
-    "subject": "Sir Alistair Thorne",
+    "subject": "Sir Alistair",
     "relation": "present_at",
-    "object": "Library",
-    "time": "20:45",
+    "object": "The Library",
+    "time": "6:30 PM",
+    "source": "timeline"
+  },
+  {
+    "subject": "Inspector Vane",
+    "relation": "present_at",
+    "object": "The Library",
+    "time": "6:30 PM",
     "source": "timeline"
   },
   {
     "subject": "T03",
     "relation": "timeline_event",
-    "object": "Eleanor Thorne knocks on the library door. Alistair shouts at her to leave. The butler, Parker, witnesses this exchange.",
-    "time": "21:15",
+    "object": "Arthur is seen arguing heatedly with Alistair near the conservatory; Alistair tells him he is 'finished'.",
+    "time": "7:15 PM",
     "source": "timeline"
   },
   {
-    "subject": "Eleanor Thorne",
+    "subject": "Sir Alistair",
     "relation": "present_at",
-    "object": "Library Hallway",
-    "time": "21:15",
+    "object": "Conservatory Wing",
+    "time": "7:15 PM",
     "source": "timeline"
   },
   {
-    "subject": "Sir Alistair Thorne",
+    "subject": "Arthur",
     "relation": "present_at",
-    "object": "Library Hallway",
-    "time": "21:15",
-    "source": "timeline"
-  },
-  {
-    "subject": "Parker the Butler",
-    "relation": "present_at",
-    "object": "Library Hallway",
-    "time": "21:15",
+    "object": "Conservatory Wing",
+    "time": "7:15 PM",
     "source": "timeline"
   },
   {
     "subject": "T04",
     "relation": "timeline_event",
-    "object": "Evelyn Vance enters the library through the servant\u2019s entrance behind the tapestry, carrying a hidden poisoned glass.",
-    "time": "21:30",
+    "object": "Arthur sneaks back into the conservatory to crush foxglove leaves into a concentrated vial.",
+    "time": "7:45 PM",
     "source": "timeline"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Arthur",
     "relation": "present_at",
-    "object": "Library",
-    "time": "21:30",
-    "source": "timeline"
-  },
-  {
-    "subject": "Sir Alistair Thorne",
-    "relation": "present_at",
-    "object": "Library",
-    "time": "21:30",
+    "object": "Conservatory",
+    "time": "7:45 PM",
     "source": "timeline"
   },
   {
     "subject": "T05",
     "relation": "timeline_event",
-    "object": "Sir Alistair consumes the poisoned port and dies within minutes. Evelyn swaps the glasses and wipes the desk.",
-    "time": "21:40",
+    "object": "The masquerade supper begins. All guests wear masks. Arthur uses a servant's passage to enter the study and spike the brandy.",
+    "time": "8:20 PM",
     "source": "timeline"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Arthur",
     "relation": "present_at",
-    "object": "Library",
-    "time": "21:40",
-    "source": "timeline"
-  },
-  {
-    "subject": "Sir Alistair Thorne",
-    "relation": "present_at",
-    "object": "Library",
-    "time": "21:40",
+    "object": "The Study",
+    "time": "8:20 PM",
     "source": "timeline"
   },
   {
     "subject": "T06",
     "relation": "timeline_event",
-    "object": "Evelyn exits to the Conservatory to dispose of the poisoned glass vial in a planter. She drops a lace handkerchief.",
-    "time": "21:50",
+    "object": "Alistair complains of a headache and retires to his study to review the new will before the midnight signing.",
+    "time": "8:45 PM",
     "source": "timeline"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Sir Alistair",
     "relation": "present_at",
-    "object": "Conservatory",
-    "time": "21:50",
+    "object": "Ballroom / Study",
+    "time": "8:45 PM",
     "source": "timeline"
   },
   {
     "subject": "T07",
     "relation": "timeline_event",
-    "object": "Major Sterling enters the library via the French windows. He finds Alistair dead. Instead of calling for help, he steals his own promissory note from the desk.",
-    "time": "22:00",
+    "object": "Alistair drinks the poisoned brandy and collapses.",
+    "time": "9:10 PM",
     "source": "timeline"
   },
   {
-    "subject": "Major Julian Sterling",
+    "subject": "Sir Alistair",
     "relation": "present_at",
-    "object": "Library",
-    "time": "22:00",
-    "source": "timeline"
-  },
-  {
-    "subject": "Sir Alistair Thorne",
-    "relation": "present_at",
-    "object": "Library",
-    "time": "22:00",
+    "object": "The Study",
+    "time": "9:10 PM",
     "source": "timeline"
   },
   {
     "subject": "T08",
     "relation": "timeline_event",
-    "object": "Arthur Penhaligon enters the Breakfast Room and burns the forged ledger pages in the fireplace.",
-    "time": "22:10",
+    "object": "Arthur enters the study through the servant passage, places a bloody letter opener near the body to suggest a struggle, and steals the unsigned will.",
+    "time": "9:30 PM",
     "source": "timeline"
   },
   {
-    "subject": "Arthur Penhaligon",
+    "subject": "Arthur",
     "relation": "present_at",
-    "object": "Breakfast Room",
-    "time": "22:10",
+    "object": "The Study",
+    "time": "9:30 PM",
     "source": "timeline"
   },
   {
     "subject": "T09",
     "relation": "timeline_event",
-    "object": "A loud crash is heard. The house cat knocks over a Ming vase in the drawing room, creating a distraction.",
-    "time": "22:15",
+    "object": "Martha Gable discovers the body while bringing a late tea service. The house is alerted.",
+    "time": "10:00 PM",
     "source": "timeline"
   },
   {
-    "subject": "N/A",
+    "subject": "Martha Gable",
     "relation": "present_at",
-    "object": "Drawing Room",
-    "time": "22:15",
+    "object": "The Study",
+    "time": "10:00 PM",
+    "source": "timeline"
+  },
+  {
+    "subject": "Sir Alistair",
+    "relation": "present_at",
+    "object": "The Study",
+    "time": "10:00 PM",
     "source": "timeline"
   },
   {
     "subject": "T10",
     "relation": "timeline_event",
-    "object": "Evelyn Vance returns to the Ballroom, appearing calm and joining the remaining guests for late tea.",
-    "time": "22:45",
+    "object": "Inspector Vane declares the roads are flooded and the house is sealed. Investigation begins.",
+    "time": "10:15 PM",
     "source": "timeline"
   },
   {
-    "subject": "Evelyn Vance",
+    "subject": "Inspector Vane",
     "relation": "present_at",
-    "object": "Ballroom",
-    "time": "22:45",
+    "object": "The Study",
+    "time": "10:15 PM",
     "source": "timeline"
   },
   {
-    "subject": "Eleanor Thorne",
+    "subject": "All Guests",
     "relation": "present_at",
-    "object": "Ballroom",
-    "time": "22:45",
-    "source": "timeline"
-  },
-  {
-    "subject": "T11",
-    "relation": "timeline_event",
-    "object": "Parker the Butler enters the library to check on the fire and discovers Sir Alistair's body.",
-    "time": "23:00",
-    "source": "timeline"
-  },
-  {
-    "subject": "Parker the Butler",
-    "relation": "present_at",
-    "object": "Library",
-    "time": "23:00",
-    "source": "timeline"
-  },
-  {
-    "subject": "Sir Alistair Thorne",
-    "relation": "present_at",
-    "object": "Library",
-    "time": "23:00",
+    "object": "The Study",
+    "time": "10:15 PM",
     "source": "timeline"
   },
   {
     "subject": "E01",
     "relation": "is_evidence",
-    "object": "Half-empty Port Glass",
+    "object": "Crystal Brandy Decanter",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E01",
     "relation": "found_at",
-    "object": "Library Desk",
+    "object": "Study Desk",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E01",
     "relation": "implicates",
-    "object": "Evelyn Vance",
+    "object": "Arthur Sterling",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E01",
     "relation": "description",
-    "object": "The glass on the desk. It contains traces of potassium cyanide and smells faintly of bitter almonds.",
+    "object": "The decanter is half-empty. A faint, bitter herbal residue is found at the bottom, inconsistent with high-quality brandy.",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E02",
     "relation": "is_evidence",
-    "object": "Charred Ledger Fragment",
+    "object": "Bloody Letter Opener",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E02",
     "relation": "found_at",
-    "object": "Breakfast Room Fireplace",
+    "object": "Study Floor",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E02",
     "relation": "implicates",
-    "object": "Arthur Penhaligon",
+    "object": "Eleanor Vance",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E02",
     "relation": "description",
-    "object": "A corner of a page from the estate accounts showing Arthur Penhaligon\u2019s signature next to an altered figure.",
+    "object": "A silver letter opener with a small amount of blood on the tip. It was found three feet from the victim.",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E03",
     "relation": "is_evidence",
-    "object": "Lace Handkerchief",
+    "object": "Crushed Foxglove Petals",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E03",
     "relation": "found_at",
-    "object": "Conservatory",
+    "object": "Study (Servant Entrance)",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E03",
     "relation": "implicates",
-    "object": "Evelyn Vance",
+    "object": "Arthur Sterling",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E03",
     "relation": "description",
-    "object": "A fine lace handkerchief embroidered with 'E.V.' stained with potting soil and lily pollen.",
+    "object": "Several bruised petals of Digitalis Purpurea found caught in the floorboards near the study's servant entrance.",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E04",
     "relation": "is_evidence",
-    "object": "The Promissory Note",
+    "object": "The Unsigned Will",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E04",
     "relation": "found_at",
-    "object": "Guest Wing (Sterling's Room)",
+    "object": "Servant's Hall Wastepaper Basket",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E04",
     "relation": "implicates",
-    "object": "Major Julian Sterling",
+    "object": "Arthur Sterling",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E04",
     "relation": "description",
-    "object": "A document signed by Major Sterling for five thousand pounds, found hidden in his boot.",
+    "object": "A legal document naming 'Eleanor Vance, my natural daughter' as sole beneficiary. It is crumpled and was found in a wastepaper basket in the servant's hall.",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E05",
     "relation": "is_evidence",
-    "object": "Empty Amber Vial",
+    "object": "Muddy Boots (Size 10)",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E05",
     "relation": "found_at",
-    "object": "Conservatory",
+    "object": "Arthur's Guest Room",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E05",
     "relation": "implicates",
-    "object": "Evelyn Vance",
+    "object": "Arthur Sterling",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E05",
     "relation": "description",
-    "object": "A small glass vial labeled 'Digitalis Extract' but containing traces of cyanide. Hidden in the soil of a potted fern.",
+    "object": "Men's dress boots with distinctive yellow clay from the conservatory gardens. They match the size of Arthur Sterling.",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E06",
     "relation": "is_evidence",
-    "object": "Torn Silk Scantling",
+    "object": "Stolen Diamond Brooch",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E06",
     "relation": "found_at",
-    "object": "Library Door Latch",
+    "object": "Kitchen Larder",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E06",
     "relation": "implicates",
-    "object": "Evelyn Vance",
+    "object": "Martha Gable",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E06",
     "relation": "description",
-    "object": "A small triangular piece of colorful silk matching the Harlequin costume worn by Evelyn.",
+    "object": "A piece of Sterling family jewelry reported missing months ago. It was hidden inside a flour sack.",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E07",
     "relation": "is_evidence",
-    "object": "Wet Size 5 Footprint",
+    "object": "Blue Silk Masquerade Mask",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E07",
     "relation": "found_at",
-    "object": "Library Entrance",
+    "object": "Smoking Room Hallway",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E07",
     "relation": "implicates",
-    "object": "Evelyn Vance",
+    "object": "Arthur Sterling",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E07",
     "relation": "description",
-    "object": "A small, feminine mud print near the servant's entrance to the library.",
+    "object": "Arthur's mask, which has a small stain of what appears to be green plant sap on the interior lining.",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E08",
     "relation": "is_evidence",
-    "object": "Botanical Journal",
+    "object": "Threatening Telegram",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E08",
     "relation": "found_at",
-    "object": "Evelyn's Luggage",
+    "object": "The Billiards Room",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E08",
     "relation": "implicates",
-    "object": "Evelyn Vance",
+    "object": "Colonel Reginald Thorne",
     "time": null,
     "source": "evidence"
   },
   {
     "subject": "E08",
     "relation": "description",
-    "object": "A notebook detailing the extraction methods for various alkaloids, including a handwritten note on 'The Swiftness of Cyanide'.",
+    "object": "A telegram addressed to Colonel Thorne demanding payment by the 15th or 'consequences will follow'.",
     "time": null,
     "source": "evidence"
   },
   {
-    "subject": "Arthur Penhaligon",
+    "subject": "Eleanor Vance",
     "relation": "red_herring_explained_by",
-    "object": "The burned ledger makes Arthur look like he killed Alistair to hide his theft. In reality, he only stole the ledger and burned it after he found the body was already cold, taking advantage of the situation.",
-    "time": null,
-    "source": "red_herring"
-  },
-  {
-    "subject": "Major Julian Sterling",
-    "relation": "red_herring_explained_by",
-    "object": "Sterling\u2019s possession of the note and his presence in the library suggest he is the killer. However, he entered through the windows after the poison had already taken effect, intending to commit a robbery, not a murder.",
+    "object": "The bloody letter opener suggests a struggle or a stabbing attempt. However, Alistair has no puncture wounds. Arthur used Alistair's own letter opener to prick his own finger and smear the blade to frame Eleanor, who had used the opener earlier that day to open mail.",
     "time": null,
     "source": "red_herring"
   }

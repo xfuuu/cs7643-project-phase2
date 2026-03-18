@@ -2,14 +2,15 @@
 
 一个面向课程项目的、最小但完整的“AI 犯罪推理故事生成系统”。
 
-这份 README 主要是给当前仓库的开发者/学生自己看的。重点不是宣传功能，而是帮助你准确理解：
+这份 README 主要写给当前仓库的开发者/学生自己。重点不是宣传，而是帮助你准确理解：
 
-- 现在的代码到底做了什么
-- 各个模块之间如何连接
-- 哪些部分已经接入真实 LLM
-- 哪些部分仍然是模板化、启发式或尚未完全对齐
+- 这个项目现在到底实现到了什么程度
+- 当前代码真实在做什么
+- 哪些模块已经接入 Gemini
+- 哪些部分是结构化、可校验的
+- 哪些部分仍然是启发式、模板化或处于调试状态
 
-当前文档严格基于仓库里的真实代码编写，不会假设不存在的模块或能力。
+本文严格基于当前仓库代码编写，不描述不存在的功能。
 
 ---
 
@@ -17,51 +18,51 @@
 
 ### 1.1 这个项目要解决什么问题
 
-这个项目不是单纯“让大模型写一篇侦探小说”，而是尝试把犯罪推理故事生成拆成几个明确阶段：
+这个项目不是“给大模型一句 prompt，让它直接写一篇侦探小说”，而是尝试把犯罪推理故事生成拆成多个显式阶段：
 
 1. 先生成一个隐藏的案件真相
 2. 再把真相转换成结构化事实
 3. 再生成调查过程计划
-4. 再对计划做规则校验
-5. 如果计划有问题，再做局部修复
-6. 最后才输出可读的故事文本
+4. 再用规则检查这个计划
+5. 必要时做修复
+6. 最后再生成故事文本
 
-项目希望体现一种更适合课程展示的思路：
+它的重点不是 prose 本身，而是：
 
-- 用结构化对象保存真相
-- 用规则检查调查过程
-- 用局部修补替代整段重写
-- 把最终小说文本当作“结构结果的实现层”
+- 真相要先结构化
+- 调查过程要先结构化
+- 系统要能检查自己的结果
+- 文本只是最后一层 realization
 
-### 1.2 当前系统的整体思路
+### 1.2 整体思路
 
-当前代码里，系统主要围绕下面三层数据展开：
+当前项目围绕三层核心中间表示展开：
 
 1. `CaseBible`
-   - 表示隐藏真相层
-   - 包含 victim、culprit、suspects、motive、method、true_timeline、evidence_items、red_herrings、culprit_evidence_chain
+   - 隐藏真相层
+   - 记录 victim、culprit、suspects、motive、method、true_timeline、evidence_items、red_herrings、culprit_evidence_chain
 
 2. `FactTriple`
-   - 表示机器可检查的事实层
-   - 是从 `CaseBible` 编译出来的三元组列表
+   - 事实图层
+   - 把案件真相编译成机器可处理的事实三元组
 
 3. `PlotPlan`
-   - 表示调查过程层
-   - 每一步是结构化的 `PlotStep`
+   - 调查计划层
+   - 不是小说正文，而是调查如何逐步逼近真相的结构化 steps
 
-最后，`StoryRealizer` 再把这些内容转成 `story.txt`。
+最后才有 `StoryRealizer` 把结构化结果转成故事文本。
 
 ### 1.3 为什么它不是单纯文本生成
 
-这个项目不是“输入一句 prompt，直接出小说”，原因是：
+这个系统不是纯文本生成，原因在于：
 
-- 案件真相先保存在 `CaseBible` 里，而不是先写成长文本
-- 事实被展开成 `FactTriple` 列表，而不是埋在 prose 里
-- 调查过程是 `PlotPlan.steps`，每一步都有固定字段
-- `validator.py` 使用的是确定性规则，不依赖 LLM 判断
-- `repair_operator.py` 做的是局部修复，而不是把整案重新生成
+- 案件先落在 dataclass 上，而不是直接写小说
+- 证据和时间线先转成 `FactTriple`
+- 调查过程先表示成 `PlotStep`
+- 计划能被 `validator.py` 检查
+- 失败后可以被 `repair_operator.py` 修补
 
-所以它的核心不是纯叙事，而是：
+所以项目的核心是：
 
 **结构化生成 + 显式验证 + 局部修复 + 最终叙事实现**
 
@@ -69,30 +70,61 @@
 
 ## 2. 项目整体流程
 
-### 2.1 从入口开始的顺序
+### 2.1 设计上的完整流程
 
-程序入口是 [main.py](/Users/yuezhao/Documents/New%20project/main.py)。
+从设计目标看，完整流程是：
 
-运行：
-
-```bash
+```text
 python main.py
+  ->
+CaseBibleGenerator.generate()
+  ->
+CaseBible
+  ->
+FactGraphBuilder.build(case_bible)
+  ->
+fact_graph
+  ->
+PlotPlanner.build_plan(case_bible, fact_graph)
+  ->
+initial_plot_plan
+  ->
+PlotPlanValidator.validate(...)
+  ->
+if needed: PlotPlanRepairOperator.repair(...)
+  ->
+StoryRealizer.realize(...)
+  ->
+save JSON + story.txt
 ```
 
-后，执行顺序如下：
+### 2.2 当前真实运行流程
 
-1. `main.py` 解析参数
-2. 创建 `CrimeMysteryPipeline`
-3. `pipeline.run()` 触发整个流程
-4. `CaseBibleGenerator.generate()` 生成隐藏真相
-5. `FactGraphBuilder.build()` 构建事实图
-6. `PlotPlanner.build_plan()` 生成调查计划
-7. `PlotPlanValidator.validate()` 检查计划
-8. 如果失败，`PlotPlanRepairOperator.repair()` 做修复
-9. `StoryRealizer.realize()` 生成最终故事文本
-10. 将结构化输出和文本输出保存到 `outputs/`
+但要特别注意：**当前 `pipeline.py` 处于调试模式**。
 
-### 2.2 文字版流程图
+现在 [pipeline.py](/Users/yuezhao/Documents/New%20project/pipeline.py) 实际做的是：
+
+1. 生成 `CaseBible`
+2. 构建 `fact_graph`
+3. 生成 `plot_plan`
+4. 保存：
+   - `case_bible.json`
+   - `fact_graph.json`
+   - `plot_plan.json`
+5. 然后直接 `quit()`
+
+也就是说，当前默认运行时：
+
+- `validator` 没有在主流程里执行
+- `repair` 没有在主流程里执行
+- `StoryRealizer` 也没有在主流程里执行
+- `validation_report.json` 和 `story.txt` 当前不会自动重新生成
+
+这是最近调试阶段留下的真实状态，README 需要明确说明。
+
+### 2.3 文字版流程图
+
+当前代码实际执行流程：
 
 ```text
 python main.py
@@ -111,89 +143,22 @@ FactGraphBuilder.build(case_bible)
   ->
 fact_graph
   ->
-PlotPlanner.build_plan(case_bible)
+PlotPlanner.build_plan(case_bible, fact_graph)
   ->
-initial_plot_plan
+plot_plan
   ->
-PlotPlanValidator.validate(case_bible, initial_plot_plan)
+save case_bible.json / fact_graph.json / plot_plan.json
   ->
-initial_report
-  ->
-if invalid:
-    PlotPlanRepairOperator.repair(...)
-    ->
-    validate again
-  ->
-StoryRealizer.realize(case_bible, final_plot_plan)
-  ->
-story_text
-  ->
-save outputs/*.json + outputs/story.txt
+quit()
 ```
 
-### 2.3 用“输入 -> 中间表示 -> 校验 -> 修复 -> 输出”理解
+设计上的后续步骤虽然代码还保留着对象和模块，但当前在主流程里被注释掉了：
 
-#### 输入
-
-当前系统的输入主要有三类：
-
-- 命令行参数：`--output-dir`、`--seed`
-- 外部设定文件：[generators/setting.txt](/Users/yuezhao/Documents/New%20project/generators/setting.txt)
-- LLM backend 返回的文本
-
-#### 中间表示
-
-中间表示主要有三层：
-
-1. `CaseBible`
-2. `list[FactTriple]`
-3. `PlotPlan`
-
-它们分别表示：
-
-- 真实发生了什么
-- 程序可检查的事实
-- 调查如何逐步接近真相
-
-#### 校验
-
-校验由 [validators/validator.py](/Users/yuezhao/Documents/New%20project/validators/validator.py) 完成。
-
-它检查的不是自然语言质量，而是结构约束，比如：
-
-- 嫌疑人数是否足够
-- 证据数是否足够
-- 是否有红鲱鱼
-- 是否有至少两个 alibi check
-- 最终 confrontation 是否引用关键证据
-- plot step 时间顺序是否单调
-
-#### 修复
-
-修复由 [repair/repair_operator.py](/Users/yuezhao/Documents/New%20project/repair/repair_operator.py) 完成。
-
-它不是整案重生成，而是根据失败项补：
-
-- alibi 步骤
-- interference 步骤
-- red herring 步骤
-- 缺失的 evidence chain
-- 缺失或证据不足的 confrontation
-
-#### 输出
-
-输出分两类：
-
-结构化输出：
-
-- `case_bible.json`
-- `fact_graph.json`
-- `plot_plan.json`
-- `validation_report.json`
-
-文本输出：
-
-- `story.txt`
+- validate
+- repair
+- story realization
+- 保存 `validation_report.json`
+- 保存 `story.txt`
 
 ---
 
@@ -230,83 +195,85 @@ save outputs/*.json + outputs/story.txt
 ### [main.py](/Users/yuezhao/Documents/New%20project/main.py)
 
 - 命令行入口
-- 负责读取参数并启动 pipeline
-- 不承担生成逻辑，只做 orchestration 的最外层封装
+- 负责解析参数并调用 `CrimeMysteryPipeline`
+- 自身没有业务逻辑
 
 ### [pipeline.py](/Users/yuezhao/Documents/New%20project/pipeline.py)
 
-- 全项目的流程编排中心
-- 串起 generation、fact building、planning、validation、repair、realization、save outputs
-- 如果只想先理解全局，最适合先读这个文件
+- 全流程编排中心
+- 负责实例化各模块
+- 当前也反映了系统的“真实运行状态”
+- 这是最适合首先阅读的文件
 
 ### [models.py](/Users/yuezhao/Documents/New%20project/models.py)
 
-- 定义全系统共享的数据结构
-- 这些 dataclass 就是各模块之间的“内部协议”
-- 当前项目的数据流基本都是围绕这些类流转
+- 定义全项目的 dataclass schema
+- 各模块之间传的对象几乎都在这里定义
 
 ### [llm_interface.py](/Users/yuezhao/Documents/New%20project/llm_interface.py)
 
-- 定义 LLM 抽象接口 `LLMBackend`
-- 提供两个具体 backend：
+- 定义统一 LLM 接口 `LLMBackend`
+- 提供：
   - `MockLLMBackend`
   - `GeminiLLMBackend`
-- 现在项目已经接入真实 Gemini HTTP 调用
 
 ### [generators/case_bible_generator.py](/Users/yuezhao/Documents/New%20project/generators/case_bible_generator.py)
 
 - 负责生成隐藏真相 `CaseBible`
-- 当前不再手工硬编码 victim/suspects/timeline/evidence
-- 而是读取 `setting.txt`，让 LLM 返回一份 JSON blueprint，再本地解析成 dataclass
+- 当前已经不是手写固定案件
+- 而是读取 `setting.txt` 后，调用 Gemini 返回结构化 JSON blueprint，再本地解析
 
 ### [generators/setting.txt](/Users/yuezhao/Documents/New%20project/generators/setting.txt)
 
-- 当前案件生成的外部约束文件
-- 不是简单的 setting 名称，而是一整段“时代/风格/空间/公平推理规则”的约束说明
+- 案件生成的外部设定约束
+- 最近已补充：
+  - 侦探必须在封闭开始前就已在庄园内
+  - 侦探是受害者事先邀请来见证或协助某次揭露/清算
 
 ### [builders/fact_graph_builder.py](/Users/yuezhao/Documents/New%20project/builders/fact_graph_builder.py)
 
-- 负责把 `CaseBible` 转成 `FactTriple` 列表
-- 当前已经移除了 `confidence`
-- 时间不再写死，而是根据 `true_timeline` 做规则式推断
+- 负责把 `CaseBible` 编译成 `FactTriple`
+- 当前已删除 `confidence`
+- 时间不再写死，而是从 `true_timeline` 中推断
 
 ### [planners/plot_planner.py](/Users/yuezhao/Documents/New%20project/planners/plot_planner.py)
 
 - 负责生成 `PlotPlan`
-- 当前仍然是旧模板化实现
-- 它没有根据新的 `CaseBible` 动态规划，而是写死了一组旧案件的 plot steps
-- 这是当前系统里最重要的未对齐点之一
+- 现在已经不是旧的纯手写模板
+- 当前是：
+  - **LLM 优先的结构化 planner**
+  - **规则版 fallback planner**
 
 ### [validators/validator.py](/Users/yuezhao/Documents/New%20project/validators/validator.py)
 
 - 负责做结构性校验
-- 输入是 `CaseBible + PlotPlan`
-- 输出是 `ValidationReport`
-- 当前校验逻辑完全是 deterministic 的，不调用 LLM
+- 当前模块仍然存在且可用
+- 但当前主流程默认没有调用它
 
 ### [repair/repair_operator.py](/Users/yuezhao/Documents/New%20project/repair/repair_operator.py)
 
-- 在 validation 不通过时做局部修复
-- 是启发式补丁，不是重新生成
-- 目标是尽量把 plan 调整到满足项目要求
+- 负责在 validation 失败时做局部修复
+- 当前主流程默认没有调用它
 
 ### [realization/story_realizer.py](/Users/yuezhao/Documents/New%20project/realization/story_realizer.py)
 
-- 负责生成最终 `story.txt`
-- 当前支持 backend 分流：
-  - Mock backend：简单拼接式 realization
-  - Gemini backend：把 `CaseBible + PlotPlan` 组织成 prompt 交给模型生成自然叙事
+- 负责把结构化计划转换成故事文本
+- 支持 Mock / Gemini 两条 realization 路径
+- 当前主流程默认没有调用它
 
 ### `outputs/`
 
-- 保存最近一次运行产生的结果
-- 它们是理解系统当前行为最直观的窗口
+- 保存最近一次运行产物
+- 当前主流程最稳定会更新的文件是：
+  - `case_bible.json`
+  - `fact_graph.json`
+  - `plot_plan.json`
 
 ---
 
 ## 4. 核心数据结构 / schema
 
-这一部分只解释**当前代码里真实存在的结构**。
+这里只解释当前代码里真实存在的结构。
 
 ### 4.1 `Character`
 
@@ -315,36 +282,18 @@ save outputs/*.json + outputs/story.txt
 字段：
 
 - `name`
-  - 人物名
-  - 在所有模块中广泛使用：case bible、fact graph、plot plan、story realization
-
 - `role`
-  - 角色类型，例如 `victim`、`suspect`、`culprit`
-  - `CaseBibleGenerator` 会根据 `culprit_name` 把对应 suspect 的 role 改成 `culprit`
-
 - `description`
-  - 人物简介
-  - 主要在 case bible 和 story realization 中使用
-
 - `relationship_to_victim`
-  - 与受害者关系
-  - 在 fact graph 中展开为 `relationship_to_victim`
-
 - `means`
-  - 作案手段或能力
-  - 在 fact graph 中保留
-
 - `motive`
-  - 个体动机
-  - 区别于 `CaseBible.motive` 的“全案真实动机”
-
 - `opportunity`
-  - 个体机会说明
-  - fact graph 会保留，并为其推断一个时间窗口
-
 - `alibi`
-  - 不在场证明描述
-  - validator 不直接检查文本内容，但 plot plan 中有专门的 `alibi_check` 步骤类型
+
+作用：
+
+- 表示 victim / suspect / culprit
+- 在 case bible、plot plan、story realization 中都会被反复引用
 
 ### 4.2 `EvidenceItem`
 
@@ -360,8 +309,8 @@ save outputs/*.json + outputs/story.txt
 
 说明：
 
-- `reliability` 仍存在于 `EvidenceItem` 中，但已经**不再写入 `FactTriple`**
-- `planted` 用来表示该证据是否是嫁祸/布置出来的
+- `reliability` 仍保留在证据对象里
+- 但 `FactTriple` 已不再携带 `confidence`
 
 ### 4.3 `TimelineEvent`
 
@@ -376,11 +325,8 @@ save outputs/*.json + outputs/story.txt
 
 说明：
 
-- `true_timeline` 是整个案件的隐藏时间线
-- `FactGraphBuilder` 现在会直接依赖这些事件来推断：
-  - victim 时间
-  - culprit 方法时间
-  - 角色时间窗口
+- `true_timeline` 是整个案件的隐藏真实时间线
+- `FactGraphBuilder` 和 `PlotPlanner` 都会依赖它
 
 ### 4.4 `RedHerring`
 
@@ -391,14 +337,12 @@ save outputs/*.json + outputs/story.txt
 - `misleading_evidence_ids`
 - `explanation`
 
-说明：
+作用：
 
-- 红鲱鱼对象不是最终小说文本，而是结构化误导线索
-- validator 要求 plot plan 中必须出现 red herring arc
+- 表示结构化误导线索
+- `PlotPlanner` 会利用它安排 red herring 弧线
 
 ### 4.5 `CaseBible`
-
-这是整个系统最核心的隐藏真相对象。
 
 字段：
 
@@ -415,9 +359,8 @@ save outputs/*.json + outputs/story.txt
 
 说明：
 
-- `setting` 现在来自 `setting.txt`
-- 其余内容主要由 `CaseBibleGenerator` 调用 Gemini 生成 JSON 再解析得到
-- 后续几乎所有模块都依赖 `CaseBible`
+- 这是整个系统最核心的真相对象
+- 绝大多数后续模块都以它为起点
 
 ### 4.6 `FactTriple`
 
@@ -431,13 +374,8 @@ save outputs/*.json + outputs/story.txt
 
 说明：
 
-- 当前已删除 `confidence`
-- 所以现在的 fact triple 更像“轻量、可序列化的结构化事实”
-- `source` 用于区分事实来源，例如：
-  - `case_bible`
-  - `timeline`
-  - `evidence`
-  - `red_herring`
+- 当前已经移除 `confidence`
+- 所以它是一个更轻量的结构化事实表示
 
 ### 4.7 `PlotStep`
 
@@ -456,9 +394,8 @@ save outputs/*.json + outputs/story.txt
 
 说明：
 
-- `PlotStep` 仍然带有 `title`
-- `StoryRealizer` 目前也仍然在使用 `title`
-- 这部分与前面曾经尝试去 title 的方向不一致，但以当前仓库代码为准
+- 这是调查计划的基本单位
+- LLM planner 和 fallback planner 最终都必须输出成这种结构
 
 ### 4.8 `PlotPlan`
 
@@ -470,9 +407,9 @@ save outputs/*.json + outputs/story.txt
 说明：
 
 - `case_title` 已删除
-- 计划中只保留 investigator 和步骤列表
+- 当前计划核心就是调查者和步骤列表
 
-### 4.9 `ValidationIssue` 与 `ValidationReport`
+### 4.9 `ValidationIssue` / `ValidationReport`
 
 `ValidationIssue`：
 
@@ -488,8 +425,8 @@ save outputs/*.json + outputs/story.txt
 
 说明：
 
-- validator 的输出不是简单布尔值，而是详细报告
-- repair 会依赖 `issue.code` 决定补哪些步骤
+- 这些结构当前还在使用价值上存在
+- 即便主流程暂时没调用 validator，它们仍然是系统设计的重要一环
 
 ---
 
@@ -499,38 +436,25 @@ save outputs/*.json + outputs/story.txt
 
 主要职责：
 
-- 定义项目全部核心数据结构
+- 定义所有共享 schema
 
 输入：
 
-- 无直接运行输入，它是被各模块 import 的 schema 定义文件
+- 无直接输入
 
 输出：
 
-- 各 dataclass 类型
+- dataclass 类型定义
 
-内部逻辑：
+位置：
 
-- 几乎没有业务逻辑
-- 只有一个 `to_data()` 帮助把 dataclass 递归转成普通数据
-
-依赖：
-
-- 标准库 `dataclasses`、`typing`
-
-被谁调用：
-
-- 全项目几乎所有模块
-
-在系统中的位置：
-
-- 最底层 schema 层
+- 最底层数据协议层
 
 ### [llm_interface.py](/Users/yuezhao/Documents/New%20project/llm_interface.py)
 
 主要职责：
 
-- 把“如何调用语言模型”封装成统一接口
+- 封装 LLM 调用接口
 
 关键类：
 
@@ -539,104 +463,59 @@ save outputs/*.json + outputs/story.txt
 - `MockLLMBackend`
 - `GeminiLLMBackend`
 
-输入：
+说明：
 
-- 一个 prompt 字符串
+- 其他模块都只依赖 `generate(prompt) -> LLMResponse`
+- 不关心背后是 mock 还是真实 HTTP API
 
-输出：
+`MockLLMBackend`：
 
-- `LLMResponse(text=...)`
+- 返回少量固定候选文本
+- 用于最小化测试与占位
 
-内部逻辑：
+`GeminiLLMBackend`：
 
-- `MockLLMBackend`
-  - 根据 prompt 关键词返回固定候选文本之一
-  - 适合离线或演示
-
-- `GeminiLLMBackend`
-  - 用 `urllib.request` 发 POST 请求
-  - 调用 Gemini 的 `generateContent`
-  - 解析响应中的 `candidates[0].content.parts[*].text`
-
-依赖：
-
-- 标准库 `json`、`urllib`
-
-被谁调用：
-
-- `CaseBibleGenerator`
-- `StoryRealizer`
-- `pipeline.py` 负责实例化 backend
-
-在系统中的位置：
-
-- LLM 抽象层
-
-当前实现说明：
-
-- 默认已经接入真实 Gemini
-- 目前 `pipeline.py` 中实际把 Gemini 传给了 `CaseBibleGenerator` 和 `StoryRealizer`
-- `MockLLMBackend` 仍被实例化并保留，但当前 pipeline 默认不使用它做主流程
+- 当前真实通过 `urllib.request` 调用 Gemini `generateContent`
+- 返回解析后的文本
 
 ### [generators/case_bible_generator.py](/Users/yuezhao/Documents/New%20project/generators/case_bible_generator.py)
 
 主要职责：
 
-- 生成整个案件的隐藏真相对象 `CaseBible`
+- 生成 `CaseBible`
 
 输入：
 
 - `setting.txt`
-- 一个 `LLMBackend`
+- `LLMBackend`
 
 输出：
 
 - `CaseBible`
 
-内部核心逻辑：
+内部逻辑：
 
 1. 读取 `setting.txt`
-2. 组织 prompt，要求模型返回严格 JSON
-3. 调用 `self.llm.generate(prompt)`
-4. 从返回文本中提取 JSON
-5. 做基础结构检查
-6. 映射为：
-   - `Character`
-   - `TimelineEvent`
-   - `EvidenceItem`
-   - `RedHerring`
-   - `CaseBible`
+2. 用 prompt 要求 Gemini 返回 JSON
+3. 本地提取 JSON
+4. 校验字段存在性
+5. 转成 dataclass
 
-关键点：
+当前特点：
 
-- 现在 victim/suspects/timeline/evidence 已不是手写
-- 而是 Gemini 动态生成
-- 但本地会做一层 schema 解析和字段检查
+- 已经是 LLM 驱动的结构化生成
+- 不再手工写死 victim / suspects / timeline / evidence
 
 当前局限：
 
-- 只做了基础结构校验，没有做非常深的语义一致性修复
-- 如果 Gemini 输出 JSON 不稳定，可能直接抛错
-- `self.rng` 当前仍保留，但实际上没有参与逻辑
-
-依赖：
-
-- `llm_interface.py`
-- `models.py`
-
-被谁调用：
-
-- `pipeline.py`
-
-在系统中的位置：
-
-- 整个系统最上游的 truth generation 层
+- 仍然主要做 schema 级检查
+- 深层语义自洽性没有完全本地修复
 
 ### [builders/fact_graph_builder.py](/Users/yuezhao/Documents/New%20project/builders/fact_graph_builder.py)
 
 主要职责：
 
-- 把 `CaseBible` 转换为 `FactTriple` 列表
+- 把 `CaseBible` 转成 `FactTriple` 列表
 
 输入：
 
@@ -646,81 +525,90 @@ save outputs/*.json + outputs/story.txt
 
 - `list[FactTriple]`
 
-内部核心逻辑：
+核心逻辑：
 
-1. 先把 `true_timeline` 变成内部 `_TimedEvent` 列表并按时间排序
+1. 按时间排序 `true_timeline`
 2. 推断 victim 时间
-3. 推断 method 时间
-4. 为每个 suspect 推断一个和案发相关的时间窗口
-5. 展开 case-level facts、suspect-level facts、timeline facts、evidence facts、red herring facts
+3. 推断方法时间
+4. 推断角色时间窗口
+5. 编译 case-level / timeline-level / evidence-level / red-herring-level facts
 
-时间推断比以前更严格的地方：
+当前特点：
 
-- 不再手写固定时间
-- `is_victim` 的时间优先找“明确死亡”事件，而不是“发现尸体”事件
-- `used_method` 的时间优先找凶手实施动作的事件
-- 角色窗口会聚焦在案发附近，而不是简单取最早到最晚
-
-名字归一化：
-
-- 会去掉 `Lord`、`Lady`、`Sir`、`Dr` 等称谓
-- 所以 `Sir Alistair Thorne` 与 `Alistair Thorne` 能匹配
+- 不再手工写死时间
+- 支持人名归一化匹配
+- `confidence` 已删除
 
 当前局限：
 
-- 时间推断仍然是规则/关键词驱动，不是真正语义理解
-- 如果 timeline summary 写得非常规整之外，推断可能仍不够理想
-- 如果 timeline 里出现 `N/A` 这类占位 participant，fact graph 目前仍会原样写入
-
-依赖：
-
-- `models.py`
-
-被谁调用：
-
-- `pipeline.py`
-
-在系统中的位置：
-
-- truth layer 到 machine-checkable facts layer 的编译层
+- 时间推断仍是规则/关键词驱动
+- 如果 timeline summary 写法变化太大，推断仍可能不理想
 
 ### [planners/plot_planner.py](/Users/yuezhao/Documents/New%20project/planners/plot_planner.py)
 
 主要职责：
 
-- 生成结构化调查计划 `PlotPlan`
+- 生成 `PlotPlan`
 
 输入：
 
 - `CaseBible`
+- 可选 `fact_graph`
 
 输出：
 
 - `PlotPlan`
 
-内部核心逻辑：
+当前是混合式 planner：
 
-- 当前直接返回一个写死的 17-step 计划
-- 这组步骤来自旧案件模板
+#### 1. LLM 优先分支
 
-非常重要的现实情况：
+如果构造 `PlotPlanner` 时传入了 `llm`：
 
-- 这个文件**目前没有根据动态生成的 `CaseBible` 自适应**
-- 它仍然写死了旧人物、旧证据和旧时间
-- 因此它和当前 Gemini 版 `CaseBibleGenerator` 之间是**未完全对齐的**
+- 先尝试 `_build_plan_with_llm(...)`
+- prompt 会要求模型输出严格 JSON：
+  - 顶层 `{ "steps": [...] }`
+  - 每一步必须符合 `PlotStep` 字段结构
+- prompt 中还明确写了约束：
+  - 至少 15 步
+  - 至少 2 个 `alibi_check`
+  - 至少 1 个 `red_herring`
+  - 至少 1 个 `interference`
+  - confrontation 要引用 culprit evidence chain
+  - 不能发明不存在的 evidence id
+  - 侦探必须在案发前已在庄园中
 
-这意味着：
+这一分支的优点：
 
-- validator 往往会在这里报出很多 mismatch
-- story realization 也可能因此和 case bible 脱节
+- 可读性和节奏通常更自然
+- 不同案件之间差异更大
 
-这是当前仓库里最需要继续演进的模块。
+#### 2. 规则 fallback 分支
+
+如果 LLM 失败：
+
+- 网络失败
+- JSON 不合法
+- 解析失败
+- step 数不足
+
+就自动回退到 `_build_plan_with_rules(...)`
+
+这一分支的特点：
+
+- 结构更稳定
+- 可以保底通过 validator
+- 仍然比最早版本更动态，因为：
+  - 现在会根据 `CaseBible` 内容填充
+  - 会根据 red herring 排序嫌疑人
+  - 会根据 method 变化中段标题
+  - 会把侦探“事先在场”的设定写入开场
 
 ### [validators/validator.py](/Users/yuezhao/Documents/New%20project/validators/validator.py)
 
 主要职责：
 
-- 对 `PlotPlan` 做确定性规则校验
+- 对 `PlotPlan` 做确定性规则检查
 
 输入：
 
@@ -731,122 +619,78 @@ save outputs/*.json + outputs/story.txt
 
 - `ValidationReport`
 
-内部核心逻辑：
+规则包括：
 
-- 检查 suspects 数量
-- 检查 evidence 数量
-- 检查 step 数量
-- 检查 alibi check 数量
-- 检查是否存在 red herring
-- 检查是否存在 interference
-- 检查 culprit evidence chain 是否被 plot 引用
-- 检查 confrontation 是否存在且是否引用关键证据
-- 检查 culprit 是否在足够多步骤中被支持
-- 检查 step id 是否连续
-- 检查引用的 evidence id 是否真的存在
-- 检查 plot 时间线是否单调
+- suspects 数量
+- evidence 数量
+- plot 步数
+- alibi check 数量
+- red herring / interference 是否存在
+- culprit evidence chain 是否被覆盖
+- confrontation 是否存在且引用关键证据
+- step id 是否连续
+- evidence id 是否真实存在
+- 时间线是否单调
 
-依赖：
+当前说明：
 
-- `models.py`
-
-被谁调用：
-
-- `pipeline.py`
-
-在系统中的位置：
-
-- deterministic validation 层
+- 当前模块本身没问题
+- 但当前主流程中默认没调用
 
 ### [repair/repair_operator.py](/Users/yuezhao/Documents/New%20project/repair/repair_operator.py)
 
 主要职责：
 
-- 在 validation 失败时补局部步骤
+- 在 validation 失败时补步骤
 
-输入：
+当前说明：
 
-- `CaseBible`
-- `PlotPlan`
-- `ValidationReport`
-
-输出：
-
-- 修复后的 `PlotPlan`
-
-内部核心逻辑：
-
-- 读取 issue code 集合
-- 根据不同 code 附加新的 `PlotStep`
-- 最后重新排序并重编号
-
-当前局限：
-
-- 它是启发式补丁，不会重写整个计划
-- 如果原始 `PlotPlan` 和 `CaseBible` 差得太远，它只能缓解，不能根治
+- 设计上仍保留
+- 当前主流程默认没调用
 
 ### [realization/story_realizer.py](/Users/yuezhao/Documents/New%20project/realization/story_realizer.py)
 
 主要职责：
 
-- 将结构化计划实现为自然语言故事
+- 把 `CaseBible + PlotPlan` 转成故事文本
 
-输入：
+当前特点：
 
-- `CaseBible`
-- `PlotPlan`
+- Mock 分支：简单拼接式 realization
+- Gemini 分支：把 `CaseBible + PlotPlan` 转成 prompt，让模型写故事
+- 最近已经补充“侦探是案发前就被邀请到场”的叙事约束
 
-输出：
+当前说明：
 
-- `str` 故事文本
-
-内部核心逻辑：
-
-- 如果 backend 是 `MockLLMBackend`
-  - 使用简单拼接式 realization
-  - 还会生成标题
-
-- 如果 backend 是 `GeminiLLMBackend`
-  - 会把 `CaseBible` 与 `PlotPlan` 转成大 prompt
-  - 要求模型生成更自然的、分场景的叙事文本
-
-当前局限：
-
-- Mock 分支里仍然有旧模板痕迹，比如结尾固定提到“deleted footage”“digitalis trace”等旧案细节
-- Gemini 分支是否能与 truth 对齐，很大程度取决于 `PlotPlan` 是否已经和 `CaseBible` 对齐
+- 模块仍然有效
+- 但当前主流程默认没执行到这里
 
 ### [pipeline.py](/Users/yuezhao/Documents/New%20project/pipeline.py)
 
 主要职责：
 
-- 编排全链路
+- 串起系统各模块
 
-输入：
+当前实例化方式：
 
-- `output_dir`
-- `seed`
+- `self.mock_llm = MockLLMBackend(...)`
+- `self.gemini_llm = GeminiLLMBackend()`
+- `CaseBibleGenerator(llm=self.gemini_llm)`
+- `PlotPlanner(llm=self.gemini_llm)`
+- `StoryRealizer(llm=self.gemini_llm)`
 
-输出：
+当前真实运行逻辑：
 
-- 一个字典，包含运行过程中的关键结果对象
+1. 生成 case bible
+2. 构建 fact graph
+3. 生成 plot plan
+4. 保存三个 JSON
+5. `quit()`
 
-内部逻辑：
+这表示：
 
-1. 创建输出目录
-2. 同时实例化：
-   - `self.mock_llm`
-   - `self.gemini_llm`
-3. 当前实际把 `self.gemini_llm` 传给：
-   - `CaseBibleGenerator`
-   - `StoryRealizer`
-4. 顺序运行：
-   - case generation
-   - fact building
-   - plot planning
-   - validation
-   - optional repair
-   - realization
-5. 保存所有输出文件
+- 现在 `PlotPlanner` 已经真正接入 Gemini
+- 但完整闭环暂时被人为切成“只看结构结果”的调试模式
 
 ---
 
@@ -858,120 +702,91 @@ save outputs/*.json + outputs/story.txt
 python main.py
 ```
 
-程序会这样走：
+当前真实执行步骤如下：
 
-1. [main.py](/Users/yuezhao/Documents/New%20project/main.py) 中的 `main()` 被执行。
+1. [main.py](/Users/yuezhao/Documents/New%20project/main.py) 中的 `main()` 被调用。
+2. `parse_args()` 解析参数。
+3. 创建 `CrimeMysteryPipeline(output_dir, seed)`。
+4. 在 [pipeline.py](/Users/yuezhao/Documents/New%20project/pipeline.py) 中实例化：
+   - `MockLLMBackend`
+   - `GeminiLLMBackend`
+   - `CaseBibleGenerator`
+   - `FactGraphBuilder`
+   - `PlotPlanner`
+   - `PlotPlanValidator`
+   - `PlotPlanRepairOperator`
+   - `StoryRealizer`
+5. `run()` 中先执行：
+   - `case_bible = self.case_generator.generate()`
+6. 然后执行：
+   - `fact_graph = self.fact_builder.build(case_bible)`
+7. 再执行：
+   - `initial_plot_plan = self.plot_planner.build_plan(case_bible, fact_graph)`
+8. 然后保存：
+   - `case_bible.json`
+   - `fact_graph.json`
+   - `plot_plan.json`
+9. 执行 `quit()`，程序结束。
 
-2. `parse_args()` 读取：
-   - `--output-dir`
-   - `--seed`
+所以当前不会继续做：
 
-3. `main()` 创建 `CrimeMysteryPipeline(output_dir=args.output_dir, seed=args.seed)`。
+- `self.validator.validate(...)`
+- `self.repair_operator.repair(...)`
+- `self.story_realizer.realize(...)`
+- 保存 `validation_report.json`
+- 保存新的 `story.txt`
 
-4. [pipeline.py](/Users/yuezhao/Documents/New%20project/pipeline.py) 的 `__init__()` 中：
-   - 创建输出目录
-   - 创建 `MockLLMBackend`
-   - 创建 `GeminiLLMBackend`
-   - 创建 `CaseBibleGenerator(llm=self.gemini_llm, ...)`
-   - 创建 `FactGraphBuilder`
-   - 创建 `PlotPlanner`
-   - 创建 `PlotPlanValidator`
-   - 创建 `PlotPlanRepairOperator`
-   - 创建 `StoryRealizer(llm=self.gemini_llm)`
-
-5. 调用 `pipeline.run()`。
-
-6. `case_bible = self.case_generator.generate()`
-   - 读取 `setting.txt`
-   - 组织一个要求返回 JSON 的 prompt
-   - 调用 Gemini
-   - 提取 JSON
-   - 解析并构造成 `CaseBible`
-
-7. `fact_graph = self.fact_builder.build(case_bible)`
-   - 按时间排序 timeline
-   - 推断死亡时间、方法时间、角色窗口
-   - 展开出 `FactTriple` 列表
-
-8. `initial_plot_plan = self.plot_planner.build_plan(case_bible)`
-   - 当前这里返回的是一套旧模板 plot steps
-   - 这一点很重要，因为它可能和最新 `CaseBible` 不一致
-
-9. `initial_report = self.validator.validate(case_bible, initial_plot_plan)`
-   - validator 读取 case bible 和 plot plan
-   - 产生 issues 与 metrics
-
-10. 如果 `initial_report.is_valid` 为 `False`：
-    - 调用 `repair_operator.repair(...)`
-    - 再次 `validate(...)`
-
-11. `story_text = self.story_realizer.realize(case_bible, final_plot_plan)`
-    - 因为当前用的是 Gemini backend
-    - 所以会走 `_realize_with_gemini()`
-    - 把 `CaseBible + PlotPlan` 组织成 prompt
-    - 让模型写出自然语言故事
-
-12. pipeline 保存：
-    - `case_bible.json`
-    - `fact_graph.json`
-    - `plot_plan.json`
-    - `validation_report.json`
-    - `story.txt`
-
-13. `main.py` 最后打印：
-    - setting 摘要
-    - validation 是否通过
-    - 输出目录
+如果以后取消这些注释，系统就会回到设计上的完整闭环。
 
 ---
 
 ## 7. 输出文件说明
 
-### `outputs/case_bible.json`
+### 当前主流程会稳定更新的文件
+
+#### `outputs/case_bible.json`
 
 - 隐藏真相层
-- 表示案件的 ground truth
-- 是整个系统最上游的结构化结果
+- 表示案件 ground truth
 
-### `outputs/fact_graph.json`
+#### `outputs/fact_graph.json`
 
-- 从 `CaseBible` 编译出的事实层
-- 用于把案件信息表达成统一的三元组格式
+- 从 `CaseBible` 编译出的事实图层
 
-### `outputs/plot_plan.json`
+#### `outputs/plot_plan.json`
 
-- 调查计划层
-- 是结构化 investigation beats，而不是最终小说文本
+- 当前最重要的中间结果之一
+- 现在可能来自：
+  - LLM 动态生成
+  - rule fallback planner
 
-### `outputs/validation_report.json`
+### 当前目录里可能存在但默认不会重写的文件
 
-- 对 `plot_plan.json` 的校验结果
-- 里面有：
-  - 是否通过
-  - 哪些规则失败
-  - 基本计数指标
+#### `outputs/validation_report.json`
 
-### `outputs/story.txt`
+- 属于 validator 输出
+- 当前主流程默认不重写它
 
-- 最终自然语言输出
-- 当前它依赖 `CaseBible + PlotPlan`
-- 因此只要 `PlotPlan` 仍然和 `CaseBible` 未完全对齐，`story.txt` 也可能继承这种不一致
+#### `outputs/story.txt`
 
-### 这些输出之间的关系
+- 属于 StoryRealizer 输出
+- 当前主流程默认不重写它
+
+### 输出关系
 
 - `case_bible.json`：隐藏真相层
-- `fact_graph.json`：隐藏真相的机器事实层
+- `fact_graph.json`：机器事实层
 - `plot_plan.json`：调查过程层
-- `validation_report.json`：调查过程的规则检查层
-- `story.txt`：最终自然语言叙事层
+- `validation_report.json`：规则检查层（设计上保留，当前默认不更新）
+- `story.txt`：最终叙事层（设计上保留，当前默认不更新）
 
 ---
 
-## 8. Validator 和 Repair 的机制详解
+## 8. Validator 和 Repair 的机制
 
-### 8.1 Validator 检查了什么
+### 8.1 Validator 现在检查什么
 
-当前 validator 检查：
+规则包括：
 
 - 至少 4 个 suspects
 - 至少 8 个 evidence items
@@ -979,49 +794,37 @@ python main.py
 - 至少 2 个 `alibi_check`
 - 至少 1 个 `red_herring`
 - 至少 1 个 `interference`
-- culprit evidence chain 是否都被 plot plan 覆盖
-- 是否存在 confrontation
-- confrontation 是否包含关键证据
-- culprit 是否被足够多步骤支持
-- step_id 是否连续
-- plot 中 evidence id 是否真的存在于 case bible
-- plot 时间是否前后一致
+- culprit evidence chain 被 plot plan 覆盖
+- confrontation 存在
+- confrontation 引用关键 evidence
+- culprit 在足够多步骤中被支持
+- step id 连续
+- evidence id 真实存在
+- 时间线单调
 
-### 8.2 为什么这些规则重要
+### 8.2 Repair 怎么修
 
-- 这些规则对应课程项目的显式要求
-- 它们保证系统不是“随便写一个推理故事”
-- 而是至少在结构层面满足：
-  - 嫌疑人够多
-  - 线索够多
-  - 有误导
-  - 有 alibi check
-  - 有 confrontation
-  - 有可追踪证据链
+Repair 会根据 issue code 补：
 
-### 8.3 Repair 是怎么修的
+- alibi step
+- interference step
+- red herring step
+- 缺失 evidence chain
+- confrontation
 
-Repair 不是回到上游重新生成案件，而是：
+### 8.3 当前状态说明
 
-- 缺 alibi，就补一个 alibi step
-- 缺 interference，就补一个 interference step
-- 缺 red herring，就补一个 red herring step
-- culprit chain 没覆盖，就补一个 evidence step
-- 没有 confrontation 或 confrontation 证据不足，就补 confrontation 或给已有 confrontation 加证据
-
-### 8.4 当前 repair 的局限
-
-- 它是启发式 patch，不是智能重规划
-- 如果 `PlotPlanner` 与 `CaseBible` 差异太大，它很难彻底修正
-- 它更适合修“小缺口”，不适合修“整体剧情模板错案”
+- validator / repair 模块都还在
+- 逻辑也仍然可用
+- 但当前 `pipeline.py` 默认不执行这部分
 
 ---
 
 ## 9. LLM / Mock 机制详解
 
-### 9.1 `llm_interface.py` 到底做了什么
+### 9.1 `llm_interface.py` 做了什么
 
-它定义了统一接口：
+它定义统一接口：
 
 ```python
 class LLMBackend:
@@ -1029,227 +832,185 @@ class LLMBackend:
         ...
 ```
 
-这样其他模块只关心：
+这样各模块不关心底层 provider，只关心：
 
 - 输入一个 prompt
-- 得到一个 `LLMResponse.text`
+- 返回一个 `LLMResponse.text`
 
-而不关心背后到底是 mock 还是真实 HTTP API。
-
-### 9.2 Mock backend 的作用
+### 9.2 Mock backend 的角色
 
 `MockLLMBackend`：
 
-- 不访问网络
-- 适合做离线测试或结构演示
-- 当前更像一个最小占位 backend
+- 不联网
+- 返回固定候选文本
+- 主要用于最小化测试和 fallback 场景
 
-### 9.3 Gemini backend 的作用
+### 9.3 Gemini backend 的角色
 
 `GeminiLLMBackend`：
 
-- 当前使用 Gemini `generateContent` HTTP API
-- 真实发送请求并获取文本输出
+- 当前真实发 HTTP 请求
+- 被用于：
+  - `CaseBibleGenerator`
+  - `PlotPlanner`
+  - `StoryRealizer`
 
-### 9.4 为什么默认不完全依赖 mock
+### 9.4 为什么 PlotPlanner 也开始用 LLM
 
-当前实现已经把主流程切到了 Gemini：
+最近的一个重要变化是：
 
-- `CaseBibleGenerator` 用 Gemini
-- `StoryRealizer` 用 Gemini
+- 你不再满足于 rule-based planner 的固定骨架
+- 因此 `PlotPlanner` 现在改成了 **LLM-first planner**
 
-原因是你已经开始把“真相生成”和“故事实现”都接入真实大模型。
+这样做的目的不是放弃结构化，而是：
 
-### 9.5 如果将来要替换模型，应该改哪里
+- 让调查计划更像真实的调查弧线
+- 减少机械模板感
+- 让不同案件生成不同节奏的 plan
 
-主要改动点在：
+同时通过 fallback planner 保留稳定性。
+
+### 9.5 如果以后要替换模型，改哪里
+
+主要改动点：
 
 - [llm_interface.py](/Users/yuezhao/Documents/New%20project/llm_interface.py)
 - [pipeline.py](/Users/yuezhao/Documents/New%20project/pipeline.py)
 
-如果要换成别的模型：
-
-1. 新增一个实现 `LLMBackend` 的 backend 类
-2. 在 `pipeline.py` 中切换传给 `CaseBibleGenerator` / `StoryRealizer` 的实例
-
 ---
 
-## 10. 这个项目体现了哪些设计思想
+## 10. 项目体现的设计思想
 
 ### hidden truth vs revealed investigation
 
-- `CaseBible` 是隐藏真相
-- `PlotPlan` 是调查如何揭示真相
-- 这两层是概念上分开的
+- `CaseBible` 表示隐藏真相
+- `PlotPlan` 表示调查如何揭示真相
 
 ### structure before prose
 
-- 先有结构对象，再有故事文本
-- `story.txt` 不是唯一输出，而是最后一步
+- 先有结构对象，再有叙事
+- 当前 even story generation 还没默认执行，进一步说明 prose 不是唯一重点
 
 ### deterministic validation
 
-- 校验由 `validator.py` 负责
-- 不是让 LLM 说“我觉得这个计划合理”
+- validator 仍是确定性规则
+- 即使 planner 用 LLM，校验思想不变
 
 ### local repair instead of full regeneration
 
-- 出问题时优先补丁，而不是整案重来
-- 这让系统更像“规划 + 修复”流程
+- 失败时优先补局部，而不是整案重写
 
-### separation of concerns
+### hybrid planning
 
-- case generation
-- fact building
-- planning
-- validation
-- repair
-- realization
+这是最近新增的重要设计思想：
 
-这些职责被拆在不同文件里，虽然实现还简化，但边界是清楚的。
+- planner 不再只是 rule-based
+- 也不是完全无约束的纯 LLM
+- 而是：
+  - LLM 先尝试生成结构化 plan
+  - 失败则回退到规则 planner
+
+这让系统在可读性和稳定性之间做了折中。
 
 ---
 
-## 11. 当前实现的简化之处与局限性
+## 11. 当前实现的简化与局限
 
-这一部分非常重要，需要诚实说明。
+### 11.1 `pipeline.py` 当前不是完整闭环
 
-### 11.1 `PlotPlanner` 还没有跟上新的 `CaseBible`
+这是最重要的现实状态：
 
-这是当前最大局限。
+- validate / repair / realization 目前默认没跑
+- 系统暂时更像“结构化中间结果生成器”
 
-- `CaseBibleGenerator` 已改为 Gemini 动态生成
-- 但 `PlotPlanner` 仍是旧模板
+### 11.2 LLM planner 虽然更自然，但更容易自由发挥
 
-结果就是：
+这会带来两个特点：
 
-- 上游真相层是动态的
-- 中游调查计划层仍是静态旧案
+- 优点：节奏更自然、可读性更高
+- 风险：可能补出 `CaseBible` 没有明确给出的细节
 
-这会导致：
+因此 validator 仍然很重要。
 
-- validator 报很多 mismatch
-- story realizer 可能生成与 case bible 不一致的叙事
+### 11.3 fallback planner 仍然带有模板骨架
 
-### 11.2 `StoryRealizer` 的 mock 分支仍有旧模板残留
+虽然比最早版本动态很多，但 fallback 本质仍是结构化模板填充。
 
-比如它的 closing 中仍提到：
+### 11.4 `CaseBible` 里侦探角色还没有正式结构化
 
-- deleted footage
-- digitalis trace
-- staged outage
+当前“侦探事先在场”的设定已经写进：
 
-这些不一定和当前动态案件一致。
+- `setting.txt`
+- planner prompt
+- story realizer prompt
 
-### 11.3 `CaseBibleGenerator` 的校验还比较浅
+但 `CaseBible` 本身还没有一个单独的 investigator 字段。  
+所以有时候上游 timeline 里会出现别的调查/见证角色名字，而 planner 仍固定使用 `Detective Lena Marlowe`。
 
-它会检查：
+### 11.5 `FactGraphBuilder` 仍是启发式推断
 
-- JSON 结构对不对
-- 字段有没有
-- 类型对不对
-- culprit evidence chain 是否引用真实证据
+- 时间推断依赖规则
+- 不是深层事件语义理解
 
-但还不会深层检查：
+### 11.6 Gemini 调用仍可能不稳定
 
-- timeline 是否绝对严密
-- 红鲱鱼是否足够强
-- alibi 文本是否真的自洽
-
-### 11.4 `FactGraphBuilder` 的时间推断仍然是启发式
-
-虽然比之前强很多，但仍依赖：
-
-- 时间排序
-- 关键词
-- summary 文本中是否出现特定动作词
-
-它不是基于真正的事件语义解析。
-
-### 11.5 Gemini 调用可能超时
-
-当前真实使用了网络 API。
-
-所以可能出现：
+可能出现：
 
 - timeout
-- 网络不可达
-- API 响应格式不稳定
+- 返回 JSON 不稳定
+- 网络失败
 
-这不是 mock 模式下会遇到的问题。
-
-### 11.6 API key 当前实现仍然比较原型化
-
-根据当前代码，`GeminiLLMBackend` 构造函数里仍保留了默认 key 字符串。
-
-这对课程 demo 可能方便，但从工程角度不理想，后续更适合改为：
-
-- 环境变量
-- 本地配置文件
-- 不在仓库中明文保存
+这也是为什么 `PlotPlanner` 要保留 fallback。
 
 ---
 
 ## 12. 如何阅读这个项目
 
-如果你第一次读这个仓库，建议按这个顺序：
+建议按这个顺序读：
 
-### 第一步：先看 [pipeline.py](/Users/yuezhao/Documents/New%20project/pipeline.py)
+### 第一步：看 [pipeline.py](/Users/yuezhao/Documents/New%20project/pipeline.py)
 
-原因：
+因为它告诉你：
 
-- 它是全局入口
-- 最容易理解模块之间怎么串起来
+- 当前到底跑到哪一步
+- 哪些模块已接上 Gemini
+- 哪些步骤被暂时注释掉了
 
 ### 第二步：看 [models.py](/Users/yuezhao/Documents/New%20project/models.py)
 
-原因：
-
-- 先把数据结构弄清楚，再看各模块就容易很多
+因为 schema 是全项目共用语言。
 
 ### 第三步：看 [generators/case_bible_generator.py](/Users/yuezhao/Documents/New%20project/generators/case_bible_generator.py)
 
-原因：
+因为真相生成是整个系统上游。
 
-- 它决定了上游 truth layer 怎么产生
-- 也是最近变化最大的模块之一
+### 第四步：看 [planners/plot_planner.py](/Users/yuezhao/Documents/New%20project/planners/plot_planner.py)
 
-### 第四步：看 [builders/fact_graph_builder.py](/Users/yuezhao/Documents/New%20project/builders/fact_graph_builder.py)
+因为最近最大改动在这里：
 
-原因：
+- 从固定模板
+- 变成了 LLM-first + fallback
 
-- 它展示了从叙事实体到结构事实的编译过程
+### 第五步：看 [builders/fact_graph_builder.py](/Users/yuezhao/Documents/New%20project/builders/fact_graph_builder.py)
 
-### 第五步：看 [validators/validator.py](/Users/yuezhao/Documents/New%20project/validators/validator.py) 和 [repair/repair_operator.py](/Users/yuezhao/Documents/New%20project/repair/repair_operator.py)
+理解真相如何编译成事实层。
 
-原因：
+### 第六步：看 [validators/validator.py](/Users/yuezhao/Documents/New%20project/validators/validator.py) 和 [repair/repair_operator.py](/Users/yuezhao/Documents/New%20project/repair/repair_operator.py)
 
-- 这里体现了“验证 + 修复”的课程核心思想
-
-### 第六步：看 [planners/plot_planner.py](/Users/yuezhao/Documents/New%20project/planners/plot_planner.py)
-
-原因：
-
-- 看完你会立刻明白当前系统最大的未对齐点在哪里
+理解系统的“规则约束”思想。
 
 ### 第七步：看 [realization/story_realizer.py](/Users/yuezhao/Documents/New%20project/realization/story_realizer.py)
 
-原因：
-
-- 这是最终把结构转成故事文本的地方
-- 也能看出 Mock / Gemini 两种 realization 路径
+理解最终叙事如何生成，以及为什么当前主流程还没默认走到这里。
 
 ---
 
 ## 13. 如何运行
 
-### 13.1 依赖
-
-当前项目只使用 Python 标准库，没有额外第三方依赖要求。
-
-建议环境：
+### 13.1 环境
 
 - Python 3.10+
+- 当前项目只依赖标准库
 
 ### 13.2 启动命令
 
@@ -1257,100 +1018,103 @@ class LLMBackend:
 python main.py
 ```
 
-也可以指定：
+也可以：
 
 ```bash
 python main.py --output-dir outputs --seed 7
 ```
 
-### 13.3 配置要求
+### 13.3 当前需要什么配置
 
-因为当前主流程使用 `GeminiLLMBackend`，所以运行时需要：
+因为当前主流程使用 `GeminiLLMBackend`，所以需要：
 
 - 网络可访问 Gemini API
-- API key 可用
+- 可用的 API key
 
 ### 13.4 当前默认不是纯 mock mode
 
-这一点要明确：
+当前：
 
-- 当前 pipeline 会同时实例化 Mock 和 Gemini
-- 但真正传给核心模块的是 Gemini
+- `MockLLMBackend` 会被实例化
+- 但主流程里真正传给主要模块的是 Gemini
 
-也就是说，**当前默认运行模式是 Gemini 主流程，不是纯 mock**。
+包括：
+
+- `CaseBibleGenerator`
+- `PlotPlanner`
+- `StoryRealizer`
+
+### 13.5 当前运行后会输出什么
+
+当前默认最稳定输出：
+
+- `outputs/case_bible.json`
+- `outputs/fact_graph.json`
+- `outputs/plot_plan.json`
+
+不会自动刷新：
+
+- `outputs/validation_report.json`
+- `outputs/story.txt`
+
+除非你把 `pipeline.py` 里注释的完整流程恢复。
 
 ---
 
 ## 14. 从一个例子理解系统
 
-以当前 `outputs/` 目录中常见的一次运行结果为例：
+当前一次典型运行会是这样：
 
-1. `case_bible.json`
-   - 会给出一个完整的 manor mystery 案件
-   - 比如 victim、culprit、suspects、timeline、evidence、red herrings、culprit evidence chain
+1. `CaseBibleGenerator` 根据 `setting.txt` 和 Gemini 生成一个庄园密室案件
+2. `FactGraphBuilder` 把案件编译成事实图
+3. `PlotPlanner` 优先让 Gemini 生成一份结构化调查计划
+4. 如果 Gemini plot 生成失败，再自动回退到规则 planner
+5. 当前主流程先把这些结构化结果写到 `outputs/`
 
-2. `fact_graph.json`
-   - 会把其中的信息编译成：
-     - `is_victim`
-     - `is_culprit`
-     - `used_method`
-     - `present_at`
-     - `is_evidence`
-     - `implicates`
-     - `red_herring_explained_by`
+在你最近的输出里，`plot_plan.json` 已经能出现这种变化：
 
-3. `plot_plan.json`
-   - 当前仍可能是旧模板调查计划
-   - 所以你需要警惕它是否真的对应这个最新案件
+- 不再固定 17 步模板
+- step 数可能变成 16
+- `phase` / `kind` 更自由
+- 红鲱鱼与关键证据链更像真实侦探弧线，而不是固定 checklist
 
-4. `validation_report.json`
-   - 如果 plot plan 与 case bible 对不上，这里通常会出现：
-     - `unknown_evidence`
-     - `evidence_chain`
-     - `culprit_support`
-     - `confrontation_evidence`
-
-5. `story.txt`
-   - 如果上游和中游已经对齐，它应该是结构到叙事的合理转换
-   - 如果上游 truth 和 plot plan 仍未对齐，它会继承这种不一致
+这正是 hybrid planner 的直接效果。
 
 ---
 
 ## 快速读码指南
 
-如果你想用最短时间理解这个项目，建议只开这三个文件，按顺序看：
+如果你想用最短时间理解项目，建议先开这三个文件：
 
 ### 1. [pipeline.py](/Users/yuezhao/Documents/New%20project/pipeline.py)
 
-先看这个文件，因为它告诉你：
+先看它，因为它决定：
 
-- 系统有哪些阶段
-- 每个阶段的顺序是什么
-- 当前到底是 Mock 还是 Gemini 在驱动主流程
+- 当前系统跑到哪里
+- 哪些模块真的在主流程里
+- 当前是不是调试状态
 
 ### 2. [models.py](/Users/yuezhao/Documents/New%20project/models.py)
 
-再看这个文件，因为它决定了：
+再看它，因为它决定：
 
-- 数据长什么样
+- 数据到底长什么样
 - 模块之间到底传什么对象
 
-把 schema 看明白后，其他模块都会好理解很多。
+### 3. [planners/plot_planner.py](/Users/yuezhao/Documents/New%20project/planners/plot_planner.py)
 
-### 3. [generators/case_bible_generator.py](/Users/yuezhao/Documents/New%20project/generators/case_bible_generator.py)
+第三个看它，因为最近最重要的变化都在这里：
 
-第三个看它，因为当前系统最关键的变化都从这里开始：
+- 侦探在场的设定如何体现
+- LLM planner 如何组织 prompt
+- fallback planner 如何兜底
 
-- `setting.txt` 怎么被读取
-- Gemini 怎么被 prompt 成结构化 JSON
-- JSON 怎么被解析成 `CaseBible`
+然后继续按这个顺序读：
 
-看完这三个文件后，再按这个顺序继续：
-
-1. [builders/fact_graph_builder.py](/Users/yuezhao/Documents/New%20project/builders/fact_graph_builder.py)
-2. [validators/validator.py](/Users/yuezhao/Documents/New%20project/validators/validator.py)
-3. [repair/repair_operator.py](/Users/yuezhao/Documents/New%20project/repair/repair_operator.py)
-4. [planners/plot_planner.py](/Users/yuezhao/Documents/New%20project/planners/plot_planner.py)
+1. [generators/case_bible_generator.py](/Users/yuezhao/Documents/New%20project/generators/case_bible_generator.py)
+2. [builders/fact_graph_builder.py](/Users/yuezhao/Documents/New%20project/builders/fact_graph_builder.py)
+3. [validators/validator.py](/Users/yuezhao/Documents/New%20project/validators/validator.py)
+4. [repair/repair_operator.py](/Users/yuezhao/Documents/New%20project/repair/repair_operator.py)
 5. [realization/story_realizer.py](/Users/yuezhao/Documents/New%20project/realization/story_realizer.py)
 
-这样你会先建立“真实数据流”的理解，再去看当前哪些地方已经成熟，哪些地方仍然需要继续改。
+这样你会先抓住当前最真实、最活跃的代码路径，再逐步理解完整系统设计。

@@ -19,8 +19,7 @@ class StoryRealizer:
         title = self._generate_title(case_bible)
         opening = (
             f"{title}\n\n"
-            f"{case_bible.setting} was supposed to host an elegant retreat, "
-            f"but by the time Detective Lena Marlowe arrived, the estate had hardened into a trap. "
+            f"{case_bible.setting} was supposed to culminate in a tense private revelation, and Detective Lena Marlowe had already been invited to witness it before the storm sealed the estate. "
             f"{case_bible.victim.name} lay dead, the road was swallowed by snow, and every face in the hall carried some private fear.\n"
         )
 
@@ -68,6 +67,7 @@ class StoryRealizer:
             "- Do not invent major new plot events that are not supported by the plan.\n"
             "- Do not omit the key investigative developments in the plot steps.\n"
             "- The final confrontation and resolution must clearly rely on the key evidence chain.\n\n"
+            "- The lead investigator was already present at the estate before the murder because the victim had invited them to witness or advise on a coming revelation; do not write the investigator as conveniently arriving from outside after the crime.\n\n"
 
             "Writing goals:\n"
             "- Make the story immersive, smooth, and highly readable.\n"

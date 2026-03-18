@@ -22,7 +22,7 @@ class CrimeMysteryPipeline:
         self.gemini_llm = GeminiLLMBackend()
         self.case_generator = CaseBibleGenerator(llm=self.gemini_llm, seed=seed + 1)
         self.fact_builder = FactGraphBuilder()
-        self.plot_planner = PlotPlanner()
+        self.plot_planner = PlotPlanner(llm=self.gemini_llm)
         self.validator = PlotPlanValidator()
         self.repair_operator = PlotPlanRepairOperator()
         self.story_realizer = StoryRealizer(llm=self.gemini_llm)
@@ -30,21 +30,22 @@ class CrimeMysteryPipeline:
     def run(self) -> dict[str, object]:
         case_bible = self.case_generator.generate()
         fact_graph = self.fact_builder.build(case_bible)
-        initial_plot_plan = self.plot_planner.build_plan(case_bible)
-        initial_report = self.validator.validate(case_bible, initial_plot_plan)
+        initial_plot_plan = self.plot_planner.build_plan(case_bible, fact_graph)
+        # initial_report = self.validator.validate(case_bible, initial_plot_plan)
 
         final_plot_plan: PlotPlan = initial_plot_plan
-        final_report: ValidationReport = initial_report
-        if not initial_report.is_valid:
-            final_plot_plan = self.repair_operator.repair(case_bible, initial_plot_plan, initial_report)
-            final_report = self.validator.validate(case_bible, final_plot_plan)
+        # final_report: ValidationReport = initial_report
+        # if not initial_report.is_valid:
+        #     final_plot_plan = self.repair_operator.repair(case_bible, initial_plot_plan, initial_report)
+        #     final_report = self.validator.validate(case_bible, final_plot_plan)
 
-        story_text = self.story_realizer.realize(case_bible, final_plot_plan)
+        # story_text = self.story_realizer.realize(case_bible, final_plot_plan)
         self._save_json("case_bible.json", asdict(case_bible))
         self._save_json("fact_graph.json", [asdict(fact) for fact in fact_graph])
         self._save_json("plot_plan.json", asdict(final_plot_plan))
-        self._save_json("validation_report.json", asdict(final_report))
-        self._save_text("story.txt", story_text)
+        # self._save_json("validation_report.json", asdict(final_report))
+        # self._save_text("story.txt", story_text)
+        quit()
 
         return {
             "case_bible": case_bible,
