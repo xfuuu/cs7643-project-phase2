@@ -6,7 +6,7 @@ from models import CaseBible, FactTriple
 class FactGraphBuilder:
     def build(self, case_bible: CaseBible) -> list[FactTriple]:
         facts: list[FactTriple] = [
-            FactTriple(case_bible.title, "set_in", case_bible.setting, None, "case_bible", 1.0),
+            FactTriple("case", "set_in", case_bible.setting, None, "case_bible", 1.0),
             FactTriple(case_bible.victim.name, "is_victim", "true", "9:12 PM", "case_bible", 1.0),
             FactTriple(case_bible.culprit.name, "is_culprit", "true", "9:12 PM", "case_bible", 1.0),
             FactTriple(case_bible.culprit.name, "has_motive", case_bible.motive, None, "case_bible", 0.99),

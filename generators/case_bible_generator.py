@@ -14,7 +14,6 @@ class CaseBibleGenerator:
         self.setting_file = Path(__file__).with_name("setting.txt")
 
     def generate(self) -> CaseBible:
-        title = self.llm.generate("Generate a mystery title").text
         setting = self.setting_file.read_text(encoding="utf-8").strip()
 
         victim = Character(
@@ -245,10 +244,8 @@ class CaseBibleGenerator:
         ]
 
         culprit_evidence_chain = ["E2", "E8", "E3", "E4", "E7", "E9"]
-        notes = self.llm.generate("Generate story notes").text
 
         return CaseBible(
-            title=title,
             setting=setting,
             victim=victim,
             culprit=culprit,
@@ -259,5 +256,4 @@ class CaseBibleGenerator:
             evidence_items=evidence_items,
             red_herrings=red_herrings,
             culprit_evidence_chain=culprit_evidence_chain,
-            notes=notes,
         )

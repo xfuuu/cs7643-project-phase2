@@ -16,8 +16,9 @@ class StoryRealizer:
         return self._realize_with_mock(case_bible, plot_plan)
 
     def _realize_with_mock(self, case_bible: CaseBible, plot_plan: PlotPlan) -> str:
+        title = self._generate_title(case_bible)
         opening = (
-            f"{case_bible.title}\n\n"
+            f"{title}\n\n"
             f"{case_bible.setting} was supposed to host an elegant retreat, "
             f"but by the time Detective Lena Marlowe arrived, the estate had hardened into a trap. "
             f"{case_bible.victim.name} lay dead, the road was swallowed by snow, and every face in the hall carried some private fear.\n"
@@ -100,12 +101,21 @@ class StoryRealizer:
             f"True motive: {case_bible.motive}\n"
             f"True method: {case_bible.method}\n"
             f"Key evidence chain: {', '.join(case_bible.culprit_evidence_chain)}\n"
-            f"Story note: {case_bible.notes}\n\n"
-
             "Plot steps:\n"
             f"{chr(10).join(step_lines)}\n\n"
 
-            "Now write the final story as a cohesive short mystery narrative. "
+            "First, write a fitting mystery title on its own line. "
+            "Then write the final story as a cohesive short mystery narrative. "
             "Make it substantially more readable than a procedural summary, while staying faithful to the structured plan."
         )
         return self.llm.generate(prompt).text
+
+    def _generate_title(self, case_bible: CaseBible) -> str:
+        prompt = (
+            "Generate a concise mystery story title based on this case.\n"
+            f"Setting: {case_bible.setting}\n"
+            f"Victim: {case_bible.victim.name}\n"
+            f"Culprit: {case_bible.culprit.name}\n"
+            f"Method: {case_bible.method}"
+        )
+        return self.llm.generate(prompt).text.strip()

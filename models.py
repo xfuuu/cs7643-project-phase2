@@ -47,7 +47,6 @@ class RedHerring:
 
 @dataclass
 class CaseBible:
-    title: str
     setting: str
     victim: Character
     culprit: Character
@@ -58,7 +57,6 @@ class CaseBible:
     evidence_items: list[EvidenceItem]
     red_herrings: list[RedHerring]
     culprit_evidence_chain: list[str]
-    notes: str
 
 
 @dataclass
@@ -87,7 +85,6 @@ class PlotStep:
 
 @dataclass
 class PlotPlan:
-    case_title: str
     investigator: str
     steps: list[PlotStep]
 

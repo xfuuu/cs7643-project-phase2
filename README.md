@@ -243,7 +243,7 @@ main.py 打印摘要信息
 
 - 负责生成隐藏案件真相
 - 输出的是 `CaseBible`
-- 这里的案件素材基本是硬编码 + 少量 LLM 文本 + 外部 `setting.txt` 文件
+- 这里的案件素材基本是硬编码 + 外部 `setting.txt` 文件
 
 ### `builders/fact_graph_builder.py`
 
@@ -390,7 +390,6 @@ main.py 打印摘要信息
 
 字段：
 
-- `title`
 - `setting`
 - `victim`
 - `culprit`
@@ -401,7 +400,6 @@ main.py 打印摘要信息
 - `evidence_items`
 - `red_herrings`
 - `culprit_evidence_chain`
-- `notes`
 
 作用：
 
@@ -463,7 +461,6 @@ main.py 打印摘要信息
 
 字段：
 
-- `case_title`
 - `investigator`
 - `steps`
 
@@ -608,7 +605,7 @@ main.py 打印摘要信息
 
 ### 它被哪些模块调用
 
-- `CaseBibleGenerator` 当前使用传入的 backend 生成标题和 `notes`
+- `CaseBibleGenerator` 当前保留了 `llm` 参数，但在当前实现里不再实际调用它
 - `StoryRealizer` 会根据传入 backend 类型决定走 mock realization 还是 Gemini realization
 - `pipeline.py` 当前会同时实例化 `MockLLMBackend` 和 `GeminiLLMBackend`
 
@@ -654,18 +651,16 @@ main.py 打印摘要信息
 
 它做了几件事：
 
-1. 用 LLM 生成标题
-2. 从外部文件 `generators/setting.txt` 读取设定
-3. 手工定义受害者
-4. 手工定义四个角色，其中最后一个 `Julian Pike` 同时扮演 culprit
-5. 从 culprit 身上提取案件总体动机 `motive`
-6. 手工定义作案方法 `method`
-7. 手工定义真实时间线 `timeline`
-8. 手工定义证据列表 `evidence_items`
-9. 手工定义红鲱鱼 `red_herrings`
-10. 手工定义关键证据链 `culprit_evidence_chain`
-11. 用 LLM 再生成一条 `notes`
-12. 封装成 `CaseBible`
+1. 从外部文件 `generators/setting.txt` 读取设定
+2. 手工定义受害者
+3. 手工定义四个角色，其中最后一个 `Julian Pike` 同时扮演 culprit
+4. 从 culprit 身上提取案件总体动机 `motive`
+5. 手工定义作案方法 `method`
+6. 手工定义真实时间线 `timeline`
+7. 手工定义证据列表 `evidence_items`
+8. 手工定义红鲱鱼 `red_herrings`
+9. 手工定义关键证据链 `culprit_evidence_chain`
+10. 封装成 `CaseBible`
 
 ### 依赖哪些模块
 
@@ -688,6 +683,7 @@ main.py 打印摘要信息
 - 时间线不是推理得到的，而是直接写死
 - 证据链不是从事实中自动发现的，而是直接列出
 - 设定文本也不是动态生成，而是从外部 txt 文件读取
+- 当前虽然构造函数仍然接收 `llm`，但在这份实现里并没有实际使用它
 
 这并不影响课程项目价值，但需要诚实认识：
 **当前 Case Bible 更像“程序化构造”而非真正自由生成”。**
@@ -1000,8 +996,8 @@ issue_codes = {issue.code for issue in report.issues}
 
 其中：
 
-- `_realize_with_mock()` 基本保留原先实现，按开头、步骤段落、结尾串接成文本
-- `_realize_with_gemini()` 会把 `CaseBible` 关键信息和 `PlotPlan` 中的每个 step 压缩成结构化文本，再交给 Gemini 生成更自然的故事
+- `_realize_with_mock()` 会先单独生成标题，再按开头、步骤段落、结尾串接成文本
+- `_realize_with_gemini()` 会把 `CaseBible` 关键信息和 `PlotPlan` 中的每个 step 压缩成结构化文本，再交给 Gemini 生成更自然的故事；当前 prompt 明确要求 LLM 先写标题再写正文
 
 Mock 路径分成三部分：
 
@@ -1083,7 +1079,7 @@ Mock 路径分成三部分：
 
 根据当前实现，pipeline 现在采用的是混合 backend 策略：
 
-- `CaseBibleGenerator` 使用 `MockLLMBackend`
+- `CaseBibleGenerator` 构造时接收 `MockLLMBackend`，但当前实现里并不实际调用它
 - `StoryRealizer` 使用 `GeminiLLMBackend`
 
 ### `run()` 做了什么
@@ -1217,7 +1213,7 @@ pipeline = CrimeMysteryPipeline(output_dir=args.output_dir, seed=args.seed)
 注意：
 
 - generator 使用的是 `seed + 1`
-- `CaseBibleGenerator` 当前使用 mock backend
+- `CaseBibleGenerator` 当前虽然接收 mock backend，但实现中不实际调用它
 - `StoryRealizer` 当前使用 Gemini backend
 
 ### 第 5 步：执行 `pipeline.run()`
@@ -1238,7 +1234,6 @@ case_bible = self.case_generator.generate()
 
 这一步会：
 
-- 用 mock LLM 生成标题
 - 从 `generators/setting.txt` 读取设定
 - 构造受害者 `Professor Adrian Wren`
 - 构造四名核心角色
@@ -1247,7 +1242,6 @@ case_bible = self.case_generator.generate()
 - 构造 9 个证据
 - 构造 2 个红鲱鱼
 - 构造关键证据链
-- 用 mock LLM 生成 `notes`
 - 返回 `CaseBible`
 
 此时系统拿到的是“完整真相层”。
@@ -1347,7 +1341,7 @@ story_text = self.story_realizer.realize(case_bible, final_plot_plan)
 - 先整理 `CaseBible` 关键信息
 - 再整理全部 `PlotStep`
 - 把这些结构化内容拼成 prompt 发给 Gemini
-- 由 Gemini 返回更自然的故事文本
+- 由 Gemini 先生成标题，再生成更自然的故事正文
 
 生成结果保存到：
 
@@ -1587,22 +1581,16 @@ repair 的策略是“按失败原因补齐”。
 
 - `MockLLMBackend`
   - 负责低成本、可复现的轻量文本生成
-  - 当前主要用于 `CaseBibleGenerator` 的标题和 `notes`
+  - 当前主要保留为一个可复现的轻量 backend 选项，并支持简单的 mock realization 路径
 - `GeminiLLMBackend`
   - 负责真实大模型生成
-  - 当前主要用于 `StoryRealizer` 的最终故事生成
+  - 当前主要用于 `StoryRealizer` 的标题与最终故事生成
 
 mock backend 的作用仍然有三点：
 
 1. 保证项目无外部依赖即可运行
 2. 保证课程演示时可复现
 3. 提供少量“像 LLM 输出”的文本变化
-
-它当前主要用于生成：
-
-- 标题
-- notes
-- 以及保留一条简单的 mock realization 路径
 
 ## 9.3 为什么项目里仍然保留 mock backend
 
@@ -1776,6 +1764,7 @@ mock backend 的作用仍然有三点：
 可继续增强的方向包括：
 
 - 让 `CaseBibleGenerator` 不只读取单个 `setting.txt`，而是支持多份设定文件或用户输入设定
+- 清理 `CaseBibleGenerator` 中当前未使用的 `llm` 成员，让接口与实现重新一致
 - 让 fact graph 驱动 planner，而不是只做保存
 - 用真实 LLM 生成多个候选 plot plan
 - 用 validator + repair 做迭代式优化
@@ -1912,11 +1901,10 @@ python main.py --output-dir outputs --seed 7
 
 当前仓库里已经有实际输出，因此可以直接结合输出理解。
 
-### 14.1 最近一次运行生成了什么案件
+### 14.1 最近一次运行的核心信息
 
 根据当前 `outputs/`：
 
-- 标题：`Murder Beneath the Clocktower Snow`
 - 设定：`Blackstone Hall, a snowbound estate converted into a private criminology retreat`
 - 凶手：`Julian Pike`
 - 校验结果：通过
@@ -1951,9 +1939,9 @@ python main.py --output-dir outputs --seed 7
 
 从当前 `story.txt` 可以看出：
 
-- 它不是高度文学化叙事
-- 而是按步骤清晰展开
-- 每个段落都能追溯回一个 `PlotStep`
+- 最终文本的可读性取决于当前 `StoryRealizer` 走的是 mock 还是 Gemini 路径
+- mock 路径更接近按步骤展开
+- Gemini 路径则会更自然，但仍然严格受结构化计划约束
 
 这很适合课程展示“从结构到文本”的映射关系。
 

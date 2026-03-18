@@ -17,7 +17,7 @@ def main() -> None:
     pipeline = CrimeMysteryPipeline(output_dir=args.output_dir, seed=args.seed)
     results = pipeline.run()
     report = results["validation_report"]
-    print(f"Generated case: {results['case_bible'].title}")
+    print(f"Generated setting: {results['case_bible'].setting[:80]}...")
     print(f"Validation passed: {report.is_valid}")
     print(f"Output directory: {results['output_dir']}")
 

@@ -215,4 +215,4 @@ class PlotPlanner:
             ),
         ]
 
-        return PlotPlan(case_title=case_bible.title, investigator=investigator, steps=steps)
+        return PlotPlan(investigator=investigator, steps=steps)

@@ -99,4 +99,4 @@ class PlotPlanRepairOperator:
         for index, step in enumerate(repaired_steps, start=1):
             step.step_id = index
 
-        return PlotPlan(case_title=plot_plan.case_title, investigator=plot_plan.investigator, steps=repaired_steps)
+        return PlotPlan(investigator=plot_plan.investigator, steps=repaired_steps)
