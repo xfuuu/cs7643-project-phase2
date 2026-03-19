@@ -15,12 +15,12 @@ from validators.validator import PlotPlanValidator
 
 
 class CrimeMysteryPipeline:
-    def __init__(self, output_dir: str = "outputs", seed: int = 7) -> None:
+    def __init__(self, output_dir: str = "outputs", gemini_api_key: str | None = None) -> None:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.mock_llm = MockLLMBackend(seed=seed)
-        self.gemini_llm = GeminiLLMBackend()
-        self.case_generator = CaseBibleGenerator(llm=self.gemini_llm, seed=seed + 1)
+        self.mock_llm = MockLLMBackend()
+        self.gemini_llm = GeminiLLMBackend(api_key=gemini_api_key)
+        self.case_generator = CaseBibleGenerator(llm=self.gemini_llm)
         self.fact_builder = FactGraphBuilder()
         self.plot_planner = PlotPlanner(llm=self.gemini_llm)
         self.validator = PlotPlanValidator()
@@ -31,21 +31,20 @@ class CrimeMysteryPipeline:
         case_bible = self.case_generator.generate()
         fact_graph = self.fact_builder.build(case_bible)
         initial_plot_plan = self.plot_planner.build_plan(case_bible, fact_graph)
-        # initial_report = self.validator.validate(case_bible, initial_plot_plan)
+        initial_report = self.validator.validate(case_bible, initial_plot_plan)
 
         final_plot_plan: PlotPlan = initial_plot_plan
-        # final_report: ValidationReport = initial_report
-        # if not initial_report.is_valid:
-        #     final_plot_plan = self.repair_operator.repair(case_bible, initial_plot_plan, initial_report)
-        #     final_report = self.validator.validate(case_bible, final_plot_plan)
+        final_report: ValidationReport = initial_report
+        if not initial_report.is_valid:
+            final_plot_plan = self.repair_operator.repair(case_bible, initial_plot_plan, initial_report)
+            final_report = self.validator.validate(case_bible, final_plot_plan)
 
-        # story_text = self.story_realizer.realize(case_bible, final_plot_plan)
+        story_text = self.story_realizer.realize(case_bible, final_plot_plan)
         self._save_json("case_bible.json", asdict(case_bible))
         self._save_json("fact_graph.json", [asdict(fact) for fact in fact_graph])
         self._save_json("plot_plan.json", asdict(final_plot_plan))
-        # self._save_json("validation_report.json", asdict(final_report))
-        # self._save_text("story.txt", story_text)
-        quit()
+        self._save_json("validation_report.json", asdict(final_report))
+        self._save_text("story.txt", story_text)
 
         return {
             "case_bible": case_bible,

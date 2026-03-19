@@ -56,7 +56,7 @@ class MockLLMBackend(LLMBackend):
 class GeminiLLMBackend(LLMBackend):
     def __init__(
         self,
-        api_key: str = "REMOVED_GEMINI_API_KEY",
+        api_key: str | None = None,
         endpoint: str = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
         timeout_seconds: float = 30.0,
     ) -> None:

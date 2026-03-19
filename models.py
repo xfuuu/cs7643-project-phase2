@@ -48,6 +48,7 @@ class RedHerring:
 @dataclass
 class CaseBible:
     setting: str
+    investigator: str
     victim: Character
     culprit: Character
     suspects: list[Character]

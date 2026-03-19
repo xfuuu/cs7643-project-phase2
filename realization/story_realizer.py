@@ -17,9 +17,10 @@ class StoryRealizer:
 
     def _realize_with_mock(self, case_bible: CaseBible, plot_plan: PlotPlan) -> str:
         title = self._generate_title(case_bible)
+        investigator = plot_plan.investigator
         opening = (
             f"{title}\n\n"
-            f"{case_bible.setting} was supposed to culminate in a tense private revelation, and Detective Lena Marlowe had already been invited to witness it before the storm sealed the estate. "
+            f"{case_bible.setting} was supposed to culminate in a tense private revelation, and {investigator} had already been invited to witness it before the storm sealed the estate. "
             f"{case_bible.victim.name} lay dead, the road was swallowed by snow, and every face in the hall carried some private fear.\n"
         )
 
@@ -97,6 +98,7 @@ class StoryRealizer:
 
             f"Setting: {case_bible.setting}\n"
             f"Victim: {case_bible.victim.name} - {case_bible.victim.description}\n"
+            f"Investigator: {plot_plan.investigator}\n"
             f"Culprit: {case_bible.culprit.name}\n"
             f"True motive: {case_bible.motive}\n"
             f"True method: {case_bible.method}\n"

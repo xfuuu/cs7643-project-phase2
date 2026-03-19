@@ -176,11 +176,22 @@ class FactGraphBuilder:
         mentions_victim = mentions_victim or self._summary_mentions_name(summary, victim_name)
         if not mentions_victim:
             return False
-        death_markers = {"dies", "died", "killed", "murdered", "dead", "death", "succumbs", "collapses"}
+        direct_death_markers = {
+            "collapses",
+            "collapsed",
+            "dies",
+            "died",
+            "succumbs",
+            "gasping for air",
+            "gasping",
+            "stops breathing",
+            "is dead",
+        }
         discovery_markers = {"discovers", "discovered", "finds", "found", "body", "corpse"}
-        return any(marker in summary for marker in death_markers) and not any(
-            marker in summary for marker in discovery_markers
-        )
+        threat_markers = {"threatens", "threatened", "threat", "see him dead", "wants him dead"}
+        if any(marker in summary for marker in discovery_markers | threat_markers):
+            return False
+        return any(marker in summary for marker in direct_death_markers)
 
     def _is_method_execution_event(self, event: _TimedEvent, case_bible: CaseBible) -> bool:
         summary = event.summary.lower()
@@ -194,31 +205,38 @@ class FactGraphBuilder:
             "spike",
             "spiked",
             "spikes",
+            "serve",
             "deliver",
             "delivers",
             "delivered",
             "administer",
             "administers",
             "administered",
-            "stab",
-            "stabs",
-            "stabbed",
-            "strangle",
-            "strangles",
-            "strangled",
-            "shoot",
-            "shoots",
-            "shot",
-            "breaks",
-            "plants",
-            "planted",
+            "slip",
+            "slips",
+            "slipped",
+            "dissolve",
+            "dissolved",
+            "mix",
+            "mixed",
+            "hide",
+            "hides",
+            "stole",
+            "steals",
         }
         method_tokens = {
             token
             for token in re.findall(r"[a-z]+", case_bible.method.lower())
-            if token not in {"with", "via", "the", "and", "a", "an", "of", "to", "by", "followed", "post", "mortem"}
+            if token not in {"with", "via", "the", "and", "a", "an", "of", "to", "by", "followed", "post", "mortem", "during", "alone", "specific", "vintage"}
         }
-        return any(marker in summary for marker in action_markers) or any(token in summary for token in method_tokens)
+        concrete_method_tokens = {
+            token
+            for token in method_tokens
+            if token in {"cyanide", "digitalis", "arsenic", "poisoning", "poison", "brandy", "snifter", "decanter", "toxin"}
+        }
+        if any(marker in summary for marker in {"threatens", "threatened", "argument", "argues", "shouting match"}):
+            return False
+        return any(marker in summary for marker in action_markers) or any(token in summary for token in concrete_method_tokens)
 
     def _summary_mentions_name(self, summary: str, name: str) -> bool:
         summary_tokens = set(re.findall(r"[a-z]+", summary.lower()))

@@ -40,10 +40,11 @@ class PlotPlanner:
             steps.append(self._build_step(step_data, index, evidence_ids))
 
         self._normalize_step_ids(steps)
-        return PlotPlan(investigator="Detective Lena Marlowe", steps=steps)
+        self._normalize_llm_step_times(case_bible, steps)
+        return PlotPlan(investigator=case_bible.investigator, steps=steps)
 
     def _build_plan_with_rules(self, case_bible: CaseBible, fact_graph: list[FactTriple] | None) -> PlotPlan:
-        investigator = "Detective Lena Marlowe"
+        investigator = case_bible.investigator
         timed_events = self._sorted_events(case_bible.true_timeline)
         evidence_ids = self._available_evidence_ids(case_bible, fact_graph)
         evidence_by_person = self._evidence_by_person(case_bible)
@@ -66,7 +67,7 @@ class PlotPlanner:
         red_herring_two = case_bible.red_herrings[1] if len(case_bible.red_herrings) > 1 else None
         pre_murder_tension = self._find_pre_murder_tension_event(timed_events, case_bible.victim.name) or opening_event
         misdirection_event = self._find_misdirection_event(timed_events) or concealment_event or discovery_event
-        investigator_setup = self._investigator_setup(case_bible.victim.name, discovery_event.location)
+        investigator_setup = self._investigator_setup(investigator, case_bible.victim.name, discovery_event.location)
         pivot_title = self._pivot_title(case_bible.method)
         confrontation_title = self._confrontation_title(red_herring_one, case_bible.culprit.name)
 
@@ -318,7 +319,7 @@ class PlotPlanner:
 
         return (
             "Generate a structured investigation plot plan as valid JSON only. Do not use markdown fences.\n"
-            "The lead investigator is Detective Lena Marlowe, who was already present at the estate before the murder because the victim invited her to witness or advise on a coming revelation.\n"
+            f"The lead investigator is {case_bible.investigator}, who was already present at the estate before the murder because the victim invited them to witness or advise on a coming revelation.\n"
             "Return JSON with exactly this top-level shape:\n"
             '{\n  "steps": [\n'
             '    {"step_id": int, "phase": str, "kind": str, "title": str, "summary": str, "location": str, "participants": [str], "evidence_ids": [str], "reveals": [str], "timeline_ref": str}\n'
@@ -403,6 +404,57 @@ class PlotPlanner:
         steps.sort(key=lambda step: step.step_id)
         for index, step in enumerate(steps, start=1):
             step.step_id = index
+
+    def _normalize_llm_step_times(self, case_bible: CaseBible, steps: list[PlotStep]) -> None:
+        if not steps:
+            return
+        timed_events = self._sorted_events(case_bible.true_timeline)
+        discovery_event = self._find_discovery_event(timed_events) if timed_events else None
+        anchor_minutes = self._parse_time(discovery_event.time_marker) if discovery_event is not None else None
+        if anchor_minutes is None:
+            parseable = [self._parse_time(step.timeline_ref) for step in steps if self._parse_time(step.timeline_ref) is not None]
+            anchor_minutes = parseable[0] if parseable else 23 * 60
+
+        step_minutes = [self._parse_time(step.timeline_ref) for step in steps]
+        if self._llm_times_need_repair(anchor_minutes, step_minutes):
+            normalized_times = self._step_times(self._display_time_from_minutes(anchor_minutes), len(steps))
+            for step, normalized_time in zip(steps, normalized_times):
+                step.timeline_ref = normalized_time
+            return
+
+        normalized_minutes: list[int] = []
+        day_offset = 0
+        previous_raw: int | None = None
+        minimum_allowed = anchor_minutes
+        for raw_minutes in step_minutes:
+            if raw_minutes is None:
+                base_minutes = normalized_minutes[-1] + 10 if normalized_minutes else minimum_allowed
+                normalized_minutes.append(max(base_minutes, minimum_allowed))
+                continue
+            if previous_raw is not None and raw_minutes < previous_raw:
+                day_offset += 24 * 60
+            candidate = raw_minutes + day_offset
+            if candidate < minimum_allowed:
+                candidate = minimum_allowed if not normalized_minutes else max(minimum_allowed, normalized_minutes[-1] + 10)
+            elif normalized_minutes and candidate <= normalized_minutes[-1]:
+                candidate = normalized_minutes[-1] + 10
+            normalized_minutes.append(candidate)
+            previous_raw = raw_minutes
+
+        for step, minutes in zip(steps, normalized_minutes):
+            step.timeline_ref = self._display_time_from_minutes(minutes)
+
+    def _llm_times_need_repair(self, anchor_minutes: int, step_minutes: list[int | None]) -> bool:
+        parseable = [minutes for minutes in step_minutes if minutes is not None]
+        if not parseable:
+            return True
+        if any(minutes < anchor_minutes - 60 for minutes in parseable):
+            return True
+        if any(abs(current - previous) > 180 for previous, current in zip(parseable, parseable[1:])):
+            return True
+        if parseable[0] < anchor_minutes:
+            return True
+        return False
 
     def _require_string(self, data: dict[str, Any], key: str) -> str:
         value = data.get(key)
@@ -505,9 +557,9 @@ class PlotPlanner:
 
         return sorted(case_bible.suspects, key=sort_key)
 
-    def _investigator_setup(self, victim_name: str, location: str) -> str:
+    def _investigator_setup(self, investigator: str, victim_name: str, location: str) -> str:
         return (
-            f"Detective Lena Marlowe had already been invited to the manor by {victim_name}, "
+            f"{investigator} had already been invited to the manor by {victim_name}, "
             f"who meant to stage a private revelation before select witnesses in the {location.lower()}."
         )
 

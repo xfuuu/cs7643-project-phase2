@@ -1,174 +1,191 @@
 {
   "setting": "A classic closed-circle manor mystery set in rural England in the late 1920s. On a stormy autumn evening, a select group of guests has gathered at an old country estate for a formal masquerade and private supper. By nightfall, the roads are flooded, the grounds are impassable, and the household is sealed off from the outside world until morning. The lead investigator must already be present inside the estate before the isolation begins, having been specifically invited by the eventual victim to witness or advise on a planned private revelation, accusation, or reckoning later that evening.\n\nThe story should feel like a traditional fair-play whodunit: atmospheric, elegant, and deduction-centered. It must be historically and technologically consistent with the late 1920s. No modern communications, digital devices, surveillance systems, database searches, or advanced forensic procedures may be used. The mystery must unfold through interviews, conflicting testimony, timing discrepancies, room access, physical traces, written documents, household objects, and careful reasoning. The investigator's presence must be narratively justified as part of the evening's social arrangement, not as someone who conveniently arrives from outside after the murder.\n\nThe estate should provide a rich but finite investigative space, including rooms such as a library, study, ballroom, conservatory, dining room, guest wing, servant corridors, and private chambers. The characters should be socially plausible for the period and setting: aristocratic family members, family friends, staff, professional associates, or dependents, each carrying secrets, anxieties, and conflicting interests. Themes may include inheritance, scandal, debt, blackmail, jealousy, class tension, and fear of public disgrace.\n\nThe crime should be designed as a layered but fair mystery with one true culprit, one victim, at least four serious suspects, at least eight evidence items, at least one red herring arc, at least two alibi checks, and at least one deliberate attempt to mislead the investigation. The hidden truth must support a long-form investigation with at least fifteen substantial plot beats, culminating in a final confrontation grounded in a clear and coherent chain of evidence.",
+  "investigator": "Arthur Penhaligon",
   "victim": {
-    "name": "Sir Alistair Sterling",
+    "name": "Sir Alistair Thorne",
     "role": "victim",
-    "description": "A wealthy, stern industrialist in his late 60s, known for his vast estate and a recent, mysterious change in his social circle.",
+    "description": "A wealthy, abrasive industrialist with a history of predatory business practices and colonial shipping interests.",
     "relationship_to_victim": "Self",
-    "means": "None",
-    "motive": "None",
-    "opportunity": "None",
-    "alibi": "None"
+    "means": "Not applicable",
+    "motive": "Not applicable",
+    "opportunity": "Not applicable",
+    "alibi": "Not applicable"
   },
   "culprit": {
-    "name": "Arthur Sterling",
+    "name": "Eleanor Vance",
     "role": "culprit",
-    "description": "Sir Alistair's only nephew and presumed heir. An elegant but desperate man with a penchant for high-stakes gambling.",
-    "relationship_to_victim": "Nephew and primary heir",
-    "means": "Access to the estate's conservatory and knowledge of the heart medication Alistair already took, allowing for a lethal interaction.",
-    "motive": "Alistair intended to sign a new will tonight disinheriting Arthur in favor of a newly discovered illegitimate daughter.",
-    "opportunity": "He slipped away during the masquerade while everyone was in the ballroom, using the servant corridors to reach the study.",
-    "alibi": "Claims he was in the smoking room alone, but no one can verify his presence for a crucial forty-minute window."
+    "description": "The doctor's quiet, observant wife and an expert amateur botanist.",
+    "relationship_to_victim": "Associate",
+    "means": "Extracted Aconitine (monkshood) from the manor's conservatory.",
+    "motive": "To protect her husband from Alistair's blackmail, which was destroying Percival's health and sanity.",
+    "opportunity": "Briefly left the masquerade at 9:45 PM while the music was at its loudest.",
+    "alibi": "Claims she was in the powder room fixing her mask, but the attendant was away."
   },
   "suspects": [
     {
-      "name": "Arthur Sterling",
-      "role": "culprit",
-      "description": "Sir Alistair's only nephew and presumed heir. An elegant but desperate man with a penchant for high-stakes gambling.",
-      "relationship_to_victim": "Nephew and primary heir",
-      "means": "Access to the estate's conservatory and knowledge of the heart medication Alistair already took, allowing for a lethal interaction.",
-      "motive": "Alistair intended to sign a new will tonight disinheriting Arthur in favor of a newly discovered illegitimate daughter.",
-      "opportunity": "He slipped away during the masquerade while everyone was in the ballroom, using the servant corridors to reach the study.",
-      "alibi": "Claims he was in the smoking room alone, but no one can verify his presence for a crucial forty-minute window."
+      "name": "Julian Thorne",
+      "role": "suspect",
+      "description": "The victim's estranged son, a high-stakes gambler with mounting debts in London.",
+      "relationship_to_victim": "Son",
+      "means": "Access to a decorative hunting knife kept in the library.",
+      "motive": "Accelerating his inheritance to pay off violent debt collectors.",
+      "opportunity": "Slipped out of the ballroom for twenty minutes during the masquerade.",
+      "alibi": "Claims he was on the terrace clearing his head from the heat, but no one saw him."
+    },
+    {
+      "name": "Lady Elspeth Thorne",
+      "role": "suspect",
+      "description": "Sir Alistair's second wife, younger and socially ambitious, hiding a secret affair.",
+      "relationship_to_victim": "Spouse",
+      "means": "Knowledge of the manor's layout and household routines.",
+      "motive": "Fear of being disinherited after Alistair threatened to divorce her for her infidelity.",
+      "opportunity": "Was unaccounted for during the supper transition to the masquerade.",
+      "alibi": "Claims she was in the library reading, though her book remained on the shelf."
+    },
+    {
+      "name": "Dr. Percival Vance",
+      "role": "suspect",
+      "description": "The family physician who has served the Thornes for twenty years.",
+      "relationship_to_victim": "Family Doctor",
+      "means": "Access to lethal sedatives and medical instruments.",
+      "motive": "Alistair was blackmailing him over a fatal surgical error he covered up years ago.",
+      "opportunity": "Had a scheduled private meeting with Alistair in the study at 10:15 PM.",
+      "alibi": "Claims he was in the washroom and then preparing his medical bag for a house call."
     },
     {
       "name": "Eleanor Vance",
-      "role": "suspect",
-      "description": "Sir Alistair\u2019s private secretary, recently hired. She is actually his illegitimate daughter, though only Alistair and the investigator knew this.",
-      "relationship_to_victim": "Secret daughter and employee",
-      "means": "Constant access to Alistair's personal items and drinks.",
-      "motive": "Resentment for years of neglect, though she truly desired a relationship rather than his money.",
-      "opportunity": "Was seen near the study shortly before the body was discovered, delivering correspondence.",
-      "alibi": "Claims to have been in the library preparing the new will documents, but the library was empty when the investigator checked."
-    },
-    {
-      "name": "Colonel Reginald Thorne",
-      "role": "suspect",
-      "description": "An old military friend of Sir Alistair with a distinguished career and a very thin wallet.",
-      "relationship_to_victim": "Lifelong friend and debtor",
-      "means": "Carries a ceremonial dagger and has knowledge of poisons from his time in the colonies.",
-      "motive": "Alistair was calling in a massive personal debt that would have bankrupted the Colonel and stripped him of his honors.",
-      "opportunity": "Left the ballroom for 'fresh air' on the covered veranda, which has a window leading into the study.",
-      "alibi": "States he was on the veranda, but his boots are suspiciously dry for someone out in a storm."
-    },
-    {
-      "name": "Martha Gable",
-      "role": "suspect",
-      "description": "The head housekeeper at Blackwood Manor for twenty years. Efficient, cold, and observant.",
-      "relationship_to_victim": "Long-term servant",
-      "means": "Full run of the house and knowledge of the household rhythms.",
-      "motive": "She had been systematically stealing and selling family heirlooms; Alistair had discovered the missing items that morning.",
-      "opportunity": "She was moving between the kitchens and the dining hall, passing the study multiple times.",
-      "alibi": "Assisted by the kitchen staff, though they admit she was 'unaccounted for' during the heavy rain peak."
+      "role": "culprit",
+      "description": "The doctor's quiet, observant wife and an expert amateur botanist.",
+      "relationship_to_victim": "Associate",
+      "means": "Extracted Aconitine (monkshood) from the manor's conservatory.",
+      "motive": "To protect her husband from Alistair's blackmail, which was destroying Percival's health and sanity.",
+      "opportunity": "Briefly left the masquerade at 9:45 PM while the music was at its loudest.",
+      "alibi": "Claims she was in the powder room fixing her mask, but the attendant was away."
     }
   ],
-  "motive": "Arthur discovered that Sir Alistair was rewriting his will to leave the entire Sterling fortune to Eleanor Vance. Facing immediate ruin from London debt collectors, Arthur needed to ensure his uncle died before the new will was signed at midnight.",
-  "method": "Arthur extracted Digitalis (foxglove) concentrate from the conservatory and spiked Alistair's private decanter of brandy. The poison, combined with Alistair's existing heart condition, triggered a fatal cardiac arrest that appeared at first glance to be natural causes.",
+  "motive": "Eleanor discovered Sir Alistair was blackmailing her husband, Dr. Percival Vance, regarding a past medical mistake. She knew Alistair would never stop and that her husband was on the verge of suicide or ruin. She decided to eliminate the threat to save her husband and their social standing.",
+  "method": "Eleanor poisoned Alistair's silver brandy flask with concentrated Aconitine extracted from monkshood plants in the conservatory. Alistair took a private nightcap in his study as part of his nightly ritual, leading to swift cardiac failure.",
   "true_timeline": [
     {
       "event_id": "T01",
-      "time_marker": "6:00 PM",
-      "summary": "Guests arrive at Blackwood Manor as the storm begins to intensify.",
+      "time_marker": "18:00",
+      "summary": "The guests arrive at Blackwood Manor as the storm begins to intensify; the roads start flooding.",
       "participants": [
-        "Sir Alistair",
-        "Arthur",
-        "Eleanor",
-        "Reginald",
-        "Inspector Vane"
+        "Arthur Penhaligon",
+        "Sir Alistair Thorne",
+        "Julian Thorne",
+        "Lady Elspeth Thorne",
+        "Dr. Percival Vance",
+        "Eleanor Vance"
       ],
-      "location": "Main Entrance Hall",
+      "location": "Main Entrance",
       "public": true
     },
     {
       "event_id": "T02",
-      "time_marker": "6:30 PM",
-      "summary": "Sir Alistair privately reveals to Inspector Vane that he will sign the new will at midnight and expects a 'troublesome reaction'.",
+      "time_marker": "19:30",
+      "summary": "A tense formal dinner where Alistair hints at a 'grand reckoning' and an upcoming announcement.",
       "participants": [
-        "Sir Alistair",
-        "Inspector Vane"
+        "Arthur Penhaligon",
+        "Sir Alistair Thorne",
+        "Julian Thorne",
+        "Lady Elspeth Thorne",
+        "Dr. Percival Vance",
+        "Eleanor Vance"
+      ],
+      "location": "Dining Room",
+      "public": true
+    },
+    {
+      "event_id": "T03",
+      "time_marker": "20:30",
+      "summary": "Alistair privately pulls Arthur Penhaligon aside, asking him to witness a 'confession of a leech' at midnight.",
+      "participants": [
+        "Arthur Penhaligon",
+        "Sir Alistair Thorne"
       ],
       "location": "The Library",
       "public": false
     },
     {
-      "event_id": "T03",
-      "time_marker": "7:15 PM",
-      "summary": "Arthur is seen arguing heatedly with Alistair near the conservatory; Alistair tells him he is 'finished'.",
+      "event_id": "T04",
+      "time_marker": "21:00",
+      "summary": "The masquerade begins; guests are masked and costumes make identification difficult from a distance.",
       "participants": [
-        "Sir Alistair",
-        "Arthur"
+        "Julian Thorne",
+        "Lady Elspeth Thorne",
+        "Dr. Percival Vance",
+        "Eleanor Vance"
       ],
-      "location": "Conservatory Wing",
+      "location": "Ballroom",
       "public": true
     },
     {
-      "event_id": "T04",
-      "time_marker": "7:45 PM",
-      "summary": "Arthur sneaks back into the conservatory to crush foxglove leaves into a concentrated vial.",
+      "event_id": "T05",
+      "time_marker": "21:45",
+      "summary": "Eleanor Vance slips into the conservatory to retrieve a concentrated monkshood extract she prepared earlier.",
       "participants": [
-        "Arthur"
+        "Eleanor Vance"
       ],
       "location": "Conservatory",
       "public": false
     },
     {
-      "event_id": "T05",
-      "time_marker": "8:20 PM",
-      "summary": "The masquerade supper begins. All guests wear masks. Arthur uses a servant's passage to enter the study and spike the brandy.",
+      "event_id": "T06",
+      "time_marker": "22:00",
+      "summary": "Eleanor enters the study and doses the brandy in Alistair's silver flask with the poison.",
       "participants": [
-        "Arthur"
+        "Eleanor Vance"
       ],
       "location": "The Study",
       "public": false
     },
     {
-      "event_id": "T06",
-      "time_marker": "8:45 PM",
-      "summary": "Alistair complains of a headache and retires to his study to review the new will before the midnight signing.",
-      "participants": [
-        "Sir Alistair"
-      ],
-      "location": "Ballroom / Study",
-      "public": true
-    },
-    {
       "event_id": "T07",
-      "time_marker": "9:10 PM",
-      "summary": "Alistair drinks the poisoned brandy and collapses.",
+      "time_marker": "22:10",
+      "summary": "Alistair retires to his study early and drinks from the poisoned flask, dying almost immediately.",
       "participants": [
-        "Sir Alistair"
+        "Sir Alistair Thorne"
       ],
       "location": "The Study",
       "public": false
     },
     {
       "event_id": "T08",
-      "time_marker": "9:30 PM",
-      "summary": "Arthur enters the study through the servant passage, places a bloody letter opener near the body to suggest a struggle, and steals the unsigned will.",
+      "time_marker": "22:15",
+      "summary": "Dr. Percival Vance enters for his scheduled meeting, finds Alistair dead, and panics; he hides a blackmail note he finds on the desk.",
       "participants": [
-        "Arthur"
+        "Dr. Percival Vance"
       ],
       "location": "The Study",
       "public": false
     },
     {
       "event_id": "T09",
-      "time_marker": "10:00 PM",
-      "summary": "Martha Gable discovers the body while bringing a late tea service. The house is alerted.",
+      "time_marker": "22:30",
+      "summary": "Julian Thorne enters the study to steal his IOU notes from the desk; he finds the body, tears his costume ribbon in his haste, and flees.",
       "participants": [
-        "Martha Gable",
-        "Sir Alistair"
+        "Julian Thorne"
       ],
       "location": "The Study",
-      "public": true
+      "public": false
     },
     {
       "event_id": "T10",
-      "time_marker": "10:15 PM",
-      "summary": "Inspector Vane declares the roads are flooded and the house is sealed. Investigation begins.",
+      "time_marker": "22:45",
+      "summary": "Julian Thorne stabs the corpse with a library knife to make it look like a struggle, unaware the poison already acted.",
       "participants": [
-        "Inspector Vane",
-        "All Guests"
+        "Julian Thorne"
+      ],
+      "location": "The Study",
+      "public": false
+    },
+    {
+      "event_id": "T11",
+      "time_marker": "23:00",
+      "summary": "Arthur Penhaligon, concerned by the lack of activity, enters the study and discovers the body.",
+      "participants": [
+        "Arthur Penhaligon"
       ],
       "location": "The Study",
       "public": true
@@ -176,92 +193,93 @@
   ],
   "evidence_items": [
     {
-      "evidence_id": "E01",
-      "name": "Crystal Brandy Decanter",
-      "description": "The decanter is half-empty. A faint, bitter herbal residue is found at the bottom, inconsistent with high-quality brandy.",
+      "evidence_id": "EV-01",
+      "name": "Silver Brandy Flask",
+      "description": "Contains traces of high-quality brandy and concentrated Aconitine.",
       "location_found": "Study Desk",
-      "implicated_person": "Arthur Sterling",
-      "reliability": 0.9,
-      "planted": false
-    },
-    {
-      "evidence_id": "E02",
-      "name": "Bloody Letter Opener",
-      "description": "A silver letter opener with a small amount of blood on the tip. It was found three feet from the victim.",
-      "location_found": "Study Floor",
       "implicated_person": "Eleanor Vance",
-      "reliability": 0.2,
-      "planted": true
-    },
-    {
-      "evidence_id": "E03",
-      "name": "Crushed Foxglove Petals",
-      "description": "Several bruised petals of Digitalis Purpurea found caught in the floorboards near the study's servant entrance.",
-      "location_found": "Study (Servant Entrance)",
-      "implicated_person": "Arthur Sterling",
-      "reliability": 0.85,
+      "reliability": 1.0,
       "planted": false
     },
     {
-      "evidence_id": "E04",
-      "name": "The Unsigned Will",
-      "description": "A legal document naming 'Eleanor Vance, my natural daughter' as sole beneficiary. It is crumpled and was found in a wastepaper basket in the servant's hall.",
-      "location_found": "Servant's Hall Wastepaper Basket",
-      "implicated_person": "Arthur Sterling",
-      "reliability": 0.95,
-      "planted": false
-    },
-    {
-      "evidence_id": "E05",
-      "name": "Muddy Boots (Size 10)",
-      "description": "Men's dress boots with distinctive yellow clay from the conservatory gardens. They match the size of Arthur Sterling.",
-      "location_found": "Arthur's Guest Room",
-      "implicated_person": "Arthur Sterling",
+      "evidence_id": "EV-02",
+      "name": "Torn Green Silk Ribbon",
+      "description": "A ribbon from a masquerade costume, snagged on the desk corner.",
+      "location_found": "Study Floor",
+      "implicated_person": "Julian Thorne",
       "reliability": 0.8,
       "planted": false
     },
     {
-      "evidence_id": "E06",
-      "name": "Stolen Diamond Brooch",
-      "description": "A piece of Sterling family jewelry reported missing months ago. It was hidden inside a flour sack.",
-      "location_found": "Kitchen Larder",
-      "implicated_person": "Martha Gable",
-      "reliability": 0.7,
-      "planted": false
-    },
-    {
-      "evidence_id": "E07",
-      "name": "Blue Silk Masquerade Mask",
-      "description": "Arthur's mask, which has a small stain of what appears to be green plant sap on the interior lining.",
-      "location_found": "Smoking Room Hallway",
-      "implicated_person": "Arthur Sterling",
+      "evidence_id": "EV-03",
+      "name": "Stained Suede Glove",
+      "description": "A woman's gardening glove with traces of crushed plant matter and dirt.",
+      "location_found": "Conservatory Trash Bin",
+      "implicated_person": "Eleanor Vance",
       "reliability": 0.9,
       "planted": false
     },
     {
-      "evidence_id": "E08",
-      "name": "Threatening Telegram",
-      "description": "A telegram addressed to Colonel Thorne demanding payment by the 15th or 'consequences will follow'.",
-      "location_found": "The Billiards Room",
-      "implicated_person": "Colonel Reginald Thorne",
+      "evidence_id": "EV-04",
+      "name": "Blackmail Letter",
+      "description": "A note from Alistair to 'P' demanding 5,000 pounds to keep a 'medical secret'.",
+      "location_found": "Dr. Vance's Pocket",
+      "implicated_person": "Dr. Percival Vance",
+      "reliability": 0.9,
+      "planted": false
+    },
+    {
+      "evidence_id": "EV-05",
+      "name": "Missing Ledger Page",
+      "description": "A page detailing Julian's gambling debts, recently torn from the victim's books.",
+      "location_found": "Julian's Bedroom Drawer",
+      "implicated_person": "Julian Thorne",
+      "reliability": 0.7,
+      "planted": false
+    },
+    {
+      "evidence_id": "EV-06",
+      "name": "Smudged Wine Glass",
+      "description": "A glass bearing Lady Elspeth's unique shade of lipstick.",
+      "location_found": "The Library",
+      "implicated_person": "Lady Elspeth Thorne",
+      "reliability": 0.4,
+      "planted": false
+    },
+    {
+      "evidence_id": "EV-07",
+      "name": "Dried Monkshood Petal",
+      "description": "A small purple petal found inside a beaded evening handbag.",
+      "location_found": "Eleanor's Handbag",
+      "implicated_person": "Eleanor Vance",
+      "reliability": 0.95,
+      "planted": false
+    },
+    {
+      "evidence_id": "EV-08",
+      "name": "Decorative Hunting Knife",
+      "description": "The weapon used for the post-mortem stab wound, wiped clean of prints.",
+      "location_found": "Study Hearth",
+      "implicated_person": "Julian Thorne",
       "reliability": 0.6,
       "planted": false
     }
   ],
   "red_herrings": [
     {
-      "herring_id": "RH01",
-      "suspect_name": "Eleanor Vance",
+      "herring_id": "RH-01",
+      "suspect_name": "Julian Thorne",
       "misleading_evidence_ids": [
-        "E02"
+        "EV-02",
+        "EV-05",
+        "EV-08"
       ],
-      "explanation": "The bloody letter opener suggests a struggle or a stabbing attempt. However, Alistair has no puncture wounds. Arthur used Alistair's own letter opener to prick his own finger and smear the blade to frame Eleanor, who had used the opener earlier that day to open mail."
+      "explanation": "Julian's torn ribbon and the knife suggest a violent struggle over his debts. In reality, he arrived after the death and committed the theft and the stabbing in a panicked attempt to cover his trail and reclaim his IOU notes."
     }
   ],
   "culprit_evidence_chain": [
-    "E03",
-    "E07",
-    "E01",
-    "E04"
+    "EV-03",
+    "EV-07",
+    "EV-01"
   ]
 }

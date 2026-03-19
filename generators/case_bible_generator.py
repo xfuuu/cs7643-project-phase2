@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from random import Random
 from typing import Any
 
 from llm_interface import LLMBackend
@@ -10,14 +9,14 @@ from models import CaseBible, Character, EvidenceItem, RedHerring, TimelineEvent
 
 
 class CaseBibleGenerator:
-    def __init__(self, llm: LLMBackend, seed: int = 11) -> None:
+    def __init__(self, llm: LLMBackend) -> None:
         self.llm = llm
-        self.rng = Random(seed)
         self.setting_file = Path(__file__).with_name("setting.txt")
 
     def generate(self) -> CaseBible:
         setting = self.setting_file.read_text(encoding="utf-8").strip()
         blueprint = self._generate_case_blueprint(setting)
+        investigator = self._require_string(blueprint, "investigator")
         victim = self._build_character(blueprint["victim"])
         suspects = [self._build_character(item) for item in blueprint["suspects"]]
         culprit = self._resolve_culprit(blueprint, suspects)
@@ -30,6 +29,7 @@ class CaseBibleGenerator:
 
         return CaseBible(
             setting=setting,
+            investigator=investigator,
             victim=victim,
             culprit=culprit,
             suspects=suspects,
@@ -47,6 +47,7 @@ class CaseBibleGenerator:
             "Return JSON only. Do not use markdown fences.\n"
             "The JSON must follow this schema exactly:\n"
             "{\n"
+            '  "investigator": str,\n'
             '  "victim": {"name": str, "role": "victim", "description": str, "relationship_to_victim": str, "means": str, "motive": str, "opportunity": str, "alibi": str},\n'
             '  "suspects": [\n'
             '    {"name": str, "role": "suspect" or "culprit", "description": str, "relationship_to_victim": str, "means": str, "motive": str, "opportunity": str, "alibi": str}\n'
@@ -66,6 +67,7 @@ class CaseBibleGenerator:
             '  "culprit_evidence_chain": [str]\n'
             "}\n\n"
             "Requirements:\n"
+            "- The investigator field must name the same lead investigator referenced anywhere in the timeline.\n"
             "- At least 4 suspects total, including exactly 1 culprit.\n"
             "- At least 8 evidence items.\n"
             "- At least 1 red herring.\n"
@@ -119,6 +121,7 @@ class CaseBibleGenerator:
 
     def _validate_blueprint_shape(self, data: dict[str, Any]) -> None:
         required_keys = [
+            "investigator",
             "victim",
             "suspects",
             "culprit_name",
