@@ -1,0 +1,307 @@
+{
+  "investigator": "Arthur Penhaligon",
+  "steps": [
+    {
+      "step_id": 1,
+      "phase": "Discovery",
+      "kind": "discovery",
+      "title": "The Witness Fails to Appear",
+      "summary": "Arthur Penhaligon, waiting in the hallway for the private midnight revelation Sir Alistair promised, grows concerned by the silence and enters the study to find the industrialist slumped over his desk.",
+      "location": "The Study",
+      "participants": [
+        "Arthur Penhaligon",
+        "Sir Alistair Thorne"
+      ],
+      "evidence_ids": [],
+      "reveals": [
+        "Sir Alistair Thorne is dead."
+      ],
+      "timeline_ref": "10:15 PM"
+    },
+    {
+      "step_id": 2,
+      "phase": "Initial Sweep",
+      "kind": "search",
+      "title": "A Room Disturbed",
+      "summary": "Arthur secures the room and conducts a methodical sweep. He discovers a silver flask with an odd residue and a scrap of silk snagged on the corner of the heavy mahogany desk.",
+      "location": "The Study",
+      "participants": [
+        "Arthur Penhaligon"
+      ],
+      "evidence_ids": [
+        "EV-01",
+        "EV-02"
+      ],
+      "reveals": [
+        "A silver brandy flask contains traces of Aconitine.",
+        "A green silk ribbon was left behind by someone in a hurry."
+      ],
+      "timeline_ref": "10:25 PM"
+    },
+    {
+      "step_id": 3,
+      "phase": "Initial Sweep",
+      "kind": "interview",
+      "title": "The Household Gathers",
+      "summary": "Arthur informs the guests of the tragedy. He notes the reactions: Julian's sweating, Elspeth's icy detachment, and the Vances' clinical shock.",
+      "location": "Drawing Room",
+      "participants": [
+        "Arthur Penhaligon",
+        "Julian Thorne",
+        "Lady Elspeth Thorne",
+        "Dr. Percival Vance",
+        "Eleanor Vance"
+      ],
+      "evidence_ids": [],
+      "reveals": [
+        "Julian Thorne was wearing a green costume that is now missing a ribbon."
+      ],
+      "timeline_ref": "10:35 PM"
+    },
+    {
+      "step_id": 4,
+      "phase": "Verifying Alibis",
+      "kind": "alibi_check",
+      "title": "The Silent Library",
+      "summary": "Arthur checks Lady Elspeth's claim that she was reading in the library. He finds her wine glass with distinct lipstick marks, but the book she claimed to be reading is dust-covered and hasn't been moved in weeks.",
+      "location": "The Library",
+      "participants": [
+        "Arthur Penhaligon",
+        "Lady Elspeth Thorne"
+      ],
+      "evidence_ids": [
+        "EV-06"
+      ],
+      "reveals": [
+        "Lady Elspeth's alibi is fabricated; she was not reading."
+      ],
+      "timeline_ref": "10:45 PM"
+    },
+    {
+      "step_id": 5,
+      "phase": "The False Trail",
+      "kind": "search",
+      "title": "The Weapon in the Ashes",
+      "summary": "A search of the study's hearth reveals a hunting knife wiped clean, but hidden hastily beneath the logs.",
+      "location": "The Study",
+      "participants": [
+        "Arthur Penhaligon"
+      ],
+      "evidence_ids": [
+        "EV-08"
+      ],
+      "reveals": [
+        "A decorative hunting knife was used to stab the victim."
+      ],
+      "timeline_ref": "10:55 PM"
+    },
+    {
+      "step_id": 6,
+      "phase": "The False Trail",
+      "kind": "interview",
+      "title": "The Heir's Panic",
+      "summary": "Arthur confronts Julian about the green ribbon (EV-02) and the knife. Julian becomes aggressive and defensive, claiming he was on the terrace alone.",
+      "location": "Ballroom",
+      "participants": [
+        "Arthur Penhaligon",
+        "Julian Thorne"
+      ],
+      "evidence_ids": [
+        "EV-02",
+        "EV-08"
+      ],
+      "reveals": [
+        "Julian Thorne has no witnesses for his whereabouts between 10:00 PM and 10:45 PM."
+      ],
+      "timeline_ref": "11:05 PM"
+    },
+    {
+      "step_id": 7,
+      "phase": "Verifying Alibis",
+      "kind": "alibi_check",
+      "title": "The Muddy Terrace",
+      "summary": "Arthur examines the terrace. Despite Julian's claim of clearing his head, there are no footprints in the mud near the door, and the storm would have soaked anyone standing there in seconds.",
+      "location": "The Terrace",
+      "participants": [
+        "Arthur Penhaligon"
+      ],
+      "evidence_ids": [],
+      "reveals": [
+        "Julian Thorne's alibi is physically impossible given the weather."
+      ],
+      "timeline_ref": "11:15 PM"
+    },
+    {
+      "step_id": 8,
+      "phase": "The False Trail",
+      "kind": "red_herring",
+      "title": "The Motive of Debt",
+      "summary": "Arthur discovers a hidden ledger page in Julian's drawer. It details massive gambling debts that would provide a clear motive for murder to secure an immediate inheritance.",
+      "location": "Julian's Bedroom",
+      "participants": [
+        "Arthur Penhaligon"
+      ],
+      "evidence_ids": [
+        "EV-05"
+      ],
+      "reveals": [
+        "Julian Thorne was being hunted by debt collectors and needed his father's money urgently."
+      ],
+      "timeline_ref": "11:25 PM"
+    },
+    {
+      "step_id": 9,
+      "phase": "Deep Investigation",
+      "kind": "analysis",
+      "title": "The Bloodless Wound",
+      "summary": "Arthur re-examines the body with a keen eye. He notes the lack of blood spray from the knife wound, indicating Alistair's heart had already stopped when he was stabbed.",
+      "location": "The Study",
+      "participants": [
+        "Arthur Penhaligon"
+      ],
+      "evidence_ids": [
+        "EV-01",
+        "EV-08"
+      ],
+      "reveals": [
+        "The stabbing was post-mortem; Julian's 'murder' was a panicked attempt to cover up a theft."
+      ],
+      "timeline_ref": "11:35 PM"
+    },
+    {
+      "step_id": 10,
+      "phase": "Deep Investigation",
+      "kind": "interference",
+      "title": "The Doctor's Deception",
+      "summary": "As Arthur questions Dr. Vance, he notices the doctor attempting to shove a piece of paper into his medical bag. Arthur insists on seeing it, revealing a blackmail note.",
+      "location": "Guest Wing",
+      "participants": [
+        "Arthur Penhaligon",
+        "Dr. Percival Vance"
+      ],
+      "evidence_ids": [
+        "EV-04"
+      ],
+      "reveals": [
+        "Dr. Vance was being blackmailed by Alistair over a fatal surgical error."
+      ],
+      "timeline_ref": "11:45 PM"
+    },
+    {
+      "step_id": 11,
+      "phase": "Deep Investigation",
+      "kind": "interview",
+      "title": "The Loyal Wife",
+      "summary": "Arthur speaks with Eleanor Vance. She is calm and supportive of her husband, insisting Percival was with her or in the washroom all evening, though her mask adjustments were conveniently unobserved.",
+      "location": "Drawing Room",
+      "participants": [
+        "Arthur Penhaligon",
+        "Eleanor Vance"
+      ],
+      "evidence_ids": [],
+      "reveals": [
+        "Eleanor Vance was remarkably attentive to her husband's deteriorating mental state."
+      ],
+      "timeline_ref": "11:55 PM"
+    },
+    {
+      "step_id": 12,
+      "phase": "The Poison Path",
+      "kind": "search",
+      "title": "The Gardener's Secret",
+      "summary": "Suspecting the poison's origin, Arthur visits the conservatory. He finds a discarded suede glove in the bin with crushed organic residue and soil.",
+      "location": "Conservatory",
+      "participants": [
+        "Arthur Penhaligon"
+      ],
+      "evidence_ids": [
+        "EV-03"
+      ],
+      "reveals": [
+        "Someone recently harvested monkshood from the manor's collection."
+      ],
+      "timeline_ref": "12:05 AM"
+    },
+    {
+      "step_id": 13,
+      "phase": "The Poison Path",
+      "kind": "search",
+      "title": "The Beaded Handbag",
+      "summary": "While the guests are resting, Arthur checks the cloaks and bags in the hall. Inside Eleanor Vance's handbag, he finds a single, tell-tale purple petal.",
+      "location": "Main Entrance Hall",
+      "participants": [
+        "Arthur Penhaligon"
+      ],
+      "evidence_ids": [
+        "EV-07"
+      ],
+      "reveals": [
+        "Eleanor Vance was in possession of monkshood petals during the masquerade."
+      ],
+      "timeline_ref": "12:15 AM"
+    },
+    {
+      "step_id": 14,
+      "phase": "Deep Investigation",
+      "kind": "analysis",
+      "title": "The Midnight Reckoning",
+      "summary": "Arthur pieces together the timing: Julian arrived after the poison took effect, and Percival arrived after Julian, finding the body already stabbed. The revelation Alistair intended for midnight was the exposure of Percival, which Eleanor moved to prevent.",
+      "location": "The Library",
+      "participants": [
+        "Arthur Penhaligon"
+      ],
+      "evidence_ids": [
+        "EV-01",
+        "EV-03",
+        "EV-04",
+        "EV-07"
+      ],
+      "reveals": [
+        "Eleanor Vance killed Alistair to protect her husband from the 'grand reckoning' Alistair planned for midnight."
+      ],
+      "timeline_ref": "12:25 AM"
+    },
+    {
+      "step_id": 15,
+      "phase": "Climax",
+      "kind": "confrontation",
+      "title": "The Final Mask Removed",
+      "summary": "Arthur gathers the suspects in the study. He presents the silver flask (EV-01), the stained glove (EV-03), and the petal from the handbag (EV-07), systematically dismantling Eleanor's supportive facade.",
+      "location": "The Study",
+      "participants": [
+        "Arthur Penhaligon",
+        "Eleanor Vance",
+        "Dr. Percival Vance",
+        "Julian Thorne",
+        "Lady Elspeth Thorne"
+      ],
+      "evidence_ids": [
+        "EV-01",
+        "EV-03",
+        "EV-07"
+      ],
+      "reveals": [
+        "Eleanor Vance is the poisoner."
+      ],
+      "timeline_ref": "12:35 AM"
+    },
+    {
+      "step_id": 16,
+      "phase": "Climax",
+      "kind": "resolution",
+      "title": "A Bitter Vintage",
+      "summary": "Eleanor Vance confesses, stating she would do it again to stop Alistair's cruelty from killing her husband's spirit. As the storm breaks and the police arrive at dawn, she is taken into custody while Julian and Elspeth are left to face the shame of their own smaller crimes.",
+      "location": "The Study",
+      "participants": [
+        "Arthur Penhaligon",
+        "Eleanor Vance",
+        "Dr. Percival Vance"
+      ],
+      "evidence_ids": [],
+      "reveals": [
+        "The case is closed; the motive was protection, not greed."
+      ],
+      "timeline_ref": "12:45 AM"
+    }
+  ]
+}

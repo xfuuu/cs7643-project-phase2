@@ -1,0 +1,13 @@
+{
+  "is_valid": true,
+  "issues": [],
+  "metrics": {
+    "suspect_count": 4,
+    "evidence_count": 8,
+    "plot_step_count": 16,
+    "alibi_step_count": 2,
+    "interference_step_count": 1,
+    "red_herring_step_count": 1,
+    "referenced_evidence_count": 8
+  }
+}
