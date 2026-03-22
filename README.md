@@ -190,12 +190,12 @@ To make the estimate concrete, this README uses the **current code prompts** and
 
 The code calls:
 
-- `gemini-flash-latest`
+- `gemini-2.5-flash`
 
-For a concrete paid-tier estimate, we use the current **Gemini 2.0 Flash Standard** pricing listed by Google AI for Developers:
+For a concrete paid-tier estimate, we use the current **Gemini 2.5 Flash Standard** pricing listed by Google AI for Developers:
 
-- **Input:** `$0.10 / 1,000,000 tokens`
-- **Output:** `$0.40 / 1,000,000 tokens`
+- **Input:** `$0.30 / 1,000,000 tokens`
+- **Output:** `$2.50 / 1,000,000 tokens`
 
 Official references:
 
@@ -254,23 +254,19 @@ Total estimated output tokens:
 
 Input cost:
 
-- `8,239 / 1,000,000 * $0.10 = $0.0008239`
+- `8,239 / 1,000,000 * $0.30 = $0.0024717`
 
 Output cost:
 
-- `6,690 / 1,000,000 * $0.40 = $0.0026760`
+- `6,690 / 1,000,000 * $2.50 = $0.0167250`
 
 Estimated total cost per complete run:
 
-- `$0.0008239 + $0.0026760 = $0.0034999`
+- `$0.0024717 + $0.0167250 = $0.0191967`
 
 Rounded practical estimate:
 
-- **about $0.0035 per run**
-- equivalently, **about 0.35 cents for 100 runs**
-- or **about $3.50 for 1,000 runs**
-
-If the run is covered by a free tier, the effective cost may be `$0`, but the paid-tier estimate above reflects the current system much more precisely than a generic “very low cost” statement.
+- **about $0.0192 per run**
 
 These numbers can be reproduced directly in this repository with:
 

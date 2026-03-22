@@ -12,7 +12,7 @@ from urllib.request import Request, urlopen
 from llm_interface import LLMBackend, LLMResponse
 
 
-DEFAULT_GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent"
+DEFAULT_GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
 
 @dataclass

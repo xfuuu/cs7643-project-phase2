@@ -116,8 +116,8 @@ def main() -> None:
 
     total_input_tokens = case_prompt_tokens + plot_prompt_tokens + story_prompt_tokens
     total_output_tokens = case_output_tokens + plot_output_tokens + story_output_tokens
-    input_cost = total_input_tokens / 1_000_000 * 0.10
-    output_cost = total_output_tokens / 1_000_000 * 0.40
+    input_cost = total_input_tokens / 1_000_000 * 0.30
+    output_cost = total_output_tokens / 1_000_000 * 2.50
     total_cost = input_cost + output_cost
 
     print("Prompt character counts")
@@ -144,7 +144,7 @@ def main() -> None:
     print(f"total_input_tokens_est={total_input_tokens}")
     print(f"total_output_tokens_est={total_output_tokens}")
     print()
-    print("Cost estimate (Gemini 2.0 Flash standard pricing)")
+    print("Cost estimate (Gemini 2.5 Flash standard pricing)")
     print(f"input_cost_usd_est={input_cost:.8f}")
     print(f"output_cost_usd_est={output_cost:.8f}")
     print(f"total_cost_usd_est={total_cost:.8f}")

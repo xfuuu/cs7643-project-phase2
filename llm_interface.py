@@ -57,7 +57,7 @@ class GeminiLLMBackend(LLMBackend):
     def __init__(
         self,
         api_key: str | None = None,
-        endpoint: str = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
+        endpoint: str = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
         timeout_seconds: float = 30.0,
     ) -> None:
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
