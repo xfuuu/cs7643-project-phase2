@@ -1,0 +1,121 @@
+{
+  "rooms": {
+    "The Study": {
+      "name": "The Study",
+      "description": "The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.",
+      "adjacent_rooms": [
+        "The Library"
+      ],
+      "npc_names": [],
+      "evidence_ids": [
+        "EV-01",
+        "EV-02",
+        "EV-04",
+        "EV-07",
+        "EV-08"
+      ],
+      "item_names": []
+    },
+    "Drawing Room": {
+      "name": "Drawing Room",
+      "description": "Dark oak panels gleam faintly in the flickering candlelight, casting long, wavering shadows across the sumptuous velvet drapes. Outside, the autumn storm rattles the tall windows, a stark contrast to the room's hushed, heavy opulence. An air of expectant stillness hangs thick, as if holding its breath.",
+      "adjacent_rooms": [
+        "Ballroom",
+        "Conservatory",
+        "Main Entrance Hall",
+        "The Library"
+      ],
+      "npc_names": [],
+      "evidence_ids": [],
+      "item_names": []
+    },
+    "The Library": {
+      "name": "The Library",
+      "description": "The Library engulfs you in a rich embrace of dark, polished oak panelling, where candlelight struggles against the encroaching gloom. The insistent drumming of an autumn storm against the leaded windows seems to amplify the profound silence within, a silence heavy with the scent of old paper and inherited wealth.",
+      "adjacent_rooms": [
+        "The Study",
+        "Drawing Room"
+      ],
+      "npc_names": [],
+      "evidence_ids": [
+        "EV-06"
+      ],
+      "item_names": []
+    },
+    "Ballroom": {
+      "name": "Ballroom",
+      "description": "You step into the cavernous ballroom, where towering wood panels rise to meet a ceiling lost in shadow. Flickering gaslights cast dancing patterns over the polished floor, hinting at grand balls long past, while the distant rumble of an autumn storm echoes through the empty space. A faint scent of beeswax and cold hearths hangs in the air, a silent testament to generations of quiet wealth.",
+      "adjacent_rooms": [
+        "Drawing Room",
+        "Main Entrance Hall",
+        "The Terrace"
+      ],
+      "npc_names": [],
+      "evidence_ids": [],
+      "item_names": []
+    },
+    "The Terrace": {
+      "name": "The Terrace",
+      "description": "You step through the grand French doors, the warm glow of the panelled ballroom spilling out onto the flagstone terrace. A blustery autumn storm lashes at the ancient stone balustrade, and the air is thick with the damp scent of fallen leaves and distant thunder. Beyond the flickering candlelight, only the vast, rain-swept darkness of the estate stretches out.",
+      "adjacent_rooms": [
+        "Ballroom"
+      ],
+      "npc_names": [],
+      "evidence_ids": [],
+      "item_names": []
+    },
+    "Julian's Bedroom": {
+      "name": "Julian's Bedroom",
+      "description": "The heavy oak door swings inward to reveal Julian's bedroom, a cavern of dark wood panelling where the only light comes from the flickering storm outside and the dim glow of a single sconce. Rich, aged fabrics and substantial furniture speak of generations of wealth, though the air feels uncommonly still. The only sound is the persistent drumming of rain against the tall windows, making the shadows dance.",
+      "adjacent_rooms": [
+        "Guest Wing"
+      ],
+      "npc_names": [],
+      "evidence_ids": [
+        "EV-05"
+      ],
+      "item_names": []
+    },
+    "Guest Wing": {
+      "name": "Guest Wing",
+      "description": "The dark oak panelling of the guest wing gleams dully in the flickering light of a single sconce, casting long, dancing shadows down the corridor. A cold draft whispers through, carrying the distant sound of the autumn storm lashing against unseen windows and underscoring the profound silence that hangs in the air. This space feels both meticulously maintained and heavy with forgotten stories.",
+      "adjacent_rooms": [
+        "Julian's Bedroom",
+        "Main Corridor"
+      ],
+      "npc_names": [],
+      "evidence_ids": [],
+      "item_names": []
+    },
+    "Conservatory": {
+      "name": "Conservatory",
+      "description": "Stepping from the hushed wood-panelled Drawing Room, the Conservatory greets you with a rush of humid air and the rhythmic patter of rain against its vast glass ceiling. Exotic plants, bathed in the soft glow of what little light penetrates the stormy night, cast eerie, shifting silhouettes across the tiled floor, their leaves glistening with moisture.",
+      "adjacent_rooms": [
+        "Drawing Room"
+      ],
+      "npc_names": [],
+      "evidence_ids": [
+        "EV-03"
+      ],
+      "item_names": []
+    },
+    "Main Entrance Hall": {
+      "name": "Main Entrance Hall",
+      "description": "The colossal oak doors swing shut behind you with a weighty thud, leaving you in the cavernous Main Entrance Hall, its dark wood panelling gleaming under the flickering, golden light of wall sconces. A chill permeates the air, carrying the faint scent of damp earth and polished antique as the distant rumble of thunder punctuates the silence, hinting at the tempest raging beyond these opulent, centuries-old walls.",
+      "adjacent_rooms": [
+        "Drawing Room",
+        "Ballroom",
+        "Main Corridor"
+      ],
+      "npc_names": [
+        "Sir Alistair Thorne",
+        "Eleanor Vance",
+        "Julian Thorne",
+        "Lady Elspeth Thorne",
+        "Dr. Percival Vance"
+      ],
+      "evidence_ids": [],
+      "item_names": []
+    }
+  }
+}

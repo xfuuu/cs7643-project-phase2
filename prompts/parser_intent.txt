@@ -1,0 +1,19 @@
+You are parsing a player's text input in a 1920s mystery investigation game.
+
+Player input: "{raw_input}"
+
+Extract the player's intent. Common verbs: examine, search, take, go, ask, show, use, open, read, talk, look.
+
+Output ONLY valid JSON — no markdown, no explanation:
+{
+  "verb": "examine",
+  "object": "silver flask",
+  "target_location": null,
+  "confidence": 0.95
+}
+
+Rules:
+- "verb": the core action verb in English (even if input is Chinese, translate to English verb)
+- "object": the thing being acted on (English, normalised)
+- "target_location": destination room if verb is "go"/"move"/"walk", otherwise null
+- "confidence": 0.0–1.0. Use < 0.7 if the input is ambiguous, nonsensical, or has no clear object

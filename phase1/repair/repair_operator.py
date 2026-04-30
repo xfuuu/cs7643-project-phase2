@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from models import CaseBible, PlotPlan, PlotStep, ValidationReport
+from storyGenerator.models import CaseBible, PlotPlan, PlotStep, ValidationReport
 
 
 class PlotPlanRepairOperator:

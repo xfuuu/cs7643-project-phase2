@@ -1,0 +1,24 @@
+You are designing the floor plan of a 1920s English country manor for a mystery game.
+
+The following rooms have been identified from the investigation plot:
+{rooms_list}
+
+Some rooms are already connected by obvious adjacency (e.g. Study↔Library, Ballroom↔Drawing Room).
+Current adjacency graph (may be incomplete or disconnected):
+{current_adjacency}
+
+Your task:
+1. If the graph is already fully connected (every room reachable from every other), output it unchanged.
+2. If it is disconnected, add the minimum number of intermediate rooms (e.g. "Main Corridor", "Back Passage", "Servants' Hall") to make it connected.
+3. Do not remove any existing edges.
+4. Every room must have at least one neighbour.
+
+Output ONLY valid JSON in this exact format — no markdown, no explanation:
+{
+  "rooms": ["Room A", "Room B", ...],
+  "adjacency": {
+    "Room A": ["Room B", "Room C"],
+    "Room B": ["Room A"],
+    ...
+  }
+}
