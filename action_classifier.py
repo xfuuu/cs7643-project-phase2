@@ -14,6 +14,7 @@ from models_phase2 import (
     StateChange,
     ViolatedSpan,
 )
+from world_state import WorldStateManager
 
 
 class ActionClassifier:
@@ -28,7 +29,11 @@ class ActionClassifier:
 
     # ── public API ────────────────────────────────────────────────────────
 
-    def classify(self, intent: ActionIntent) -> ActionClassification:
+    def classify(
+        self,
+        intent: ActionIntent,
+        world_state: WorldStateManager | None = None,
+    ) -> ActionClassification:
         effects = intent.predicted_effects
 
         # 1. exceptional check (highest priority)
@@ -41,7 +46,7 @@ class ActionClassifier:
 
         # 2. constituent check
         next_step = self.current_step
-        if next_step is not None and self._is_constituent(effects, intent, next_step):
+        if next_step is not None and self._is_constituent(effects, intent, next_step, world_state):
             return ActionClassification(
                 kind=ActionKind.CONSTITUENT,
                 triggered_step_id=next_step.step_id,
@@ -80,6 +85,7 @@ class ActionClassifier:
         effects: list[StateChange],
         intent: ActionIntent,
         step: PlotStep,
+        world_state: WorldStateManager | None = None,
     ) -> bool:
         # Match by evidence: player examines/takes evidence referenced in next step
         for change in effects:
@@ -97,9 +103,16 @@ class ActionClassifier:
                 if _normalise(intent.object_) in _normalise(participant):
                     return True
 
-        # Match by kind: discovery steps trigger on any examine in the right room
+        # Match by kind: discovery steps trigger on any "examine"-style verb,
+        # but only when the player is actually in the step's room. Without the
+        # room check, idly examining furniture in any room would fire a
+        # discovery beat for somewhere else (e.g. a Study-located discovery
+        # firing while the player examines a chair in the Library).
         if step.kind == "discovery" and intent.verb in ("examine", "look", "search", "check"):
-            return True
+            if world_state is None:
+                return True  # no spatial context available; preserve old behavior
+            if _normalise(world_state.player_room) == _normalise(step.location):
+                return True
 
         return False
 

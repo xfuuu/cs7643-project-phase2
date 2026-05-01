@@ -152,8 +152,17 @@ def run(
                 print(narrator.narrate_system("No save file found."))
                 continue
             world_state, completed, remaining, depth = load_game(_SAVE_FILE, world_map)
-            tracker = CausalSpanTracker(fact_triples, plot_plan)
-            classifier = ActionClassifier(tracker, PlotPlan(investigator=plot_plan.investigator, steps=completed + remaining))
+            # Compile the causal-span tracker from the SAVED plan (which may be
+            # post-accommodation) so until_step_ids match the live plan. Using
+            # the original plot_plan would leave dangling spans for steps that
+            # were removed by drama.accommodate() and miss spans for newly
+            # inserted steps.
+            saved_plan = PlotPlan(
+                investigator=plot_plan.investigator,
+                steps=completed + remaining,
+            )
+            tracker = CausalSpanTracker(fact_triples, saved_plan)
+            classifier = ActionClassifier(tracker, saved_plan)
             for _ in completed:
                 classifier.advance_step()
             drama = DramaManager(case_bible, llm)
@@ -212,7 +221,7 @@ def run(
                 print(f"You cannot reach '{intent.target_location}' from here.")
             continue
 
-        classification = classifier.classify(intent)
+        classification = classifier.classify(intent, world_state)
 
         try:
             if classification.kind == ActionKind.EXCEPTIONAL:
@@ -275,11 +284,23 @@ def _print_room(world_state: WorldStateManager) -> None:
 
 def _check_constituent_on_enter(classifier, world_state, narrator, drama) -> None:
     step = classifier.current_step
-    if step and world_state.player_room.lower() == step.location.lower():
-        if step.kind == "discovery":
-            classifier.advance_step()
-            drama.reset_depth()
-            _check_game_over(classifier, narrator)
+    if step is None:
+        return
+    if world_state.player_room.lower() != step.location.lower():
+        return
+
+    # Discovery beats classically advance the moment the player reaches the
+    # right room (e.g. finding the body in The Study). We additionally
+    # auto-advance "presence-only" beats: those with no required evidence and
+    # no NPC interaction (participants is just the investigator). Without this,
+    # alibi_check beats like Step 7 ("The Muddy Terrace" — examine an empty
+    # terrace) had no in-game action that could trigger them and the plot
+    # silently stalled.
+    is_presence_only = (not step.evidence_ids) and len(step.participants) <= 1
+    if step.kind == "discovery" or is_presence_only:
+        classifier.advance_step()
+        drama.reset_depth()
+        _check_game_over(classifier, narrator)
 
 
 def _check_game_over(classifier, narrator) -> None:

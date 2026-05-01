@@ -73,9 +73,13 @@ class DramaManager:
             n_steps=n_steps,
         )
 
+        # Keep step_ids stable across accommodation. Surviving steps retain
+        # their original ids; brand-new steps were already assigned ids above
+        # max(remaining) by `_runtime_repair`. Renumbering 1..N would silently
+        # break ActionClassifier._completed (which keys on the original ids)
+        # and CausalSpanTracker.until_step_id references after update_plan().
         merged = remaining + new_steps
         merged.sort(key=lambda s: s.step_id)
-        self._renumber(merged)
         return PlotPlan(investigator=current_plan.investigator, steps=merged)
 
     def _find_dependent_steps(
@@ -214,12 +218,6 @@ class DramaManager:
                 )
             )
         return steps
-
-    @staticmethod
-    def _renumber(steps: list[PlotStep]) -> None:
-        for i, step in enumerate(steps, start=1):
-            step.step_id = i
-
 
 def _steps_summary(steps: list[PlotStep]) -> str:
     if not steps:
