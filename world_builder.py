@@ -45,10 +45,19 @@ class WorldBuilder:
         rooms = self._extract_rooms(plot_plan)
         contents = self._assign_contents(case_bible, rooms)
         adjacency = self._build_adjacency(rooms)
-        descriptions = self._generate_descriptions(rooms, contents, adjacency)
+
+        # Include rooms introduced by adjacency completion (e.g. "Main Corridor"
+        # from _llm_connect); otherwise they appear only as exits and the player
+        # cannot enter them.
+        all_rooms: list[str] = list(rooms)
+        for room_name in adjacency.keys():
+            if room_name not in all_rooms:
+                all_rooms.append(room_name)
+
+        descriptions = self._generate_descriptions(all_rooms, contents, adjacency)
 
         room_objects: dict[str, Room] = {}
-        for room_name in rooms:
+        for room_name in all_rooms:
             c = contents.get(room_name, {})
             room_objects[room_name] = Room(
                 name=room_name,

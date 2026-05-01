@@ -106,11 +106,15 @@ def run(
     raw_backend = GeminiLLMBackend(api_key=gemini_api_key)
     llm = LoggedLLMBackend(raw_backend, log_path="phase2_llm.log")
 
-    print("Building / loading world map…")
     builder = WorldBuilder(llm)
-    world_map = builder.build(case_bible, plot_plan)
-    builder.save(world_map, world_json)
-    print(f"World saved to {world_json}")
+    if Path(world_json).exists():
+        print(f"Loading existing world map from {world_json}…")
+        world_map = builder.load(world_json)
+    else:
+        print("Building world map (this calls the LLM)…")
+        world_map = builder.build(case_bible, plot_plan)
+        builder.save(world_map, world_json)
+        print(f"World saved to {world_json}")
 
     starting_room = plot_plan.steps[0].location if plot_plan.steps else next(iter(world_map.rooms))
     world_state = WorldStateManager(world_map, starting_room)

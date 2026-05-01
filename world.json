@@ -116,6 +116,17 @@
       ],
       "evidence_ids": [],
       "item_names": []
+    },
+    "Main Corridor": {
+      "name": "Main Corridor",
+      "description": "A long, hushed passageway runs the spine of the manor's east wing, its dark oak wainscoting rising to faded damask above. Wall sconces throw a tremulous, honey-coloured light across the worn Persian runner, while the distant rattle of the autumn storm against unseen windows is the only company. The air smells of beeswax polish and old paper, and every footfall seems amplified by the watchful silence.",
+      "adjacent_rooms": [
+        "Main Entrance Hall",
+        "Guest Wing"
+      ],
+      "npc_names": [],
+      "evidence_ids": [],
+      "item_names": []
     }
   }
 }
