@@ -161,10 +161,29 @@ class WorldStateManager:
             return
 
     def _resolve_room_name(self, name: str) -> str | None:
+        if not name:
+            return None
         if name in self._world_map.rooms:
             return name
-        name_lower = name.lower()
+
+        name_lower = name.lower().strip()
+
+        # Exact case-insensitive match.
         for room_name in self._world_map.rooms:
             if room_name.lower() == name_lower:
                 return room_name
+
+        # Substring fallback: handles "library" -> "The Library",
+        # "bedroom" -> "Julian's Bedroom", etc. If multiple rooms match,
+        # prefer the shortest (most specific) name to avoid silently
+        # picking the wrong one.
+        candidates: list[str] = []
+        for room_name in self._world_map.rooms:
+            rn = room_name.lower()
+            if name_lower in rn or rn in name_lower:
+                candidates.append(room_name)
+        if len(candidates) == 1:
+            return candidates[0]
+        if len(candidates) > 1:
+            return min(candidates, key=len)
         return None

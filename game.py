@@ -186,13 +186,16 @@ def run(
             continue
 
         # ── LLM parse pipeline ────────────────────────────────────────────
-        # Any LLM call below may raise RuntimeError on transient backend failures
-        # (5xx, 429, network errors). The retry layer in GeminiLLMBackend handles
-        # the easy ones; if it still gives up, we lose the turn but not the game.
+        # Any LLM call below may raise on transient backend failures
+        # (5xx, 429, network errors) handled by GeminiLLMBackend's retry layer,
+        # or on unexpected LLM output (e.g. JSON shape we don't fully validate).
+        # Catch broadly so a single bad turn never kills the game session;
+        # KeyboardInterrupt and SystemExit are not subclasses of Exception, so
+        # /quit and Ctrl-C still work normally.
         try:
             intent = parser.parse(raw, world_state)
-        except RuntimeError as exc:
-            print(f"\n[The line went dead — {exc}]")
+        except Exception as exc:
+            print(f"\n[The line went dead — {exc!s}]")
             print("Please try the action again in a moment.")
             continue
 
@@ -241,8 +244,8 @@ def run(
                 world_state.apply_effects(intent.predicted_effects)
                 narration = narrator.narrate(intent, intent.predicted_effects, classifier.current_step, world_state)
                 print(f"\n{narration}")
-        except RuntimeError as exc:
-            print(f"\n[The narrator hesitates — {exc}]")
+        except Exception as exc:
+            print(f"\n[The narrator hesitates — {exc!s}]")
             print("The action took effect, but no description this turn. The investigation continues.")
             continue
 

@@ -29,13 +29,16 @@ class InputParser:
         world_state: WorldStateManager,
     ) -> ActionIntent | None:
         intent_data = self._extract_intent(raw_input)
-        confidence = float(intent_data.get("confidence", 0.0))
+        # Normalise None values from the LLM up-front so downstream string
+        # operations (.replace, .lower, ...) never see them.
+        intent_data = _coerce_strings(intent_data)
+        confidence = float(intent_data.get("confidence", 0.0) or 0.0)
         if confidence < self._threshold:
             return None
 
         verb = intent_data.get("verb", "")
         object_ = intent_data.get("object", "")
-        target_location = intent_data.get("target_location")
+        target_location = intent_data.get("target_location") or None
 
         direct_effects = self._predict_effects(intent_data, world_state)
         implied_effects = self._infer_commonsense(intent_data, direct_effects)
@@ -97,6 +100,17 @@ def _has_label(llm: LLMBackend) -> bool:
         return "label" in sig.parameters
     except Exception:
         return False
+
+
+def _coerce_strings(data: dict) -> dict:
+    # Convert None values for known string-like keys to "" so .replace / .lower
+    # never blow up. Leave target_location as None (it is allowed to be absent).
+    string_keys = ("verb", "object")
+    out = dict(data)
+    for k in string_keys:
+        if out.get(k) is None:
+            out[k] = ""
+    return out
 
 
 def _parse_json_obj(text: str) -> dict | None:
