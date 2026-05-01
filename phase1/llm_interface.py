@@ -2,12 +2,18 @@ from __future__ import annotations
 
 import json
 import os
+import random
+import sys
+import time
 from dataclasses import dataclass
 from random import Random
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
+
+# HTTP status codes that are worth retrying on (transient).
+_RETRYABLE_HTTP_CODES = frozenset({408, 425, 429, 500, 502, 503, 504})
 
 
 @dataclass
@@ -59,10 +65,16 @@ class GeminiLLMBackend(LLMBackend):
         api_key: str | None = None,
         endpoint: str = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
         timeout_seconds: float = 30.0,
+        max_retries: int = 3,
+        initial_backoff_seconds: float = 2.0,
+        backoff_multiplier: float = 2.0,
     ) -> None:
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
         self.endpoint = endpoint
         self.timeout_seconds = timeout_seconds
+        self.max_retries = max(0, max_retries)
+        self.initial_backoff_seconds = initial_backoff_seconds
+        self.backoff_multiplier = backoff_multiplier
         if not self.api_key:
             raise ValueError("Missing Gemini API key. Pass api_key or set GEMINI_API_KEY.")
 
@@ -91,19 +103,55 @@ class GeminiLLMBackend(LLMBackend):
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        try:
-            with urlopen(request, timeout=self.timeout_seconds) as response:
-                raw = response.read().decode("utf-8")
-        except HTTPError as exc:
-            details = exc.read().decode("utf-8", errors="replace")
-            raise RuntimeError(f"Gemini API request failed with HTTP {exc.code}: {details}") from exc
-        except URLError as exc:
-            raise RuntimeError(f"Gemini API request failed: {exc.reason}") from exc
+
+        # Retry on transient failures (5xx, 429, network errors). Auth/validation
+        # errors (4xx other than 408/425/429) fail fast.
+        attempts = self.max_retries + 1
+        last_error: Exception | None = None
+        for attempt in range(attempts):
+            try:
+                with urlopen(request, timeout=self.timeout_seconds) as response:
+                    raw = response.read().decode("utf-8")
+                break
+            except HTTPError as exc:
+                details = exc.read().decode("utf-8", errors="replace")
+                if exc.code in _RETRYABLE_HTTP_CODES and attempt < attempts - 1:
+                    self._sleep_before_retry(attempt, f"HTTP {exc.code}")
+                    last_error = exc
+                    continue
+                raise RuntimeError(
+                    f"Gemini API request failed with HTTP {exc.code}: {details}"
+                ) from exc
+            except URLError as exc:
+                if attempt < attempts - 1:
+                    self._sleep_before_retry(attempt, f"network error: {exc.reason}")
+                    last_error = exc
+                    continue
+                raise RuntimeError(
+                    f"Gemini API request failed: {exc.reason}"
+                ) from exc
+        else:
+            # Defensive: loop exhausted without break and without raise.
+            raise RuntimeError(
+                f"Gemini API request failed after {attempts} attempts: {last_error}"
+            )
 
         try:
             return json.loads(raw)
         except json.JSONDecodeError as exc:
             raise RuntimeError(f"Gemini API returned invalid JSON: {raw}") from exc
+
+    def _sleep_before_retry(self, attempt: int, reason: str) -> None:
+        # Exponential backoff with ±25% jitter so concurrent callers don't sync up.
+        base = self.initial_backoff_seconds * (self.backoff_multiplier ** attempt)
+        delay = base * random.uniform(0.75, 1.25)
+        print(
+            f"[GeminiLLMBackend] {reason}; retrying in {delay:.1f}s "
+            f"(attempt {attempt + 2}/{self.max_retries + 1})…",
+            file=sys.stderr,
+            flush=True,
+        )
+        time.sleep(delay)
 
     def _extract_text(self, response_data: dict[str, Any]) -> str:
         candidates = response_data.get("candidates")

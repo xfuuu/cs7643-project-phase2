@@ -186,7 +186,16 @@ def run(
             continue
 
         # ── LLM parse pipeline ────────────────────────────────────────────
-        intent = parser.parse(raw, world_state)
+        # Any LLM call below may raise RuntimeError on transient backend failures
+        # (5xx, 429, network errors). The retry layer in GeminiLLMBackend handles
+        # the easy ones; if it still gives up, we lose the turn but not the game.
+        try:
+            intent = parser.parse(raw, world_state)
+        except RuntimeError as exc:
+            print(f"\n[The line went dead — {exc}]")
+            print("Please try the action again in a moment.")
+            continue
+
         if intent is None:
             print("I didn't quite follow that. Could you describe your action more clearly?")
             continue
@@ -202,35 +211,40 @@ def run(
 
         classification = classifier.classify(intent)
 
-        if classification.kind == ActionKind.EXCEPTIONAL:
-            world_state.apply_effects(intent.predicted_effects)
-            tracker.remove_spans_for_steps(
-                [s.step_id for s in classifier.remaining_steps
-                 if any(ev in {e for vs in classification.violated_spans for e in vs.span.evidence_ids}
-                        for ev in s.evidence_ids)]
-            )
-            new_plan = drama.accommodate(
-                classification.violated_spans,
-                PlotPlan(investigator=plot_plan.investigator,
-                         steps=classifier.completed_steps + classifier.remaining_steps),
-                classifier.completed_steps,
-            )
-            classifier.update_plan(new_plan)
-            narration = narrator.narrate(intent, intent.predicted_effects, classifier.current_step, world_state)
-            print(f"\n{narration}")
+        try:
+            if classification.kind == ActionKind.EXCEPTIONAL:
+                world_state.apply_effects(intent.predicted_effects)
+                tracker.remove_spans_for_steps(
+                    [s.step_id for s in classifier.remaining_steps
+                     if any(ev in {e for vs in classification.violated_spans for e in vs.span.evidence_ids}
+                            for ev in s.evidence_ids)]
+                )
+                new_plan = drama.accommodate(
+                    classification.violated_spans,
+                    PlotPlan(investigator=plot_plan.investigator,
+                             steps=classifier.completed_steps + classifier.remaining_steps),
+                    classifier.completed_steps,
+                )
+                classifier.update_plan(new_plan)
+                narration = narrator.narrate(intent, intent.predicted_effects, classifier.current_step, world_state)
+                print(f"\n{narration}")
 
-        elif classification.kind == ActionKind.CONSTITUENT:
-            world_state.apply_effects(intent.predicted_effects)
-            narration = narrator.narrate(intent, intent.predicted_effects, classifier.current_step, world_state)
-            print(f"\n{narration}")
-            classifier.advance_step()
-            drama.reset_depth()
-            _check_game_over(classifier, narrator)
+            elif classification.kind == ActionKind.CONSTITUENT:
+                world_state.apply_effects(intent.predicted_effects)
+                narration = narrator.narrate(intent, intent.predicted_effects, classifier.current_step, world_state)
+                print(f"\n{narration}")
+                classifier.advance_step()
+                drama.reset_depth()
+                _check_game_over(classifier, narrator)
 
-        else:  # CONSISTENT
-            world_state.apply_effects(intent.predicted_effects)
-            narration = narrator.narrate(intent, intent.predicted_effects, classifier.current_step, world_state)
-            print(f"\n{narration}")
+            else:  # CONSISTENT
+                world_state.apply_effects(intent.predicted_effects)
+                narration = narrator.narrate(intent, intent.predicted_effects, classifier.current_step, world_state)
+                print(f"\n{narration}")
+        except RuntimeError as exc:
+            print(f"\n[The narrator hesitates — {exc}]")
+            print("The action took effect, but no description this turn. The investigation continues.")
+            continue
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
