@@ -75,6 +75,16 @@ class GameSession:
         idle_secs: float = IDLE_SECS,
         total_timeout: float = TURN_TIMEOUT_SECS,
     ) -> str:
+        """Read until the game prints its input prompt ``"\\n> "`` (the
+        unambiguous marker that ``input()`` is now blocked waiting for us),
+        OR the process exits, OR ``total_timeout`` elapses.
+
+        ``idle_secs`` is kept as a defensive secondary exit only for the
+        rare case where the prompt marker never arrives (e.g. the game
+        printed something abnormal on shutdown). It must be loose enough
+        to NOT fire during normal LLM retry backoff sleeps, which can be
+        as long as ~10s with 3 attempts of exponential backoff.
+        """
         start = time.time()
         last_recv = start
         chunks: list[str] = []
@@ -85,23 +95,32 @@ class GameSession:
                 last_recv = time.time()
             except Empty:
                 pass
+
+            joined = "".join(chunks) if chunks else ""
+            # Strongest signal: the game is now blocked on input().
+            if joined.endswith("\n> "):
+                return joined
+
             now = time.time()
-            if chunks and now - last_recv >= idle_secs:
-                break
             if now - start >= total_timeout:
                 if not chunks:
                     raise TimeoutError(
                         f"no output from game in {total_timeout:.0f}s"
                     )
-                break
+                return joined
             if self.proc.poll() is not None:
                 while True:
                     try:
                         chunks.append(self._q.get_nowait())
                     except Empty:
                         break
-                break
-        return "".join(chunks)
+                return "".join(chunks)
+            # Defensive fallback: if for some reason the prompt never appears
+            # but the game has been silent for a long time, give up gracefully.
+            # Use a generous threshold (>> longest retry sleep) so we don't
+            # cut a turn short during legitimate LLM backoff.
+            if chunks and now - last_recv >= max(idle_secs, 20.0):
+                return joined
 
     def send(self, command: str) -> str:
         if self.proc.poll() is not None:
