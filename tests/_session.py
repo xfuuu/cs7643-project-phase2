@@ -72,27 +72,31 @@ class GameSession:
 
     def read_until_idle(
         self,
-        idle_secs: float = IDLE_SECS,
+        idle_secs: float = IDLE_SECS,  # noqa: ARG002 — kept for API compat
         total_timeout: float = TURN_TIMEOUT_SECS,
     ) -> str:
         """Read until the game prints its input prompt ``"\\n> "`` (the
         unambiguous marker that ``input()`` is now blocked waiting for us),
-        OR the process exits, OR ``total_timeout`` elapses.
+        OR the child process exits, OR ``total_timeout`` elapses.
 
-        ``idle_secs`` is kept as a defensive secondary exit only for the
-        rare case where the prompt marker never arrives (e.g. the game
-        printed something abnormal on shutdown). It must be loose enough
-        to NOT fire during normal LLM retry backoff sleeps, which can be
-        as long as ~10s with 3 attempts of exponential backoff.
+        Note: ``idle_secs`` is intentionally NOT used as a "command done"
+        heuristic anymore. The original idle-based termination was racing
+        against legitimate LLM behaviour:
+
+        * Gemini's urlopen timeout is 30s per attempt.
+        * Exponential backoff sleeps reach ~8s + jitter on the 3rd retry.
+
+        Both can produce stretches of stdout silence longer than any
+        reasonable "idle" threshold, and using one would cut a turn short
+        before the EXCEPTIONAL pipeline (or any guard message) finishes
+        emitting. The prompt marker is the only correct signal.
         """
         start = time.time()
-        last_recv = start
         chunks: list[str] = []
         while True:
             try:
                 chunk = self._q.get(timeout=0.4)
                 chunks.append(chunk)
-                last_recv = time.time()
             except Empty:
                 pass
 
@@ -115,12 +119,6 @@ class GameSession:
                     except Empty:
                         break
                 return "".join(chunks)
-            # Defensive fallback: if for some reason the prompt never appears
-            # but the game has been silent for a long time, give up gracefully.
-            # Use a generous threshold (>> longest retry sleep) so we don't
-            # cut a turn short during legitimate LLM backoff.
-            if chunks and now - last_recv >= max(idle_secs, 20.0):
-                return joined
 
     def send(self, command: str) -> str:
         if self.proc.poll() is not None:
