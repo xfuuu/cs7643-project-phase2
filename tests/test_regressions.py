@@ -1,5 +1,7 @@
 """
-Regression tests for four bugs found in static review and patched together:
+Regression tests for bugs found in static review and patched together.
+
+Core fixes (commit ff7d4db):
 
 1. ``DramaManager._renumber`` used to clobber step_ids after accommodation,
    silently invalidating ``ActionClassifier._completed`` and the
@@ -13,6 +15,17 @@ Regression tests for four bugs found in static review and patched together:
 4. The ``discovery`` shortcut in ``ActionClassifier._is_constituent`` did not
    verify the player was actually in the step's room — any "examine" anywhere
    would fire it.
+
+End-of-game and emergency-path coverage (added later):
+
+5. ``_check_game_over`` must call ``sys.exit(0)`` when the next step is
+   ``kind="resolution"`` or when no remaining steps exist. Neither path was
+   ever exercised against a real LLM, so an offline assertion is the
+   cheapest safety net.
+6. ``DramaManager.accommodate`` must dispatch to the deterministic
+   ``_emergency_resolution`` path (no LLM call) once depth reaches
+   ``MAX_DEPTH``. New climax steps must keep ids strictly above the
+   completed-step max so they cannot collide with classifier bookkeeping.
 
 All tests are fully offline (mock LLMs only).
 """
@@ -370,6 +383,133 @@ def test_discovery_shortcut_requires_correct_room() -> None:
     assert classification.triggered_step_id == 1
 
 
+# ── end-of-game + emergency-path tests (P1-B + P2-D) ──────────────────────────
+
+
+def test_check_game_over_exits_on_resolution_kind() -> None:
+    """When the next step is ``kind='resolution'``, ``_check_game_over``
+    advances past it and calls ``sys.exit(0)``. This path is never reached
+    in the Layer-2 playthrough, so an offline assertion is the safety net."""
+    from game import _check_game_over
+
+    plan = _plot_plan()  # step 5 is the resolution
+    tracker = CausalSpanTracker(_fact_triples(), plan)
+    classifier = ActionClassifier(tracker, plan)
+    # Burn through steps 1–4 so the resolution is up next.
+    for _ in range(4):
+        classifier.advance_step()
+    assert classifier.current_step is not None
+    assert classifier.current_step.kind == "resolution"
+
+    class _NopNarrator:
+        def narrate_system(self, msg: str) -> str:
+            return msg
+
+    try:
+        _check_game_over(classifier, _NopNarrator())
+    except SystemExit as exc:
+        assert exc.code == 0, f"expected exit code 0, got {exc.code}"
+    else:
+        raise AssertionError("expected _check_game_over to call sys.exit(0)")
+
+
+def test_check_game_over_exits_on_empty_remaining() -> None:
+    """When ``remaining_steps`` is empty, ``_check_game_over`` calls
+    ``sys.exit(0)``. The other terminal path."""
+    from game import _check_game_over
+
+    plan = _plot_plan()
+    tracker = CausalSpanTracker(_fact_triples(), plan)
+    classifier = ActionClassifier(tracker, plan)
+    for _ in range(len(plan.steps)):
+        classifier.advance_step()
+    assert classifier.remaining_steps == []
+
+    class _NopNarrator:
+        def narrate_system(self, msg: str) -> str:
+            return msg
+
+    try:
+        _check_game_over(classifier, _NopNarrator())
+    except SystemExit as exc:
+        assert exc.code == 0, f"expected exit code 0, got {exc.code}"
+    else:
+        raise AssertionError("expected _check_game_over to call sys.exit(0)")
+
+
+def test_emergency_resolution_at_max_depth() -> None:
+    """Once ``DramaManager._depth >= MAX_DEPTH``, ``accommodate`` must use
+    the deterministic ``_emergency_resolution`` path: NO LLM calls, and the
+    new plan must terminate with ``confrontation`` then ``resolution`` steps
+    whose ids are strictly above the completed-step max."""
+
+    class _RecordingLLM(LLMBackend):
+        def __init__(self) -> None:
+            self.calls = 0
+
+        def generate(self, prompt: str, **kwargs) -> LLMResponse:
+            self.calls += 1
+            return LLMResponse(text="[]")
+
+    cb = _case_bible()
+    plan = _plot_plan()
+    tracker = CausalSpanTracker(_fact_triples(), plan)
+    classifier = ActionClassifier(tracker, plan)
+    classifier.advance_step()  # complete step 1
+
+    llm = _RecordingLLM()
+    drama = DramaManager(case_bible=cb, llm=llm)
+    # Pre-set the depth so the very next accommodate trips the emergency rule.
+    # MAX_DEPTH is a class attribute (3); _depth gets +=1 inside accommodate
+    # before the comparison, so depth == MAX_DEPTH-1 makes the next call
+    # cross the threshold.
+    drama._depth = DramaManager.MAX_DEPTH - 1
+
+    violations = tracker.check_violation([
+        StateChange(entity="EV-POISON", attribute="exists",
+                    old_value=True, new_value=False),
+    ])
+    assert violations, "destroying EV-POISON must violate a span"
+
+    new_plan = drama.accommodate(
+        violated_spans=violations,
+        current_plan=PlotPlan(
+            investigator=plan.investigator,
+            steps=classifier.completed_steps + classifier.remaining_steps,
+        ),
+        completed_steps=classifier.completed_steps,
+    )
+
+    assert llm.calls == 0, (
+        "emergency path must not call the LLM; "
+        f"got {llm.calls} call(s)"
+    )
+
+    kinds = [s.kind for s in new_plan.steps]
+    assert "confrontation" in kinds, (
+        f"emergency plan must contain a confrontation; got kinds={kinds}"
+    )
+    assert kinds[-1] == "resolution", (
+        f"emergency plan must end with a resolution step; got kinds={kinds}"
+    )
+
+    # Completed steps must remain at the front with their original ids.
+    completed_id = classifier.completed_steps[0].step_id
+    assert new_plan.steps[0].step_id == completed_id, (
+        "completed step must be preserved at the head of the emergency plan"
+    )
+
+    # New climax steps must have ids above the completed-step max so they
+    # cannot collide with ActionClassifier._completed bookkeeping.
+    completed_max = max(s.step_id for s in classifier.completed_steps)
+    climax_ids = [s.step_id for s in new_plan.steps
+                  if s.kind in ("confrontation", "resolution")]
+    assert climax_ids and min(climax_ids) > completed_max, (
+        f"emergency climax ids must sit above completed_max={completed_max}; "
+        f"got {climax_ids}"
+    )
+
+
 # ── runner ────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
@@ -382,4 +522,10 @@ if __name__ == "__main__":
     print("  ✓ test_load_rebuilds_tracker_from_saved_plan")
     test_discovery_shortcut_requires_correct_room()
     print("  ✓ test_discovery_shortcut_requires_correct_room")
+    test_check_game_over_exits_on_resolution_kind()
+    print("  ✓ test_check_game_over_exits_on_resolution_kind")
+    test_check_game_over_exits_on_empty_remaining()
+    print("  ✓ test_check_game_over_exits_on_empty_remaining")
+    test_emergency_resolution_at_max_depth()
+    print("  ✓ test_emergency_resolution_at_max_depth")
     print("All regression tests passed.")
