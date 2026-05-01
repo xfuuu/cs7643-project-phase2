@@ -1,58 +1,58 @@
 # Phase II — Interactive Mystery Game Engine: Implementation Plan
 
-## 0. Phase I Data Structures (复用，只读)
+## 0. Phase I Data Structures (Reused, Read-Only)
 
-从 `phase1/models.py` 复用，**不做任何修改**：
+Reused from `phase1/models.py`, **without any modification**:
 
-| 类型 | 关键字段 | Phase II 用途 |
-|------|---------|--------------|
-| `CaseBible` | investigator, victim, culprit, suspects, motive, method, true_timeline, evidence_items, red_herrings, culprit_evidence_chain | 只读真相数据库，全程不变 |
-| `FactTriple` | subject, relation, object, time, source | CausalSpanTracker 的编译源 |
-| `PlotStep` | step_id, phase, kind, title, summary, location, participants, evidence_ids, reveals, timeline_ref | 游戏进度的最小单元 |
-| `PlotPlan` | investigator, steps | 当前剩余剧情计划 |
-| `PlotPlanRepairOperator` | repair() | RuntimeRepairOperator 的基类改造对象 |
+| Type | Key Fields | Phase II Usage |
+|------|-----------|---------------|
+| `CaseBible` | investigator, victim, culprit, suspects, motive, method, true_timeline, evidence_items, red_herrings, culprit_evidence_chain | Read-only ground-truth database; never modified |
+| `FactTriple` | subject, relation, object, time, source | Compilation source for `CausalSpanTracker` |
+| `PlotStep` | step_id, phase, kind, title, summary, location, participants, evidence_ids, reveals, timeline_ref | Smallest unit of game progress |
+| `PlotPlan` | investigator, steps | The currently-remaining plot plan |
+| `PlotPlanRepairOperator` | repair() | Base-class that `RuntimeRepairOperator` adapts |
 
-从 `phase1/llm_interface.py` 复用：
-- `LLMBackend`（抽象类）
-- `GeminiLLMBackend`（直接实例化）
+Reused from `phase1/llm_interface.py`:
+- `LLMBackend` (abstract class)
+- `GeminiLLMBackend` (instantiated directly)
 
-**输入资产**（`phase1/outputs/` 下，游戏启动时加载）：
+**Input assets** (under `phase1/outputs/`, loaded at game start):
 - `case_bible.json`
 - `fact_graph.json`
 - `plot_plan.json`
-- `story.txt`（前 ~500 token 作风格参考）
+- `story.txt` (first ~500 tokens used as a style reference)
 
 ---
 
-## 1. 新增文件清单
+## 1. New File Inventory
 
 ```
-crime-mystery-planner/            ← Phase II 根目录
-├── models_phase2.py              ← Phase II 专用数据类
-├── llm_logger.py                 ← LLM 调用 debug 包装层
-├── world_builder.py              ← 一次性世界生成
+crime-mystery-planner/            ← Phase II root directory
+├── models_phase2.py              ← Phase II-specific data classes
+├── llm_logger.py                 ← Debug wrapper around LLM calls
+├── world_builder.py              ← One-shot world generation
 ├── world_state.py                ← WorldStateManager
 ├── causal_spans.py               ← CausalSpanTracker
-├── parser.py                     ← 两阶段输入解析
-├── action_classifier.py          ← 三分类器
-├── drama_manager.py              ← Accommodation 引擎
-├── narrator.py                   ← 叙述输出
-├── game.py                       ← 主循环 CLI
+├── parser.py                     ← Two-stage input parsing
+├── action_classifier.py          ← Three-way classifier
+├── drama_manager.py              ← Accommodation engine
+├── narrator.py                   ← Narrative output
+├── game.py                       ← Main CLI loop
 ├── prompts/
-│   ├── world_adjacency.txt       ← 房间邻接图生成
-│   ├── world_room_desc.txt       ← 房间描述生成
-│   ├── parser_intent.txt         ← Stage 1: 意图抽取
-│   ├── parser_effects.txt        ← Stage 2: 效果预测
-│   ├── parser_commonsense.txt    ← Stage 3: 常识推断
+│   ├── world_adjacency.txt       ← Room adjacency-graph generation
+│   ├── world_room_desc.txt       ← Room description generation
+│   ├── parser_intent.txt         ← Stage 1: intent extraction
+│   ├── parser_effects.txt        ← Stage 2: effect prediction
+│   ├── parser_commonsense.txt    ← Stage 3: commonsense inference
 │   ├── drama_runtime_repair.txt  ← RuntimeRepairOperator
-│   └── narrator.txt              ← 叙述生成
+│   └── narrator.txt              ← Narrative generation
 └── tests/
-    └── test_accommodation.py     ← Accommodation 集成测试
+    └── test_accommodation.py     ← Accommodation integration tests
 ```
 
 ---
 
-## 2. `models_phase2.py` — Phase II 数据类
+## 2. `models_phase2.py` — Phase II Data Classes
 
 ```python
 @dataclass
@@ -60,9 +60,9 @@ class Room:
     name: str
     description: str
     adjacent_rooms: list[str]
-    npc_names: list[str]          # NPC 初始所在房间
-    evidence_ids: list[str]       # 本房间初始包含的证据
-    item_names: list[str]         # 普通可交互物品
+    npc_names: list[str]          # NPCs initially in this room
+    evidence_ids: list[str]       # Evidence initially present in this room
+    item_names: list[str]         # Ordinary interactable items
 
 @dataclass
 class WorldMap:
@@ -70,7 +70,7 @@ class WorldMap:
 
 @dataclass
 class StateChange:
-    entity: str                   # NPC名 / evidence_id / item名 / 房间名
+    entity: str                   # NPC name / evidence_id / item name / room name
     attribute: str                # "location" | "state" | "accessible" | "exists"
     old_value: Any
     new_value: Any
@@ -78,12 +78,12 @@ class StateChange:
 @dataclass
 class CausalSpan:
     span_id: str
-    variable: str                 # "{entity}.{attribute}" e.g. "EV-01.exists"
-    required_value: Any           # 该变量必须保持的值
-    from_step_id: int             # 激活起始步（含）
-    until_step_id: int | None     # 失效步（None=直到游戏结束）
-    evidence_ids: list[str]       # 受此 span 保护的证据
-    description: str              # 人读说明，用于错误报告
+    variable: str                 # "{entity}.{attribute}", e.g. "EV-01.exists"
+    required_value: Any           # The value this variable must keep
+    from_step_id: int             # Activation step (inclusive)
+    until_step_id: int | None     # Deactivation step (None = until game ends)
+    evidence_ids: list[str]       # Evidence protected by this span
+    description: str              # Human-readable description, used in error reports
 
 @dataclass
 class ViolatedSpan:
@@ -97,24 +97,24 @@ class ActionIntent:
     verb: str
     object_: str
     target_location: str | None
-    confidence: float             # 0.0–1.0，低于阈值触发重述
+    confidence: float             # 0.0–1.0; below threshold triggers a re-prompt
     predicted_effects: list[StateChange]
 
 class ActionKind(str, Enum):
-    CONSTITUENT = "constituent"   # 推进剧情
-    EXCEPTIONAL  = "exceptional"  # 违反 causal span
-    CONSISTENT   = "consistent"   # 普通世界交互
+    CONSTITUENT = "constituent"   # Advances the plot
+    EXCEPTIONAL  = "exceptional"  # Violates a causal span
+    CONSISTENT   = "consistent"   # Ordinary world interaction
 
 @dataclass
 class ActionClassification:
     kind: ActionKind
-    triggered_step: PlotStep | None          # CONSTITUENT 时非空
-    violated_spans: list[ViolatedSpan]       # EXCEPTIONAL 时非空
+    triggered_step: PlotStep | None          # Non-null when CONSTITUENT
+    violated_spans: list[ViolatedSpan]       # Non-empty when EXCEPTIONAL
 ```
 
 ---
 
-## 3. `llm_logger.py` — Debug 日志包装
+## 3. `llm_logger.py` — Debug Logging Wrapper
 
 ```python
 class LoggedLLMBackend(LLMBackend):
@@ -125,18 +125,18 @@ class LoggedLLMBackend(LLMBackend):
     ) -> None
 
     def generate(self, prompt: str) -> LLMResponse
-    # 每次调用记录：ISO timestamp、call_label、prompt 字符数、
-    # response 字符数、估算 token 数(chars/4)、耗时 ms
-    # 格式：JSON Lines，每行一条记录
+    # Each call records: ISO timestamp, call_label, prompt char count,
+    # response char count, estimated token count (chars/4), and elapsed ms.
+    # Format: JSON Lines, one record per line.
 ```
 
-**所有其他模块**都通过 `LoggedLLMBackend` 间接调用 LLM，不直接使用裸 backend。
+**All other modules** invoke the LLM indirectly through `LoggedLLMBackend`; they never use the raw backend directly.
 
 ---
 
 ## 4. `world_builder.py` — WorldBuilder
 
-**职责**：一次性从 Phase I 输出构建 `WorldMap`，序列化为 `world.json`；游戏启动时直接加载，不重生成。
+**Responsibility**: One-shot construction of a `WorldMap` from Phase I outputs, serialized to `world.json`. The game loads the saved file at startup and does not regenerate it.
 
 ```python
 class WorldBuilder:
@@ -147,31 +147,33 @@ class WorldBuilder:
         case_bible: CaseBible,
         plot_plan: PlotPlan,
     ) -> WorldMap
-    # 完整流程：extract → assign → adjacency → describe
+    # Full pipeline: extract → assign → adjacency → describe
 
     def save(self, world_map: WorldMap, path: str) -> None
-    # 序列化为 world.json（dataclass → dict → json.dump）
+    # Serialize to world.json (dataclass → dict → json.dump)
 
     def load(self, path: str) -> WorldMap
-    # 反序列化 world.json → WorldMap
+    # Deserialize world.json → WorldMap
 
-    # ── 内部方法 ──────────────────────────────────────────
+    # ── Internal methods ──────────────────────────────────────
 
     def _extract_rooms(self, plot_plan: PlotPlan) -> list[str]
-    # 遍历 PlotStep.location，去重，保持出现顺序
+    # Walk PlotStep.location, deduplicate, preserve first-occurrence order
 
     def _assign_contents(
         self,
         case_bible: CaseBible,
         rooms: list[str],
     ) -> dict[str, dict]
-    # 按 EvidenceItem.location_found、TimelineEvent.location
-    # 把 NPC、证据、普通物品分配到各房间；未命中的分配到最近房间
+    # Use EvidenceItem.location_found and TimelineEvent.location to assign
+    # NPCs, evidence, and ordinary items to rooms; unmatched items go to the
+    # nearest room.
 
     def _build_adjacency(self, rooms: list[str]) -> dict[str, list[str]]
-    # 1. 常识规则直连（Study↔Library、Ballroom↔Drawing Room 等）
-    # 2. 若图不连通，调用 1 次 LLM 生成中间过渡房间并插入
-    # 确保整个房间图是连通图
+    # 1. Apply commonsense direct connections (Study↔Library, Ballroom↔Drawing Room, ...)
+    # 2. If the graph is not connected, make 1 LLM call to generate intermediate
+    #    transition rooms and insert them.
+    # Ensures the room graph is fully connected.
 
     def _generate_descriptions(
         self,
@@ -179,57 +181,59 @@ class WorldBuilder:
         contents: dict[str, dict],
         adjacency: dict[str, list[str]],
     ) -> dict[str, str]
-    # 每个房间调用 1 次 LLM（prompt: world_room_desc.txt）
-    # 生成 2-3 句 1920s 英式庄园风格描述
+    # One LLM call per room (prompt: world_room_desc.txt).
+    # Generates a 2-3 sentence description in 1920s English-manor style.
 ```
 
-**LLM 调用次数**：1（邻接补全）+ N（房间描述，N = 唯一房间数，约 8-12 次）
+**LLM call count**: 1 (adjacency completion) + N (room descriptions, where N = number of unique rooms, roughly 8–12).
 
 ---
 
 ## 5. `world_state.py` — WorldStateManager
 
-**职责**：权威的运行时世界状态，所有状态变更唯一入口。
+**Responsibility**: The authoritative runtime world state, the sole entry point for any state mutation.
 
 ```python
 class WorldStateManager:
     def __init__(self, world_map: WorldMap) -> None
-    # 初始化：player_room = 第一个 PlotStep.location
-    # 从 WorldMap 填充 npc_locations、item_states、evidence_states
+    # Initialization: player_room = location of the first PlotStep.
+    # Populate npc_locations, item_states, evidence_states from WorldMap.
 
-    # ── 公开 API ──────────────────────────────────────────
+    # ── Public API ────────────────────────────────────────────
 
     @property
     def player_room(self) -> str
 
     def apply_effects(self, effects: list[StateChange]) -> None
-    # 按顺序应用每个 StateChange；不做校验（校验在 CausalSpanTracker）
+    # Apply each StateChange in order; no validation here
+    # (validation happens in CausalSpanTracker).
 
     def move_player(self, destination: str) -> bool
-    # 检查邻接图，可达返回 True 并更新；不可达返回 False
+    # Check the adjacency graph; if reachable, return True and update,
+    # otherwise return False.
 
     def get_room_view(self, room_name: str) -> dict
-    # 返回 {description, npcs, evidence, items, exits}
-    # 用于注入 parser 的 Stage 2 prompt 上下文
+    # Returns {description, npcs, evidence, items, exits},
+    # used to inject context into the parser's Stage 2 prompt.
 
     def to_dict(self) -> dict
-    # 完整状态序列化（用于 save_game）
+    # Serialize the full state (used by save_game).
 
     @classmethod
     def from_dict(cls, data: dict, world_map: WorldMap) -> WorldStateManager
-    # 反序列化（用于 load_game）
+    # Deserialize (used by load_game).
 ```
 
 ---
 
 ## 6. `causal_spans.py` — CausalSpanTracker
 
-**职责**：从 FactTriples 编译 causal spans，运行时检测违规，随剧情推进管理 span 生命周期。
+**Responsibility**: Compile causal spans from `FactTriple`s, detect violations at runtime, and manage span lifecycles as the plot advances.
 
-**Span 编译规则**（从 `fact_graph.json` 推导）：
-- 每个 `EV-xx` 在 `plot_plan.json` 中首次被 PlotStep 引用之前，其 `exists=True` 和 `location=原始位置` 必须保持不变 → 编译为一个 CausalSpan
-- Span 激活时机：游戏开始（step_id=0）
-- Span 失效时机：引用该证据的第一个 PlotStep 完成时
+**Span compilation rules** (derived from `fact_graph.json`):
+- For every `EV-xx`, until the first `PlotStep` in `plot_plan.json` that references it, its `exists=True` and `location=<original location>` must remain unchanged → compiled into one `CausalSpan`.
+- Span activation: at game start (step_id=0).
+- Span deactivation: when the first `PlotStep` referencing that evidence completes.
 
 ```python
 class CausalSpanTracker:
@@ -238,40 +242,41 @@ class CausalSpanTracker:
         fact_triples: list[FactTriple],
         plot_plan: PlotPlan,
     ) -> None
-    # 调用 _compile_spans() 建立初始 active_spans
+    # Calls _compile_spans() to populate the initial active_spans.
 
-    # ── 公开 API ──────────────────────────────────────────
+    # ── Public API ────────────────────────────────────────────
 
     def check_violation(
         self,
         predicted_effects: list[StateChange],
     ) -> list[ViolatedSpan]
-    # 对每个 active span，检查 predicted_effects 是否触碰其 variable
-    # 若新值 ≠ required_value → 记录为 ViolatedSpan
+    # For each active span, check whether predicted_effects touches its variable.
+    # If new_value ≠ required_value → record as a ViolatedSpan.
 
     def complete_step(self, step_id: int) -> None
-    # 停用所有 until_step_id == step_id 的 span
+    # Deactivate every span whose until_step_id == step_id.
 
     def add_span(self, span: CausalSpan) -> None
-    # 供 DramaManager 注入新 step 时激活新 span
+    # Used by DramaManager when injecting a new step that activates a new span.
 
     def remove_spans_for_steps(self, step_ids: list[int]) -> None
-    # 供 DramaManager 删除 step 时同步撤销对应 span
+    # Used by DramaManager to revoke spans synchronously when steps are deleted.
 
-    # ── 内部方法 ──────────────────────────────────────────
+    # ── Internal methods ──────────────────────────────────────
 
     def _compile_spans(
         self,
         fact_triples: list[FactTriple],
         plot_plan: PlotPlan,
     ) -> list[CausalSpan]
-    # 遍历所有 evidence_id，找到 plot_plan 中第一次引用它的 step_id
-    # 为该证据的 exists 和 location 各生成一个 CausalSpan
+    # Walk all evidence_ids; for each, find the first step_id in plot_plan that
+    # references it. Generate one CausalSpan for that evidence's `exists` and one
+    # for its `location`.
 ```
 
 ---
 
-## 7. `parser.py` — InputParser（三阶段 LLM 管线）
+## 7. `parser.py` — InputParser (Three-Stage LLM Pipeline)
 
 ```python
 CONFIDENCE_THRESHOLD: float = 0.7
@@ -288,15 +293,15 @@ class InputParser:
         raw_input: str,
         world_state: WorldStateManager,
     ) -> ActionIntent | None
-    # 返回 None 表示置信度不足，调用方应提示玩家重述
-    # 依次调用三个阶段，将结果组装为 ActionIntent
+    # Returning None means confidence is too low — caller should ask the player to rephrase.
+    # Calls the three stages in order and assembles the result into an ActionIntent.
 
-    # ── 内部方法 ──────────────────────────────────────────
+    # ── Internal methods ──────────────────────────────────────
 
     def _extract_intent(self, raw_input: str) -> dict
     # Stage 1 (prompt: parser_intent.txt)
-    # 输入：自由文本
-    # 输出 JSON：{verb, object, target_location, confidence}
+    # Input: free-form text
+    # Output JSON: {verb, object, target_location, confidence}
 
     def _predict_effects(
         self,
@@ -304,8 +309,8 @@ class InputParser:
         world_state: WorldStateManager,
     ) -> list[StateChange]
     # Stage 2 (prompt: parser_effects.txt)
-    # 输入：intent dict + get_room_view() 快照
-    # 输出 JSON 数组：[{entity, attribute, old_value, new_value}, ...]
+    # Input: intent dict + a snapshot from get_room_view()
+    # Output JSON array: [{entity, attribute, old_value, new_value}, ...]
 
     def _infer_commonsense(
         self,
@@ -313,38 +318,39 @@ class InputParser:
         direct_effects: list[StateChange],
     ) -> list[StateChange]
     # Stage 3 (prompt: parser_commonsense.txt)
-    # 输入：intent + 已知直接效果
-    # 输出：隐含物理后果的额外 StateChange 列表
-    # 例：{verb:"bar", object:"door"} → {entity:"door", attribute:"accessible", new_value:False}
+    # Input: intent + already-known direct effects
+    # Output: a list of additional StateChanges representing implicit physical consequences.
+    # Example: {verb:"bar", object:"door"} → {entity:"door", attribute:"accessible", new_value:False}
 ```
 
 ---
 
 ## 8. `action_classifier.py` — ActionClassifier
 
-**优先级**：exceptional > constituent > consistent
+**Priority**: exceptional > constituent > consistent
 
 ```python
 class ActionClassifier:
     def __init__(
         self,
         causal_tracker: CausalSpanTracker,
-        plot_plan_ref: PlotPlan,     # mutable 引用，随 accommodation 更新
+        plot_plan_ref: PlotPlan,     # Mutable reference, updated by accommodation
     ) -> None
 
-    # ── 公开 API ──────────────────────────────────────────
+    # ── Public API ────────────────────────────────────────────
 
     def classify(self, intent: ActionIntent) -> ActionClassification
-    # 按优先级判断：先检查 exceptional，再检查 constituent，其余为 consistent
+    # Decide by priority: check exceptional first, then constituent;
+    # everything else is consistent.
 
     def advance_step(self) -> None
-    # constituent 动作完成后调用：
-    # 1. 将当前 step 移入 completed_steps
-    # 2. 调用 causal_tracker.complete_step(step_id)
-    # 3. current_step 指向 remaining_steps[0]（若有）
+    # Called after a constituent action completes:
+    # 1. Move the current step into completed_steps.
+    # 2. Call causal_tracker.complete_step(step_id).
+    # 3. Point current_step at remaining_steps[0] (if any).
 
     def update_plan(self, new_plan: PlotPlan) -> None
-    # accommodation 后替换 remaining_steps（已完成步骤不变）
+    # After accommodation, replace remaining_steps (completed steps are unchanged).
 
     @property
     def current_step(self) -> PlotStep | None
@@ -355,26 +361,27 @@ class ActionClassifier:
     @property
     def remaining_steps(self) -> list[PlotStep]
 
-    # ── 内部方法 ──────────────────────────────────────────
+    # ── Internal methods ──────────────────────────────────────
 
     def _is_constituent(
         self,
         effects: list[StateChange],
         step: PlotStep,
     ) -> bool
-    # 检查 effects 中是否有至少一个 StateChange 的 entity 在 step.evidence_ids 中
-    # 或 entity 是 step.participants 中的 NPC 且 attribute=="location" 匹配 step.location
+    # True if at least one StateChange has an entity that is in step.evidence_ids,
+    # or its entity is an NPC in step.participants and attribute=="location"
+    # matches step.location.
 
     def _get_violated_spans(
         self,
         effects: list[StateChange],
     ) -> list[ViolatedSpan]
-    # 转发给 causal_tracker.check_violation(effects)
+    # Forwards to causal_tracker.check_violation(effects).
 ```
 
 ---
 
-## 9. `drama_manager.py` — DramaManager（Accommodation 引擎）
+## 9. `drama_manager.py` — DramaManager (Accommodation Engine)
 
 ```python
 class DramaManager:
@@ -382,12 +389,12 @@ class DramaManager:
 
     def __init__(
         self,
-        case_bible: CaseBible,     # 只读
+        case_bible: CaseBible,     # Read-only
         llm: LLMBackend,
     ) -> None
-    # accommodation_depth 初始为 0
+    # accommodation_depth starts at 0.
 
-    # ── 公开 API ──────────────────────────────────────────
+    # ── Public API ────────────────────────────────────────────
 
     def accommodate(
         self,
@@ -395,26 +402,26 @@ class DramaManager:
         current_plan: PlotPlan,
         completed_steps: list[PlotStep],
     ) -> PlotPlan
-    # 主入口：
-    #   depth < MAX_DEPTH → 执行标准 accommodation 流程
-    #   depth >= MAX_DEPTH → 调用 _emergency_resolution()
-    # accommodation_depth 每次调用 +1
+    # Main entry point:
+    #   depth < MAX_DEPTH  → run the standard accommodation flow.
+    #   depth >= MAX_DEPTH → call _emergency_resolution().
+    # accommodation_depth is incremented by 1 per call.
 
     def reset_depth(self) -> None
-    # 连续完成一个 step 而无异常时调用，重置计数器
+    # Called when a step completes successfully without exception; resets the counter.
 
     @property
     def accommodation_depth(self) -> int
 
-    # ── 内部方法 ──────────────────────────────────────────
+    # ── Internal methods ──────────────────────────────────────
 
     def _find_dependent_steps(
         self,
         plan: PlotPlan,
         violated_spans: list[ViolatedSpan],
     ) -> list[int]
-    # 找出所有依赖 violated span 的 step_id（传递性）
-    # 依赖关系：step.evidence_ids 与 span.evidence_ids 有交集
+    # Find all step_ids that depend on the violated spans (transitively).
+    # Dependency: step.evidence_ids ∩ span.evidence_ids ≠ ∅.
 
     def _runtime_repair(
         self,
@@ -422,17 +429,19 @@ class DramaManager:
         completed_steps: list[PlotStep],
         available_evidence_ids: list[str],
     ) -> PlotPlan
-    # 调用 LLM（prompt: drama_runtime_repair.txt）
-    # Prompt 中注入：CaseBible 真相、已完成步骤（禁止 retcon）、可用证据
-    # LLM 生成新 PlotStep 列表，仍指向同一凶手
-    # 用 Phase I PlotPlanRepairOperator 做结构校验 & 补丁
+    # Calls the LLM (prompt: drama_runtime_repair.txt).
+    # Prompt injects: CaseBible truth, completed steps (no retconning allowed),
+    # and the still-available evidence.
+    # The LLM produces a new list of PlotSteps that still points to the same culprit.
+    # Phase I PlotPlanRepairOperator is then used for structural validation & patching.
 
     def _emergency_resolution(
         self,
         completed_steps: list[PlotStep],
     ) -> PlotPlan
-    # depth >= MAX_DEPTH 时：按 CaseBible.culprit_evidence_chain 直接构造
-    # 最简结局步骤（confrontation + resolution），强制完成游戏
+    # Triggered when depth >= MAX_DEPTH: build minimal endgame steps directly
+    # from CaseBible.culprit_evidence_chain (confrontation + resolution),
+    # forcing the game to a conclusion.
 ```
 
 ---
@@ -444,7 +453,7 @@ class OutputNarrator:
     def __init__(
         self,
         llm: LLMBackend,
-        style_reference: str,    # story.txt 前 ~500 token
+        style_reference: str,    # First ~500 tokens of story.txt
     ) -> None
 
     def narrate(
@@ -454,23 +463,23 @@ class OutputNarrator:
         current_step: PlotStep | None,
         world_state: WorldStateManager,
     ) -> str
-    # 调用 LLM（prompt: narrator.txt）
-    # 生成本回合叙述：动作结果 + 世界变化 + 当前剧情节拍上下文
-    # style_reference 拼入 prompt 头部
+    # Calls the LLM (prompt: narrator.txt).
+    # Generates this turn's narrative: action result + world changes + current
+    # plot-beat context. style_reference is prepended to the prompt.
 
     def narrate_system(self, message: str) -> str
-    # 对系统消息（存档/读档/错误/提示）生成简短叙述体回复
-    # 不调用 LLM，直接格式化返回
+    # For system messages (save/load/error/hints), produce a short narrative reply.
+    # Does not call the LLM; formats and returns the string directly.
 ```
 
 ---
 
-## 11. `game.py` — 主循环 CLI
+## 11. `game.py` — Main CLI Loop
 
 ```python
 def load_assets(phase1_output_dir: str) -> tuple[CaseBible, list[FactTriple], PlotPlan, str]
-# 加载 case_bible.json、fact_graph.json、plot_plan.json、story.txt
-# 反序列化为 Phase I 数据类；story.txt 返回前 ~500 token 字符串
+# Load case_bible.json, fact_graph.json, plot_plan.json, and story.txt.
+# Deserialize into Phase I data classes; return the first ~500 tokens of story.txt.
 
 def save_game(
     world_state: WorldStateManager,
@@ -478,14 +487,14 @@ def save_game(
     drama: DramaManager,
     path: str,
 ) -> None
-# 序列化：world_state.to_dict() + classifier 当前进度 + drama.accommodation_depth
-# 写入 JSON 文件
+# Serialize: world_state.to_dict() + classifier progress + drama.accommodation_depth.
+# Write to a JSON file.
 
 def load_game(
     path: str,
     world_map: WorldMap,
 ) -> tuple[WorldStateManager, dict]
-# 反序列化存档，返回 world_state + 进度 dict
+# Deserialize a save file; return the world_state plus a progress dict.
 
 def run(
     gemini_api_key: str,
@@ -493,55 +502,55 @@ def run(
     world_json: str = "world.json",
     save_path: str | None = None,
 ) -> None
-# 主函数：
+# Main function:
 # 1. load_assets()
-# 2. 若 world.json 不存在 → WorldBuilder.build() + save()，否则 load()
-# 3. 初始化所有组件
-# 4. 主循环：
+# 2. If world.json does not exist → WorldBuilder.build() + save(); otherwise load().
+# 3. Initialize all components.
+# 4. Main loop:
 #    stdin → parser.parse()
-#      → None: 提示重述
+#      → None: prompt to rephrase
 #      → ActionIntent → classifier.classify()
-#        → CONSISTENT: apply_effects + narrate
-#        → CONSTITUENT: apply_effects + advance_step + narrate
-#        → EXCEPTIONAL: drama.accommodate() + classifier.update_plan()
-#                       + causal_tracker.remove/add spans + narrate
-#    若 remaining_steps 为空 → 打印结局，退出
-#    "/save" → save_game(); "/load" → load_game(); "/quit" → 退出
+#        → CONSISTENT:   apply_effects + narrate
+#        → CONSTITUENT:  apply_effects + advance_step + narrate
+#        → EXCEPTIONAL:  drama.accommodate() + classifier.update_plan()
+#                        + causal_tracker.remove/add spans + narrate
+#    If remaining_steps is empty → print ending and exit.
+#    "/save" → save_game(); "/load" → load_game(); "/quit" → exit.
 ```
 
 ---
 
 ## 12. `tests/test_accommodation.py`
 
-使用 **mock CaseBible**（复用 Phase I 示例案件结构），**不调用真实 LLM**（MockLLMBackend + 打桩 DramaManager._runtime_repair）。
+Uses a **mock CaseBible** (reusing the Phase I example case structure) and **does not call a real LLM** (uses `MockLLMBackend` plus a stubbed `DramaManager._runtime_repair`).
 
 ```python
 def _make_mock_case_bible() -> CaseBible
-# 最小化案件：1 名凶手、1 名受害者、1 个证据 EV-POISON（毒药瓶）
+# Minimal case: 1 culprit, 1 victim, 1 piece of evidence EV-POISON (poison bottle).
 # culprit_evidence_chain = ["EV-POISON"]
 
 def _make_mock_plot_plan(case_bible: CaseBible) -> PlotPlan
-# 4 个步骤：discovery → search(EV-POISON) → confrontation → resolution
+# Four steps: discovery → search(EV-POISON) → confrontation → resolution
 
 def test_accommodation_triggered() -> None
-# 动作："把毒药瓶倒进下水道"
-# 构造 predicted_effects = [StateChange("EV-POISON", "exists", True, False)]
-# 断言：causal_tracker.check_violation(effects) 返回非空列表
-# 断言：drama_manager.accommodate() 被调用（accommodation_depth 从 0 → 1）
+# Action: "pour the poison bottle down the drain"
+# Build predicted_effects = [StateChange("EV-POISON", "exists", True, False)]
+# Assert: causal_tracker.check_violation(effects) returns a non-empty list.
+# Assert: drama_manager.accommodate() is called (accommodation_depth goes 0 → 1).
 
 def test_affected_steps_removed() -> None
-# 在 test_accommodation_triggered 的基础上
-# 断言：新 PlotPlan.steps 中不包含 step_id 对应引用 EV-POISON 的那个 search step
+# Building on test_accommodation_triggered:
+# Assert: the new PlotPlan.steps no longer contains the search step that referenced EV-POISON.
 
 def test_new_steps_target_same_culprit() -> None
-# 对 _runtime_repair 的输出（mock 返回固定新步骤）
-# 断言：新步骤的 participants 仍然包含 case_bible.culprit.name
-# 断言：新步骤的 evidence_ids 不包含已被销毁的 EV-POISON
+# For the output of _runtime_repair (mocked to return fixed new steps):
+# Assert: the new steps still include case_bible.culprit.name in participants.
+# Assert: the new steps' evidence_ids do not include the destroyed EV-POISON.
 ```
 
 ---
 
-## 13. 数据流总览
+## 13. Data Flow Overview
 
 ```
 stdin
@@ -566,44 +575,45 @@ stdin
 
 ---
 
-## 14. 模块间依赖关系
+## 14. Inter-Module Dependencies
 
 ```
 game.py
-  ├── world_builder.py  (WorldBuilder)
-  ├── world_state.py    (WorldStateManager)
-  ├── causal_spans.py   (CausalSpanTracker)
-  ├── parser.py         (InputParser)
+  ├── world_builder.py     (WorldBuilder)
+  ├── world_state.py       (WorldStateManager)
+  ├── causal_spans.py      (CausalSpanTracker)
+  ├── parser.py            (InputParser)
   ├── action_classifier.py (ActionClassifier)
-  ├── drama_manager.py  (DramaManager)
-  └── narrator.py       (OutputNarrator)
+  ├── drama_manager.py     (DramaManager)
+  └── narrator.py          (OutputNarrator)
 
-所有模块通过 llm_logger.LoggedLLMBackend 访问 LLM
-所有模块只读 CaseBible（永不写入）
-prompts/ 目录下的文件通过 pathlib.Path(__file__).parent / "prompts" 读取
-phase1 的模块通过 sys.path 注入访问（game.py 启动时添加 phase1/ 到 sys.path）
+All modules access the LLM through llm_logger.LoggedLLMBackend.
+All modules read the CaseBible only (never write).
+Files in prompts/ are read via pathlib.Path(__file__).parent / "prompts".
+Phase I modules are accessed through sys.path injection
+(game.py prepends phase1/ to sys.path on startup).
 ```
 
 ---
 
-## 15. LLM 调用统计（每回合）
+## 15. LLM Call Statistics (Per Turn)
 
-| 阶段 | 调用次数 | Prompt 文件 |
-|------|---------|------------|
-| 世界生成（一次性） | 1 + N_rooms | world_adjacency.txt, world_room_desc.txt |
-| 每回合 Stage 1 | 1 | parser_intent.txt |
-| 每回合 Stage 2 | 1 | parser_effects.txt |
-| 每回合 Stage 3 | 1 | parser_commonsense.txt |
-| 每回合 narration | 1 | narrator.txt |
-| accommodation（触发时） | 1 | drama_runtime_repair.txt |
-| **普通回合合计** | **4** | |
-| **含 accommodation 回合** | **5** | |
+| Stage | Calls | Prompt File |
+|-------|-------|-------------|
+| World generation (one-shot) | 1 + N_rooms | world_adjacency.txt, world_room_desc.txt |
+| Per turn — Stage 1 | 1 | parser_intent.txt |
+| Per turn — Stage 2 | 1 | parser_effects.txt |
+| Per turn — Stage 3 | 1 | parser_commonsense.txt |
+| Per turn — narration | 1 | narrator.txt |
+| accommodation (when triggered) | 1 | drama_runtime_repair.txt |
+| **Normal turn total** | **4** | |
+| **Turn with accommodation** | **5** | |
 
 ---
 
-## 待确认事项
+## Open Questions
 
-1. `world.json` 的生成是否需要在每次运行新案件时强制重生成（或检测 case_bible 哈希）？
-2. `InputParser` 置信度阈值默认 0.7，是否需要可配置（CLI 参数）？
-3. 存档文件路径默认 `savegame.json`，是否需要支持多存档槽？
-4. `_emergency_resolution` 触发后是否需要向玩家明示（OOC 提示），还是完全在叙述层面处理？
+1. Should `world.json` be force-regenerated for every new case run (or detected via a `case_bible` hash)?
+2. The `InputParser` confidence threshold defaults to 0.7 — should it be configurable (CLI flag)?
+3. The save-file path defaults to `savegame.json` — should multiple save slots be supported?
+4. After `_emergency_resolution` triggers, should we surface that to the player (OOC notice), or handle it purely at the narrative layer?

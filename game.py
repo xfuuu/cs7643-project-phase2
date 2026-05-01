@@ -170,10 +170,10 @@ def run(
                 print("\n[Hint] The investigation has no more planned beats.")
             continue
 
-        # ── movement shortcut: "go library" / "去图书馆" ──────────────────
+        # ── movement shortcut: "go library" ───────────────────────────────
         lower = raw.lower()
-        if lower.startswith("go ") or lower.startswith("去"):
-            dest = raw[3:].strip() if lower.startswith("go ") else raw[1:].strip()
+        if lower.startswith("go "):
+            dest = raw[3:].strip()
             if world_state.move_player(dest):
                 _print_room(world_state)
                 _check_constituent_on_enter(classifier, world_state, narrator, drama)
