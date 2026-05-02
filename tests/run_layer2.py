@@ -75,13 +75,13 @@ PLAN: list[Check] = [
         expected_title="The Household Gathers",
     ),
     Check(
-        "[3]  go drawing room → /hint stays 'The Household Gathers'",
-        ["go drawing room"],
+        "[3]  go library then drawing room (Study has no direct exit there)",
+        ["go library", "go drawing room"],
         expected_title="The Household Gathers",
     ),
     Check(
-        "[4]  ask Eleanor about her husband → /hint = 'The Silent Library'",
-        ["ask Eleanor about her husband"],
+        "[4]  interview Eleanor Vance (object must match NPC name)",
+        ["interview Eleanor Vance about the tragedy"],
         expected_title="The Silent Library",
     ),
     Check(
@@ -90,19 +90,19 @@ PLAN: list[Check] = [
         expected_title="The Silent Library",
     ),
     Check(
-        "[6]  examine the book → /hint = 'The Weapon in the Ashes'",
-        ["examine the book"],
+        "[6]  examine EV-06 (Silent Library beat)",
+        ["examine EV-06"],
         expected_title="The Weapon in the Ashes",
     ),
     Check(
-        "[7]  go study + examine the hearth → /hint = \"The Heir's Panic\"",
-        ["go study", "examine the hearth"],
+        "[7]  go study + examine EV-08 (knife in hearth)",
+        ["go study", "examine EV-08"],
         expected_title="The Heir's Panic",
     ),
     Check(
-        "[8]  multi-hop + ask Julian → /hint = 'The Muddy Terrace'",
+        "[8]  multi-hop + interview Julian Thorne → /hint = 'The Muddy Terrace'",
         ["go library", "go drawing room", "go ballroom",
-         "ask Julian about the green ribbon"],
+         "interview Julian Thorne about the green silk ribbon"],
         expected_title="The Muddy Terrace",
     ),
     # *** the single most important assertion ***
@@ -113,10 +113,10 @@ PLAN: list[Check] = [
         critical=True,  # Bug 2 — presence-only alibi_check auto-advance
     ),
     Check(
-        "[10] traverse to Julian's Bedroom + examine the drawer → /hint = 'The Bloodless Wound'",
+        "[10] Julian's Bedroom — examine EV-05 (ledger) → /hint = 'The Bloodless Wound'",
         ["go ballroom", "go drawing room", "go main entrance hall",
          "go main corridor", "go guest wing", "go julian's bedroom",
-         "examine the drawer"],
+         "examine EV-05"],
         expected_title="The Bloodless Wound",
     ),
 ]

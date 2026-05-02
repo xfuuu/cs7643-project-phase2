@@ -102,6 +102,7 @@ def run(
     world_json: str = _WORLD_FILE,
     llm_log_path: str = "phase2_llm.log",
     llm_log_full: bool = False,
+    save_file: str = _SAVE_FILE,
 ) -> None:
     print("Loading story assets…")
     case_bible, fact_triples, plot_plan, style_ref = load_assets(assets_dir)
@@ -150,15 +151,15 @@ def run(
             break
 
         if raw.lower() == "/save":
-            save_game(world_state, classifier, drama)
-            print(narrator.narrate_system(f"Game saved to {_SAVE_FILE}."))
+            save_game(world_state, classifier, drama, path=save_file)
+            print(narrator.narrate_system(f"Game saved to {save_file}."))
             continue
 
         if raw.lower() == "/load":
-            if not Path(_SAVE_FILE).exists():
+            if not Path(save_file).exists():
                 print(narrator.narrate_system("No save file found."))
                 continue
-            world_state, completed, remaining, depth = load_game(_SAVE_FILE, world_map)
+            world_state, completed, remaining, depth = load_game(save_file, world_map)
             # Compile the causal-span tracker from the SAVED plan (which may be
             # post-accommodation) so until_step_ids match the live plan. Using
             # the original plot_plan would leave dangling spans for steps that
@@ -418,6 +419,11 @@ def main() -> None:
         action="store_true",
         help="Log full prompt and response text per call (large files; good for demos)",
     )
+    ap.add_argument(
+        "--save-file",
+        default=_SAVE_FILE,
+        help="Path read/written by /save and /load (default: savegame.json)",
+    )
     args = ap.parse_args()
     llm_log = args.llm_log or os.environ.get("PHASE2_LLM_LOG", "phase2_llm.log")
     run(
@@ -428,6 +434,7 @@ def main() -> None:
         llm_log_full=args.llm_log_full or (
             os.environ.get("PHASE2_LLM_FULL", "").lower() in ("1", "true", "yes")
         ),
+        save_file=args.save_file,
     )
 
 

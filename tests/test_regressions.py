@@ -383,6 +383,88 @@ def test_discovery_shortcut_requires_correct_room() -> None:
     assert classification.triggered_step_id == 1
 
 
+def test_red_herring_advances_on_generic_examine_when_ev_visible() -> None:
+    """Effects pipeline may omit EV-xx for examine-the-drawer phrasing; the beat
+    still needs to advance when the single required clue is visible in-room."""
+    plan = PlotPlan(
+        investigator="Arthur Penhaligon",
+        steps=[
+            PlotStep(
+                step_id=8, phase="The False Trail", kind="red_herring",
+                title="The Motive of Debt",
+                summary="Ledger in Julian's drawer.",
+                location="Julian's Bedroom",
+                participants=["Arthur Penhaligon"],
+                evidence_ids=["EV-05"],
+                reveals=["Debt motive."],
+                timeline_ref=None,
+            ),
+            PlotStep(
+                step_id=9, phase="Deep Investigation", kind="analysis",
+                title="The Bloodless Wound",
+                summary="Study wound.",
+                location="The Study",
+                participants=["Arthur Penhaligon"],
+                evidence_ids=["EV-01"],
+                reveals=["Post-mortem stab."],
+                timeline_ref=None,
+            ),
+        ],
+    )
+    tracker = CausalSpanTracker([], plan)
+    classifier = ActionClassifier(tracker, plan)
+
+    wm = WorldMap(rooms={
+        "Julian's Bedroom": Room(
+            name="Julian's Bedroom",
+            description="Heir's quarters.",
+            adjacent_rooms=["Guest Wing"],
+            npc_names=[],
+            evidence_ids=["EV-05"],
+            item_names=[],
+        ),
+        "Guest Wing": Room(
+            name="Guest Wing",
+            description="Corridor.",
+            adjacent_rooms=["Julian's Bedroom"],
+            npc_names=[],
+            evidence_ids=[],
+            item_names=[],
+        ),
+        "The Study": Room(
+            name="The Study",
+            description="Desk and hearth.",
+            adjacent_rooms=["Guest Wing"],
+            npc_names=[],
+            evidence_ids=["EV-01"],
+            item_names=[],
+        ),
+    })
+    world_ok = WorldStateManager(wm, starting_room="Julian's Bedroom")
+    intent_drawer = ActionIntent(
+        raw_text="examine the drawer",
+        verb="examine",
+        object_="the drawer",
+        target_location=None,
+        confidence=0.9,
+        predicted_effects=[],
+    )
+    assert classifier.classify(intent_drawer, world_ok).kind == ActionKind.CONSTITUENT
+
+    intent_explicit = ActionIntent(
+        raw_text="examine EV-05",
+        verb="examine",
+        object_="EV-05",
+        target_location=None,
+        confidence=0.9,
+        predicted_effects=[],
+    )
+    assert classifier.classify(intent_explicit, world_ok).kind == ActionKind.CONSTITUENT
+
+    world_wrong = WorldStateManager(wm, starting_room="The Study")
+    assert classifier.classify(intent_drawer, world_wrong).kind != ActionKind.CONSTITUENT
+
+
 # ── end-of-game + emergency-path tests (P1-B + P2-D) ──────────────────────────
 
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Full playthrough (steps 1 → game exit) + full LLM JSONL + terminal transcript.
+# Saves checkpoints to presentation/logs/presentation_checkpoint.json (--checkpoint).
+# Second half only + fewer tokens: ./presentation/run_resume.sh (after a successful full).
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TS="$(date +%Y%m%d_%H%M%S)"

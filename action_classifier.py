@@ -114,6 +114,34 @@ class ActionClassifier:
             if _normalise(world_state.player_room) == _normalise(step.location):
                 return True
 
+        # Parser effects often omit evidence ids ("examine the drawer" vs EV-05).
+        # Match EV-xx named explicitly in the player text when in the step room.
+        if (
+            intent.verb in ("examine", "look", "search", "check")
+            and world_state is not None
+            and step.evidence_ids
+            and _normalise(world_state.player_room) == _normalise(step.location)
+        ):
+            obj_norm = _normalise(intent.object_)
+            for eid in step.evidence_ids:
+                en = _normalise(eid)
+                if en and en in obj_norm:
+                    return True
+
+        # Single-evidence red herring / search / interference: any substantive
+        # examine in the beat room counts when that clue is visible there.
+        if (
+            intent.verb in ("examine", "look", "search", "check")
+            and world_state is not None
+            and len(step.evidence_ids) == 1
+            and step.kind in ("red_herring", "search", "interference")
+            and _normalise(world_state.player_room) == _normalise(step.location)
+        ):
+            ev = step.evidence_ids[0]
+            visible = world_state.get_room_view().get("evidence") or []
+            if ev in visible:
+                return True
+
         return False
 
 
