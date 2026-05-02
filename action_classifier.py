@@ -99,8 +99,14 @@ class ActionClassifier:
 
         # Match by NPC interaction: player talks to a participant in next step
         if intent.verb in ("ask", "talk", "interview", "question", "speak"):
+            raw_norm = _normalise(intent.raw_text)
+            obj_norm = _normalise(intent.object_)
             for participant in step.participants:
-                if _normalise(intent.object_) in _normalise(participant):
+                participant_norm = _normalise(participant)
+                if (
+                    (obj_norm and obj_norm in participant_norm)
+                    or participant_norm in raw_norm
+                ):
                     return True
 
         # Match by kind: discovery steps trigger on any "examine"-style verb,
@@ -123,9 +129,10 @@ class ActionClassifier:
             and _normalise(world_state.player_room) == _normalise(step.location)
         ):
             obj_norm = _normalise(intent.object_)
+            raw_norm = _normalise(intent.raw_text)
             for eid in step.evidence_ids:
                 en = _normalise(eid)
-                if en and en in obj_norm:
+                if en and (en in obj_norm or en in raw_norm):
                     return True
 
         # Single-evidence red herring / search / interference: any substantive
@@ -146,4 +153,4 @@ class ActionClassifier:
 
 
 def _normalise(s: str) -> str:
-    return s.lower().strip()
+    return s.lower().replace(".", "").strip()

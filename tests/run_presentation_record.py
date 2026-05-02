@@ -286,10 +286,14 @@ def run_full(api_key: str, llm_log: Path, llm_full: bool, checkpoint: Path) -> i
         segments = list(LAYER2_PLAN[:10]) + EXTRA_FULL_PLAN
         for i, seg in enumerate(segments):
             print(f"→ {seg.name}")
-            ok, title, notes = _run_check_pres(session, seg, warn_only=True)
+            ok, title, notes = _run_check_pres(session, seg, warn_only=False)
             print(notes)
             tag = "OK" if ok else "FAIL"
             print(f"    => {tag}\n")
+            if not ok:
+                ok_any_fail = True
+                print("Stopping: plot hint did not advance to the expected beat.")
+                break
             if session.proc.poll() is not None:
                 ec = session.proc.poll()
                 print(f"Game subprocess ended (exit code {ec}) — stopping.")
@@ -301,7 +305,7 @@ def run_full(api_key: str, llm_log: Path, llm_full: bool, checkpoint: Path) -> i
                 print("→ checkpoint /save after Layer-2 segment [10]\n")
                 _emit_child_stdout(session.send("/save"))
 
-        if session.proc.poll() is None:
+        if session.proc.poll() is None and not ok_any_fail:
             print("→ final /save before recorder exits …\n")
             _emit_child_stdout(session.send("/save"))
 
@@ -318,10 +322,10 @@ def run_full(api_key: str, llm_log: Path, llm_full: bool, checkpoint: Path) -> i
         )
         if ok_any_fail:
             print(
-                "\nNote: one or more /hint titles drifted from expected "
-                "(parser variance). Review terminal + JSONL — gameplay may "
-                "still be fine."
+                "\nNote: one or more /hint titles drifted from expected. "
+                "The recorder stopped before producing a misleading full run."
             )
+            return 1
         return 0
     finally:
         if session is not None:
@@ -348,10 +352,14 @@ def run_resume(api_key: str, llm_log: Path, llm_full: bool, checkpoint: Path) ->
 
         for seg in EXTRA_FULL_PLAN:
             print(f"→ {seg.name}")
-            ok, title, notes = _run_check_pres(session, seg, warn_only=True)
+            ok, title, notes = _run_check_pres(session, seg, warn_only=False)
             print(notes)
             tag = "OK" if ok else "FAIL"
             print(f"    => {tag}\n")
+            if not ok:
+                ok_any_fail = True
+                print("Stopping: plot hint did not advance to the expected beat.")
+                break
             if session.proc.poll() is not None:
                 ec = session.proc.poll()
                 print(f"Game subprocess ended (exit code {ec}) — stopping.")
@@ -359,7 +367,7 @@ def run_resume(api_key: str, llm_log: Path, llm_full: bool, checkpoint: Path) ->
             if seg.expected_title is not None and title != seg.expected_title:
                 ok_any_fail = True
 
-        if session.proc.poll() is None:
+        if session.proc.poll() is None and not ok_any_fail:
             print("→ final /save …\n")
             _emit_child_stdout(session.send("/save"))
 
@@ -367,7 +375,8 @@ def run_resume(api_key: str, llm_log: Path, llm_full: bool, checkpoint: Path) ->
         print(f"(resume) LLM JSONL (append mode): {llm_log}")
         print(f"(resume) Raw game stdout: {SESSION_RESUME.relative_to(ROOT)}")
         if ok_any_fail:
-            print("\nNote: see WARN lines above — parser variance.")
+            print("\nNote: /hint drifted from expected; recorder stopped early.")
+            return 1
         return 0
     finally:
         if session is not None:

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -32,6 +33,7 @@ class InputParser:
         # Normalise None values from the LLM up-front so downstream string
         # operations (.replace, .lower, ...) never see them.
         intent_data = _coerce_strings(intent_data)
+        intent_data = _apply_raw_overrides(raw_input, intent_data)
         confidence = float(intent_data.get("confidence", 0.0) or 0.0)
         if confidence < self._threshold:
             return None
@@ -40,8 +42,14 @@ class InputParser:
         object_ = intent_data.get("object", "")
         target_location = intent_data.get("target_location") or None
 
-        direct_effects = self._predict_effects(intent_data, world_state)
-        implied_effects = self._infer_commonsense(intent_data, direct_effects)
+        direct_effects = _sanitize_effects(
+            intent_data,
+            self._predict_effects(intent_data, world_state),
+        )
+        implied_effects = _sanitize_effects(
+            intent_data,
+            self._infer_commonsense(intent_data, direct_effects),
+        )
         all_effects = direct_effects + implied_effects
 
         return ActionIntent(
@@ -111,6 +119,57 @@ def _coerce_strings(data: dict) -> dict:
         if out.get(k) is None:
             out[k] = ""
     return out
+
+
+def _apply_raw_overrides(raw_input: str, intent_data: dict) -> dict:
+    ev_match = re.search(r"\bEV-\d+\b", raw_input, flags=re.IGNORECASE)
+    if not ev_match:
+        return intent_data
+
+    out = dict(intent_data)
+    raw_lower = raw_input.lower().strip()
+    if raw_lower.startswith(("examine ", "look ", "search ", "check ", "read ")):
+        out["verb"] = raw_lower.split(maxsplit=1)[0]
+        out["object"] = ev_match.group(0).upper()
+        out["confidence"] = max(float(out.get("confidence") or 0.0), 0.99)
+    return out
+
+
+def _sanitize_effects(intent: dict, effects: list[StateChange]) -> list[StateChange]:
+    """Keep noisy LLM effects inside the physical bounds of the verb."""
+    verb = (intent.get("verb") or "").lower().strip()
+    observation_verbs = (
+        "examine", "look", "search", "check", "read",
+        "ask", "talk", "interview", "question", "speak",
+    )
+    if verb in observation_verbs:
+        sanitized: list[StateChange] = []
+        seen_known: set[str] = set()
+        for effect in effects:
+            if effect.attribute == "known_to_player":
+                sanitized.append(effect)
+                seen_known.add(effect.entity)
+        for effect in effects:
+            if effect.attribute == "known_to_player":
+                continue
+            if _looks_like_evidence_id(effect.entity) and effect.entity not in seen_known:
+                sanitized.append(StateChange(
+                    entity=effect.entity,
+                    attribute="known_to_player",
+                    old_value=False,
+                    new_value=True,
+                ))
+                seen_known.add(effect.entity)
+        return sanitized
+    return effects
+
+
+def _looks_like_evidence_id(entity: str) -> bool:
+    entity = (entity or "").upper()
+    if not entity.startswith("EV-"):
+        return False
+    suffix = entity[3:]
+    return bool(suffix) and suffix.replace("-", "").isalnum()
 
 
 def _parse_json_obj(text: str) -> dict | None:

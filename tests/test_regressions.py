@@ -51,6 +51,7 @@ from models_phase2 import (
     StateChange,
     WorldMap,
 )
+from parser import _apply_raw_overrides, _sanitize_effects
 from world_state import WorldStateManager
 
 
@@ -465,6 +466,89 @@ def test_red_herring_advances_on_generic_examine_when_ev_visible() -> None:
     assert classifier.classify(intent_drawer, world_wrong).kind != ActionKind.CONSTITUENT
 
 
+def test_examine_effect_sanitizer_blocks_false_evidence_moves() -> None:
+    """LLM effects may hallucinate 'examine' as taking an evidence item; that
+    must not trigger accommodation for a harmless look/search turn."""
+    effects = [
+        StateChange(
+            entity="EV-01",
+            attribute="location",
+            old_value="The Study",
+            new_value="player_inventory",
+        ),
+        StateChange(
+            entity="EV-01",
+            attribute="known_to_player",
+            old_value=False,
+            new_value=True,
+        ),
+    ]
+
+    clean = _sanitize_effects({"verb": "examine", "object": "desk"}, effects)
+
+    assert clean == [effects[1]]
+
+
+def test_raw_ev_command_overrides_llm_object_drift() -> None:
+    intent_data = {
+        "verb": "examine",
+        "object": "silver flask",
+        "target_location": None,
+        "confidence": 0.8,
+    }
+
+    out = _apply_raw_overrides("examine EV-08", intent_data)
+
+    assert out["verb"] == "examine"
+    assert out["object"] == "EV-08"
+    assert out["confidence"] == 0.99
+
+
+def test_interview_matches_participant_from_raw_text() -> None:
+    """Parser can put the topic in object_ ('green silk ribbon') instead of the
+    NPC; interview beats should still trigger when the raw command names them."""
+    plan = PlotPlan(
+        investigator="Arthur Penhaligon",
+        steps=[
+            PlotStep(
+                step_id=6, phase="The False Trail", kind="interview",
+                title="The Heir's Panic",
+                summary="Arthur confronts Julian.",
+                location="Ballroom",
+                participants=["Arthur Penhaligon", "Julian Thorne"],
+                evidence_ids=["EV-02", "EV-08"],
+                reveals=["Julian's alibi is weak."],
+                timeline_ref=None,
+            ),
+        ],
+    )
+    tracker = CausalSpanTracker([], plan)
+    classifier = ActionClassifier(tracker, plan)
+    world_state = WorldStateManager(WorldMap(rooms={
+        "Ballroom": Room(
+            name="Ballroom",
+            description="A cold ballroom.",
+            adjacent_rooms=[],
+            npc_names=[],
+            evidence_ids=[],
+            item_names=[],
+        ),
+    }), starting_room="Ballroom")
+    intent = ActionIntent(
+        raw_text="interview Julian Thorne about the green silk ribbon",
+        verb="ask",
+        object_="green silk ribbon",
+        target_location=None,
+        confidence=0.9,
+        predicted_effects=[],
+    )
+
+    classification = classifier.classify(intent, world_state)
+
+    assert classification.kind == ActionKind.CONSTITUENT
+    assert classification.triggered_step_id == 6
+
+
 # ── end-of-game + emergency-path tests (P1-B + P2-D) ──────────────────────────
 
 
@@ -604,6 +688,14 @@ if __name__ == "__main__":
     print("  ✓ test_load_rebuilds_tracker_from_saved_plan")
     test_discovery_shortcut_requires_correct_room()
     print("  ✓ test_discovery_shortcut_requires_correct_room")
+    test_red_herring_advances_on_generic_examine_when_ev_visible()
+    print("  ✓ test_red_herring_advances_on_generic_examine_when_ev_visible")
+    test_examine_effect_sanitizer_blocks_false_evidence_moves()
+    print("  ✓ test_examine_effect_sanitizer_blocks_false_evidence_moves")
+    test_raw_ev_command_overrides_llm_object_drift()
+    print("  ✓ test_raw_ev_command_overrides_llm_object_drift")
+    test_interview_matches_participant_from_raw_text()
+    print("  ✓ test_interview_matches_participant_from_raw_text")
     test_check_game_over_exits_on_resolution_kind()
     print("  ✓ test_check_game_over_exits_on_resolution_kind")
     test_check_game_over_exits_on_empty_remaining()

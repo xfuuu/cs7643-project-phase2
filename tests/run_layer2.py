@@ -70,8 +70,8 @@ PLAN: list[Check] = [
         critical=True,  # Bug 4 — discovery shortcut + room check
     ),
     Check(
-        "[2]  examine the flask → /hint = 'The Household Gathers'",
-        ["examine the flask"],
+        "[2]  examine EV-01 (flask) → /hint = 'The Household Gathers'",
+        ["examine EV-01"],
         expected_title="The Household Gathers",
     ),
     Check(

@@ -18,7 +18,7 @@ Rules:
 - "entity": the exact name of an NPC, evidence_id (e.g. "EV-01"), item name, or room name
 - "attribute": "exists" | "location" | "state" | "accessible" | "known_to_player"
 - Only include changes that ACTUALLY change (old_value ≠ new_value)
-- For "examine"/"look": add {attribute:"known_to_player", old_value:false, new_value:true} for the object
+- For "examine"/"look"/"search"/"check"/"read": do NOT move, take, damage, or alter the object; at most add {attribute:"known_to_player", old_value:false, new_value:true} for the visible evidence_id being inspected
 - For "take": change location to "player_inventory"
 - For "destroy"/"pour out"/"burn": change exists to false
 - For "go"/"move": change player location
