@@ -1,0 +1,31 @@
+Loading story assets…
+Loading existing world map from world.json…
+
+╔══════════════════════════════════════════════════════╗
+║     THE BLACKWOOD MANOR MYSTERY — Investigation      ║
+║     Type your action.  /save  /load  /look  /quit   ║
+╚══════════════════════════════════════════════════════╝
+
+
+──────────────────────────────────────────────────────
+  The Study
+──────────────────────────────────────────────────────
+  The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.
+  Evidence visible: EV-01, EV-02, EV-04, EV-07, EV-08
+  Exits: The Library
+
+
+> 
+[Hint] Next beat: The Witness Fails to Appear — The Study
+
+> [GeminiLLMBackend] HTTP 503; retrying in 2.0s (attempt 2/4)…
+[GeminiLLMBackend] HTTP 503; retrying in 4.9s (attempt 3/4)…
+[GeminiLLMBackend] HTTP 503; retrying in 7.5s (attempt 4/4)…
+
+[The line went dead — The read operation timed out]
+Please try the action again in a moment.
+
+> 
+[Hint] Next beat: The Witness Fails to Appear — The Study
+
+> Farewell.

@@ -16,13 +16,13 @@ Loading existing world map from world.json…
 
 
 > 
-Arthur's methodical gaze swept across the mahogany expanse, past the grotesque Harlequin mask now discarded, to focus on the objects directly before him. A heavy silver brandy flask lay uncapped, its polished surface reflecting the dim lamplight, a distinct smudge of white, crystalline powder clinging tenaciously to its rim – an unnatural, almost luminous embellishment. This was no casual indulgence; it spoke of a precise, lethal intention, a silent testament to the 'reckoning' Sir Alistair had so grimly promised. What other details in this study might betray the true culprit?
+Arthur’s fingers, steady as ever, traced the smooth mahogany, navigating the immediate horror of Sir Alistair's demise. Beyond the incriminating brandy flask, a more subtle detail caught his eye: tucked beneath the heavy crystal paperweight was a small, cream-coloured envelope, unsealed. Upon it, his own name was penned in Sir Alistair’s familiar, florid hand, suggesting a final, desperate confidence. The room, meanwhile, continued its silent vigil around the dead man.
 
 > 
-[Hint] Next beat: A Room Disturbed — The Study
+[Hint] Next beat: The Witness Fails to Appear — The Study
 
 > 
-Arthur’s gaze settled on the silver brandy flask, its weighty presence on the desk a stark counterpoint to the quiet horror in the room. The cap lay unscrewed, a testament to hasty use, and a distinct smudge of white, crystalline residue clung to the rim, catching the gaslight with an almost innocent shimmer. A faint, almost bitter aroma, distinct from the rain-heavy air, seemed to emanate from its mouth. The object offered a silent, damning clue, but what further details might this tragic tableau reveal?
+Arthur Penhaligon took up the silver flask, its cool, engraved weight feeling heavy in his hand. The unscrewed cap lay nearby, and closer inspection confirmed the faint, acrid scent of bitter almonds now mingled with the lingering aroma of brandy. A distinct smudge of white, crystalline residue clung stubbornly to the rim, a chilling testament to Sir Alistair's final draught. His gaze swept the desk; surely there were other clues to this grim reckoning.
 
 > 
 [Hint] Next beat: The Household Gathers — Drawing Room
@@ -48,7 +48,7 @@ Arthur’s gaze settled on the silver brandy flask, its weighty presence on the 
 [Hint] Next beat: The Household Gathers — Drawing Room
 
 > 
-Mrs. Vance, a tremor barely discernible in her silk-gloved hands, offered a few carefully chosen words of shock, her voice as hushed as the lamplit drawing room. Yet, nothing in her composed replies or the almost clinical observation from her husband, Dr. Vance, yielded any fresh insight into the tragedy. The air in the room, thick with the scent of woodsmoke and unease, continued to settle heavily upon the remaining guests.
+When Arthur addressed Eleanor Vance, her face, framed by a severe bob, remained impassive, betraying none of the raw distress Julian Thorne exhibited. Her gaze, however, held a peculiar, detached intensity, like a pathologist observing a specimen. The only sound she made was a faint, almost imperceptible rustle of her silk dress, a counterpoint to the thrumming silence that now pressed upon the room. Her composure, while remarkable, left Arthur with more questions than answers about her true feelings.
 
 > 
 [Hint] Next beat: The Silent Library — The Library
@@ -66,7 +66,7 @@ Mrs. Vance, a tremor barely discernible in her silk-gloved hands, offered a few 
 [Hint] Next beat: The Silent Library — The Library
 
 > 
-Arthur's gaze fell upon a slender crystal wine glass, abandoned on a side table beside an unlit lamp. A distinct crimson smear, perfectly matched to Lady Elspeth's preferred shade of lipstick, marked its rim, yet the volume of poetry she claimed to be engrossed in lay undisturbed, its cover a testament to weeks of accumulating dust. The silent room seemed to hold its breath, a stark contrast between the recent sip and the undisturbed pages, hinting at a presence less studious than she maintained. What other overlooked details might this hallowed space conceal?
+Arthur Penhaligon's gloved fingers lifted the delicate crystal wine glass from the low table. A distinct, deep crimson crescent, unmistakably Lady Elspeth’s preferred shade, stained the polished rim, a vivid declaration of her recent presence. Yet, the pristine layer of dust on the adjacent volume, untouched for weeks, presented a silent, undeniable contradiction to her claims. This room, it seemed, held more than just forgotten knowledge; what other details might reveal its true story?
 
 > 
 [Hint] Next beat: The Weapon in the Ashes — The Study
@@ -76,12 +76,13 @@ Arthur's gaze fell upon a slender crystal wine glass, abandoned on a side table 
   The Study
 ──────────────────────────────────────────────────────
   The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.
-  Evidence visible: EV-01, EV-02, EV-04, EV-07, EV-08
+  Evidence visible: EV-02, EV-04, EV-07, EV-08
   Exits: The Library
 
 
-> 
-Arthur knelt, sifting through the grey ash and the unburnt remnants of logs in the study's grand hearth. His gloved fingers, ever meticulous, uncovered a length of cold steel beneath a thick, unburnt oak log. It was a hunting knife, its blade disturbingly clean, as if wiped with haste and desperation before its concealment, the sharp tang of cold metal now mingling with the study's existing scents. This silent testament to a recent, violent act begged the question: what other secrets might this room yield to a careful observer?
+> [GeminiLLMBackend] HTTP 503; retrying in 2.2s (attempt 2/4)…
+
+Arthur's examination of the silver flask confirmed what he already knew; the faint, crystalline residue still clung to its rim, offering no further immediate clues. The pervasive scent of damp paper and old leather settled heavily as his attention drifted to the hearth. There, tucked hastily beneath a half-burnt log, lay a heavy hunting knife, its blade wiped clean but for a faint, almost imperceptible smudge of ash near its polished hilt. Sir Alistair’s study, it seemed, was only just beginning to give up its morbid secrets.
 
 > 
 [Hint] Next beat: The Heir's Panic — Ballroom
@@ -112,10 +113,10 @@ Arthur knelt, sifting through the grey ash and the unburnt remnants of logs in t
 
 
 > 
-Julian Thorne, his face a sudden mask of indignation beneath his forest-green Robin Hood cowl, bristled at Arthur’s questions regarding the torn ribbon and the knife. His denials were vehement, almost desperate, claiming he had spent the crucial moments on the rain-swept terrace alone, seeking respite from the suffocating gaiety of the masquerade. His voice, now laced with an edge of raw panic, echoed faintly in the vast, still ballroom, leaving behind only the undeniable tremor in his hands. It was clear that further interrogation would only harden his resolve; other avenues of inquiry might prove more fruitful.
+The green ribbon, when mentioned, drew a sharp, almost guttural sound from Julian Thorne. His eyes, already wide with a nervous energy, seemed to narrow at your query, and a flush crept up his neck as he vehemently insisted upon his solitary vigil on the cold, rain-swept terrace. The very air in the ballroom seemed to crackle with his sudden, brittle defensiveness. Clearly, there was more to unearth beneath his bluster.
 
 > 
-[Hint] Next beat: The Muddy Terrace — The Terrace
+[Hint] Next beat: The Heir's Panic — Ballroom
 
 > 
 ──────────────────────────────────────────────────────
@@ -126,7 +127,7 @@ Julian Thorne, his face a sudden mask of indignation beneath his forest-green Ro
 
 
 > 
-[Hint] Next beat: The Motive of Debt — Julian's Bedroom
+[Hint] Next beat: The Heir's Panic — Ballroom
 
 > 
 ──────────────────────────────────────────────────────
@@ -180,13 +181,13 @@ Julian Thorne, his face a sudden mask of indignation beneath his forest-green Ro
 
 
 > 
-Arthur's fingers brushed against something stiff tucked beneath a stack of old letters in the back of Julian's drawer. He pulled it free, a single, heavy sheet of paper, distinctly out of place amidst the usual clutter, upon which was written a meticulous yet damning accounting in Julian’s hurried, sprawling hand. Column after column of figures, punctuated by dates and the names of various London clubs, tallied to an astronomical sum that would make even Sir Alistair blanch. The paper reeked faintly of stale cigar smoke, a testament to the late-night desperation it so clearly chronicled. What else might Julian Thorne be hiding amongst these telling possessions?
+Arthur's keen eye settled on a small, porcelain figurine adorning a nearby occasional table, its delicate shepherdess form tilted noticeably askew. A faint, perfectly circular ring of dust on the polished mahogany indicated it had been moved and hastily resettled. Julian’s bravado seemed to falter, a nervous tremor visible in his gloved hand as he instinctively adjusted his Robin Hood cuff. The grand ballroom, which hours earlier had vibrated with jazz and laughter, now held only the tense, expectant silence of a truth under duress.
 
 > 
-[Hint] Next beat: The Bloodless Wound — The Study
+[Hint] Next beat: The Heir's Panic — Ballroom
 
 > 
-── Game saved to /Users/lucassun/Desktop/Fer/cs7643-project-phase2/presentation/logs/presentation_checkpoint.json. ──
+── Game saved to /Users/xinyuefu/Downloads/ai-story/cs7643-project-phase2/presentation/logs/presentation_checkpoint.json. ──
 
 
 > 
@@ -237,18 +238,18 @@ Arthur's fingers brushed against something stiff tucked beneath a stack of old l
   The Study
 ──────────────────────────────────────────────────────
   The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.
-  Evidence visible: EV-01, EV-02, EV-04, EV-07, EV-08
+  Evidence visible: EV-02, EV-04, EV-07, EV-08
   Exits: The Library
 
 
 > 
-Arthur re-examined the morbid tableau with a fresh, unsettling clarity. The wound itself, a neat, unsettling puncture beneath the grotesque Harlequin mask, offered a curious absence. No tell-tale crimson marred the mahogany, nor did any spray of vital fluid stain the documents beneath; it was a post-mortem indignity, chillingly devoid of life's messy protest. The faint vegetal bitterness still hung in the air, a phantom of the deceased, but the room itself seemed to hold its breath. What other details, however subtle, might be overlooked in this silent testament?
+As Julian's voice grew shriller, betraying his earlier composure, Arthur's gaze dropped to the polished parquet of the ballroom floor. There, almost imperceptible against the gleaming wood, was a faint, earthy smudge – a track of something that had certainly not originated within these gilded walls. Julian flinched, his eyes darting to the spot as if caught in a glaring transgression, and a bead of sweat traced a path down his temple, reflecting the ballroom's myriad lights. The undeniable scent of damp earth now seemed to mingle with the younger Thorne's palpable fear.
 
 > 
-Arthur's gaze, sharp and unyielding, pinned Dr. Vance's furtive hand as it attempted to conceal a folded sheet of paper within his leather medical bag. Intercepted, the thick, cream-coloured stationery revealed only a few crudely block-printed words: a stark, anonymous demand for silence and coin. A faint, almost imperceptible tremor ran through the doctor's jaw, leaving the note to carry the full weight of its damning implications in the suddenly heavy air of the Guest Wing.
+The terrace offered little respite from the relentless onslaught of the storm, its flagstones slick with driving rain, the very air thick with the scent of sodden earth and bruised hydrangeas. A quick scan of the treacherous mud nearest the study door revealed only the uniform pockmarks of the downpour; not a single discernible footprint disturbed the surface. Indeed, anyone who had paused here to "clear their head" would have been drenched to the bone, a condition Julian Thorne had notably lacked. The terrace, it seemed, provided a rather porous foundation for his alibi; perhaps the drawing room might offer a more illuminating conversation, or a re-examination of the study, now that the immediate scene had been surveyed.
 
 > 
-[Hint] Next beat: The Doctor's Deception — Guest Wing
+[Hint] Next beat: The Muddy Terrace — The Terrace
 
 > 
 ──────────────────────────────────────────────────────
@@ -294,10 +295,10 @@ Arthur's gaze, sharp and unyielding, pinned Dr. Vance's furtive hand as it attem
 
 
 > 
-Arthur’s quiet query to Dr. Vance was met with a sudden, almost desperate movement in the hushed confines of the guest wing. The doctor, his face slick with perspiration, attempted to shove a folded sheet of cream-laid paper into the gaping maw of his leather medical bag. Arthur’s hand was quicker, however, intercepting the incriminating missive to reveal stark, crudely cut block letters proclaiming a demand for silence and a considerable sum.
+Dr. Vance, ever the picture of clinical detachment, merely offered a tight-lipped shrug, his gaze impassively fixed upon the rain-lashed garden beyond the drawing room windows. His calculated silence yielded no new information, leaving Arthur to return to the damning observations from the terrace. Julian Thorne’s facile claim of clearing his head was starkly contradicted by the pristine, rain-pitted mud by the patio door; not a single impression, boot or otherwise, disturbed the soft earth, and the storm’s relentless fury would have drenched anyone within moments. The ceaseless drumming of the deluge against the panes was a gloomy counterpoint to the manor’s escalating unease. With Julian's alibi so visibly compromised, where might the trail of suspicion lead him next?
 
 > 
-[Hint] Next beat: The Loyal Wife — Drawing Room
+[Hint] Next beat: The Muddy Terrace — The Terrace
 
 > 
 ──────────────────────────────────────────────────────
@@ -326,10 +327,10 @@ Arthur’s quiet query to Dr. Vance was met with a sudden, almost desperate move
 
 
 > 
-Eleanor Vance, a vision in cerulean silk, offered a placid smile and a well-rehearsed account of her husband’s evening. She was certain Percival had been with her, or else in the washroom – a detail which conveniently obscured her moments of mask adjustment from observation. Arthur noted the unwavering calm in her voice, a stark contrast to the distant drum of the rain, but gleaned no tangible clue from her testimony. Her loyalty was evident, but perhaps the doctor himself would prove a more fruitful avenue of inquiry?
+Arthur’s inquiry of Eleanor Vance was met with a polite, if somewhat vapid, smile. She offered little beyond a lament concerning the inclement weather and vague assurances of her husband's unimpeachable character, her voice a reedy counterpoint to the distant moan of the wind. Clearly, no immediate enlightenment would be found in her company, but the chill that now permeated the drawing-room seemed to draw one's attention toward the terrace door, where the storm had truly begun its work.
 
 > 
-[Hint] Next beat: The Gardener's Secret — Conservatory
+[Hint] Next beat: The Muddy Terrace — The Terrace
 
 > 
 ──────────────────────────────────────────────────────
@@ -341,10 +342,10 @@ Eleanor Vance, a vision in cerulean silk, offered a placid smile and a well-rehe
 
 
 > 
-Arthur’s gaze, ever methodical, settled upon the rubbish bin tucked away behind a luxuriant palm, a prosaic collection of withered blooms and discarded twine. Nestled within this mundane refuse, however, was a discarded suede gardening glove, its well-worn fingers stiff with dried soil. A faint, vegetal bitterness, far sharper than the usual earthiness, emanated from a dark, crushed residue clinging stubbornly to the leather tips. The implications were clear; the question now was what other secrets this verdant sanctuary might yield.
+The terrace flagstones, slick and dark, reflected the incessant, drumming rain. One could scarcely imagine a less inviting spot for quiet contemplation, yet Julian Thorne had claimed to have sought solace here. Despite the sodden earth bordering the stone, there was not a single imprint of a shoe, nor any indication that a soul had lingered in this exposed and dripping space for even a moment. Julian's alibi, it seemed, was as ill-suited to the storm as a lace parasol.
 
 > 
-[Hint] Next beat: The Beaded Handbag — Main Entrance Hall
+[Hint] Next beat: The Muddy Terrace — The Terrace
 
 > 
 ──────────────────────────────────────────────────────
@@ -365,10 +366,10 @@ Arthur’s gaze, ever methodical, settled upon the rubbish bin tucked away behin
 
 
 > 
-Arthur Penhaligon, his gaze sweeping over the collection of wraps and bags in the hall, found Eleanor Vance’s beaded handbag among them. His fingers, moving with a practiced discretion, delved past the scent of expensive powder and a wisp of lavender. He withdrew a single, strikingly vibrant purple petal, its edges still sharp, its surface a velvety testament to recent plucking. Its presence, a splash of colour amidst the practical items, struck him as a curious, almost defiant note, urging him to wonder what other inconsistencies lay hidden within these walls.
+Arthur stepped onto the terrace, where the driving rain lashed against the flagstones and churned the flowerbeds into a dark, viscous mud. A keen eye scanned the ground near the door; despite Julian’s recent declaration of having sought fresh air, not a single boot print marred the sodden earth. Indeed, the relentless deluge would have thoroughly drenched anyone who had stood exposed to its fury for more than a mere moment.
 
 > 
-[Hint] Next beat: The Midnight Reckoning — The Library
+[Hint] Next beat: The Muddy Terrace — The Terrace
 
 > 
 ──────────────────────────────────────────────────────
@@ -388,22 +389,28 @@ Arthur Penhaligon, his gaze sweeping over the collection of wraps and bags in th
 
 
 > 
-Arthur’s gaze lingered on the ledger, its pages still splayed open on the mahogany table precisely as Alistair had left them. No new annotations or tell-tale smudges offered themselves to his scrutiny; the cold certainty of the meticulously kept entries merely reinforced the grim sequence of events he had begun to reconstruct. The faint scent of old paper and dust filled the quiet library, underscoring a truth already revealed to his mind, if not yet to the wider world. He considered what other corner of the room might yet hold a more tangible answer.
+The rain continued its relentless assault upon the flagstones, creating a slick, dark sheen across the terrace. Arthur scanned the ground near the door Julian had ostensibly used. The mud, churned to a viscous paste by the storm, showed no discernable boot print, only the random spatters of the downpour; to stand here for more than a moment would invite a thorough drenching, yet Julian’s coat remained conspicuously dry. It seemed Julian Thorne had not, in fact, sought to clear his head out here.
 
 > 
-[Hint] Next beat: The Final Mask Removed — The Study
+[Hint] Next beat: The Muddy Terrace — The Terrace
 
 > 
 ──────────────────────────────────────────────────────
   The Study
 ──────────────────────────────────────────────────────
   The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.
-  Evidence visible: EV-01, EV-02, EV-04, EV-07, EV-08
+  Evidence visible: EV-02, EV-04, EV-07, EV-08
   Exits: The Library
 
 
 > 
-Arthur held up the silver brandy flask, its polished surface catching the low light from the single lamp. The faint, crystalline residue on its rim was still visible, a stark white against the gleam of metal, a silent accusation in the heavy air. A collective intake of breath could almost be heard, though no one spoke, their eyes drawn to the incriminating object. The unspoken question hung in the silence: what other damning secrets might Arthur yet reveal?
+Arthur stepped onto the terrace, the bitter spray of the deluge immediately meeting him. The flagstones were awash, and the meticulously raked gravel beyond had surrendered entirely to a churned quagmire. He scrutinised the muddy expanse near the door; despite Julian's assertion of clearing his head here, there was not a single impression of a boot in the saturated earth. Anyone standing out in this relentless downpour for more than a moment would have been drenched to the bone, a detail that Penhaligon filed away with a distinct sense of unease.
 
-── The case is closed. ──
+> 
+[Hint] Next beat: The Muddy Terrace — The Terrace
 
+> 
+── Game saved to /Users/xinyuefu/Downloads/ai-story/cs7643-project-phase2/presentation/logs/presentation_checkpoint.json. ──
+
+
+> Farewell.

@@ -1,0 +1,180 @@
+Loading story assets…
+Loading existing world map from world.json…
+
+╔══════════════════════════════════════════════════════╗
+║     THE BLACKWOOD MANOR MYSTERY — Investigation      ║
+║     Type your action.  /save  /load  /look  /quit   ║
+╚══════════════════════════════════════════════════════╝
+
+
+──────────────────────────────────────────────────────
+  The Study
+──────────────────────────────────────────────────────
+  The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.
+  Evidence visible: EV-01, EV-02, EV-04, EV-07, EV-08
+  Exits: The Library
+
+
+> 
+Arthur's gaze, sharp and unblinking, swept across the polished mahogany, moving beyond the immediate horror of Sir Alistair's still form. Half-hidden beneath a stack of formidable ledgers, a small, stoppered glass vial lay slightly askew, empty save for a faint, bitter almond scent that seemed to cling stubbornly to its slender neck. It was a detail easily missed, yet its presence, coupled with the crystalline residue on the brandy flask, solidified a grim hypothesis. What other overlooked particulars might this room yield?
+
+> 
+[Hint] Next beat: A Room Disturbed — The Study
+
+> [GeminiLLMBackend] HTTP 503; retrying in 2.0s (attempt 2/4)…
+[GeminiLLMBackend] HTTP 503; retrying in 4.9s (attempt 3/4)…
+
+Arthur picked up the silver brandy flask, its surface cool beneath his fingers. He had already noted the tell-tale smudge of white, crystalline residue clinging to its rim, now he saw it more clearly, almost sparkling faintly under the dim light. The scent of stale brandy wafted from its unscrewed cap, a cloying sweetness that mingled unpleasantly with the sharper vegetal bitterness already in the air. His gaze, however, was drawn back to the heavy desk, where other secrets might yet lie.
+
+> 
+[Hint] Next beat: The Household Gathers — Drawing Room
+
+> You cannot reach 'drawing room' from here.
+
+> 
+[Hint] Next beat: The Household Gathers — Drawing Room
+
+> 
+Arthur turned to Mrs. Vance, her face a pale, strained canvas beneath the severe brim of her cloche hat, and posed his query regarding Sir Alistair's final hours. Her reply, a quiet, measured shake of the head, offered no illumination, her voice barely a whisper above the incessant drumming of rain against the panes. She had seen nothing, heard nothing, a picture of polite bewilderment. Julian Thorne continued to shift uncomfortably by the hearth, and Lady Elspeth remained a statue of icy composure across the room.
+
+> 
+[Hint] Next beat: The Silent Library — The Library
+
+> 
+──────────────────────────────────────────────────────
+  The Library
+──────────────────────────────────────────────────────
+  The Library engulfs you in a rich embrace of dark, polished oak panelling, where candlelight struggles against the encroaching gloom. The insistent drumming of an autumn storm against the leaded windows seems to amplify the profound silence within, a silence heavy with the scent of old paper and inherited wealth.
+  Evidence visible: EV-06
+  Exits: The Study, Drawing Room
+
+
+> 
+[Hint] Next beat: The Silent Library — The Library
+
+> [GeminiLLMBackend] HTTP 503; retrying in 2.4s (attempt 2/4)…
+
+Arthur drew the heavy volume from its shelf, the faint whisper of dislodged dust motes dancing in the meager light filtering through the tall windows. Lady Elspeth had claimed this very book, a compendium of Gothic verse, as her companion for the evening. Yet, the brittle pages within, pristine and uncreased, bore no mark of a recent reader, and the entire binding was coated in a uniform, undisturbed film of grey. It seemed the good Lady's literary pursuits were, at best, infrequent.
+
+> 
+[Hint] Next beat: The Weapon in the Ashes — The Study
+
+> 
+──────────────────────────────────────────────────────
+  The Study
+──────────────────────────────────────────────────────
+  The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.
+  Evidence visible: EV-01, EV-02, EV-04, EV-07, EV-08
+  Exits: The Library
+
+
+> 
+Arthur Penhaligon knelt by the cold, soot-stained hearth, his gloved fingers probing among the ashy remains of last night's fire. There, hastily tucked beneath a charred log, he found it: a hunting knife. Its blade, though gleaming dully, had been wiped meticulously clean, yet its presence here, secreted away, bespoke a dark purpose. The scent of lingering ash and old wood smoke seemed to cling to the weapon. What further secrets might the study yield?
+
+> 
+[Hint] Next beat: The Heir's Panic — Ballroom
+
+> 
+──────────────────────────────────────────────────────
+  The Library
+──────────────────────────────────────────────────────
+  The Library engulfs you in a rich embrace of dark, polished oak panelling, where candlelight struggles against the encroaching gloom. The insistent drumming of an autumn storm against the leaded windows seems to amplify the profound silence within, a silence heavy with the scent of old paper and inherited wealth.
+  Evidence visible: EV-06
+  Exits: The Study, Drawing Room
+
+
+> 
+──────────────────────────────────────────────────────
+  Drawing Room
+──────────────────────────────────────────────────────
+  Dark oak panels gleam faintly in the flickering candlelight, casting long, wavering shadows across the sumptuous velvet drapes. Outside, the autumn storm rattles the tall windows, a stark contrast to the room's hushed, heavy opulence. An air of expectant stillness hangs thick, as if holding its breath.
+  Exits: Ballroom, Conservatory, Main Entrance Hall, The Library
+
+
+> 
+──────────────────────────────────────────────────────
+  Ballroom
+──────────────────────────────────────────────────────
+  You step into the cavernous ballroom, where towering wood panels rise to meet a ceiling lost in shadow. Flickering gaslights cast dancing patterns over the polished floor, hinting at grand balls long past, while the distant rumble of an autumn storm echoes through the empty space. A faint scent of beeswax and cold hearths hangs in the air, a silent testament to generations of quiet wealth.
+  Exits: Drawing Room, Main Entrance Hall, The Terrace
+
+
+> 
+Arthur’s quiet probe regarding the green ribbon and the phantom glint of steel seemed to strike a raw nerve in Julian. The heir’s composure fractured instantly, his denials echoing with a shrill insistence through the vast ballroom as he vehemently claimed solitary contemplation on the rain-lashed terrace. His agitated defensiveness, however, betrayed a profound disquiet, leaving Arthur to wonder if the truth truly resided in the downpour or somewhere far less exposed.
+
+> 
+[Hint] Next beat: The Muddy Terrace — The Terrace
+
+> 
+──────────────────────────────────────────────────────
+  The Terrace
+──────────────────────────────────────────────────────
+  You step through the grand French doors, the warm glow of the panelled ballroom spilling out onto the flagstone terrace. A blustery autumn storm lashes at the ancient stone balustrade, and the air is thick with the damp scent of fallen leaves and distant thunder. Beyond the flickering candlelight, only the vast, rain-swept darkness of the estate stretches out.
+  Exits: Ballroom
+
+
+> 
+[Hint] Next beat: The Motive of Debt — Julian's Bedroom
+
+> 
+──────────────────────────────────────────────────────
+  Ballroom
+──────────────────────────────────────────────────────
+  You step into the cavernous ballroom, where towering wood panels rise to meet a ceiling lost in shadow. Flickering gaslights cast dancing patterns over the polished floor, hinting at grand balls long past, while the distant rumble of an autumn storm echoes through the empty space. A faint scent of beeswax and cold hearths hangs in the air, a silent testament to generations of quiet wealth.
+  Exits: Drawing Room, Main Entrance Hall, The Terrace
+
+
+> 
+──────────────────────────────────────────────────────
+  Drawing Room
+──────────────────────────────────────────────────────
+  Dark oak panels gleam faintly in the flickering candlelight, casting long, wavering shadows across the sumptuous velvet drapes. Outside, the autumn storm rattles the tall windows, a stark contrast to the room's hushed, heavy opulence. An air of expectant stillness hangs thick, as if holding its breath.
+  Exits: Ballroom, Conservatory, Main Entrance Hall, The Library
+
+
+> 
+──────────────────────────────────────────────────────
+  Main Entrance Hall
+──────────────────────────────────────────────────────
+  The colossal oak doors swing shut behind you with a weighty thud, leaving you in the cavernous Main Entrance Hall, its dark wood panelling gleaming under the flickering, golden light of wall sconces. A chill permeates the air, carrying the faint scent of damp earth and polished antique as the distant rumble of thunder punctuates the silence, hinting at the tempest raging beyond these opulent, centuries-old walls.
+
+  Present: Sir Alistair Thorne, Eleanor Vance, Julian Thorne, Lady Elspeth Thorne, Dr. Percival Vance
+  Exits: Drawing Room, Ballroom, Main Corridor
+
+
+> 
+──────────────────────────────────────────────────────
+  Main Corridor
+──────────────────────────────────────────────────────
+  A long, hushed passageway runs the spine of the manor's east wing, its dark oak wainscoting rising to faded damask above. Wall sconces throw a tremulous, honey-coloured light across the worn Persian runner, while the distant rattle of the autumn storm against unseen windows is the only company. The air smells of beeswax polish and old paper, and every footfall seems amplified by the watchful silence.
+  Exits: Main Entrance Hall, Guest Wing
+
+
+> 
+──────────────────────────────────────────────────────
+  Guest Wing
+──────────────────────────────────────────────────────
+  The dark oak panelling of the guest wing gleams dully in the flickering light of a single sconce, casting long, dancing shadows down the corridor. A cold draft whispers through, carrying the distant sound of the autumn storm lashing against unseen windows and underscoring the profound silence that hangs in the air. This space feels both meticulously maintained and heavy with forgotten stories.
+  Exits: Julian's Bedroom, Main Corridor
+
+
+> 
+──────────────────────────────────────────────────────
+  Julian's Bedroom
+──────────────────────────────────────────────────────
+  The heavy oak door swings inward to reveal Julian's bedroom, a cavern of dark wood panelling where the only light comes from the flickering storm outside and the dim glow of a single sconce. Rich, aged fabrics and substantial furniture speak of generations of wealth, though the air feels uncommonly still. The only sound is the persistent drumming of rain against the tall windows, making the shadows dance.
+  Evidence visible: EV-05
+  Exits: Guest Wing
+
+
+> 
+The drawer slid open with a soft, protesting groan of aged wood, revealing a meticulous array of linen and cufflinks. Yet, tucked beneath a stack of freshly laundered handkerchiefs, almost too carefully concealed, lay a single sheet of heavy cream paper. It was a ledger page, its crisp, hand-ruled columns filled with an urgent, looping script detailing sums that would make a nabob blush, each entry a stark testament to ruinous gambling debts that stretched far beyond any reasonable inheritance. The air within the drawer held a faint scent of lavender and old paper, a secret undoubtedly, and one that demanded further scrutiny of young Julian Thorne.
+
+> 
+[Hint] Next beat: The Bloodless Wound — The Study
+
+> 
+── Game saved to savegame.json. ──
+
+
+> Farewell.
