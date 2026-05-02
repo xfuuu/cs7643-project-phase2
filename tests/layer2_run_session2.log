@@ -1,0 +1,33 @@
+Loading story assets…
+Loading existing world map from world.json…
+
+╔══════════════════════════════════════════════════════╗
+║     THE BLACKWOOD MANOR MYSTERY — Investigation      ║
+║     Type your action.  /save  /load  /look  /quit   ║
+╚══════════════════════════════════════════════════════╝
+
+
+──────────────────────────────────────────────────────
+  The Study
+──────────────────────────────────────────────────────
+  The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.
+  Evidence visible: EV-01, EV-02, EV-04, EV-07, EV-08
+  Exits: The Library
+
+
+> 
+── Game loaded. ──
+
+
+──────────────────────────────────────────────────────
+  Julian's Bedroom
+──────────────────────────────────────────────────────
+  The heavy oak door swings inward to reveal Julian's bedroom, a cavern of dark wood panelling where the only light comes from the flickering storm outside and the dim glow of a single sconce. Rich, aged fabrics and substantial furniture speak of generations of wealth, though the air feels uncommonly still. The only sound is the persistent drumming of rain against the tall windows, making the shadows dance.
+  Evidence visible: EV-05
+  Exits: Guest Wing
+
+
+> 
+[Hint] Next beat: The Bloodless Wound — The Study
+
+> Farewell.
