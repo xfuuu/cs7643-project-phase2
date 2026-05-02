@@ -24,7 +24,7 @@ GAME = ROOT / "game.py"
 SAVE_FILE = ROOT / "savegame.json"
 
 # Generous: a single LLM turn can take 30s+ if Gemini retries on 5xx/429.
-TURN_TIMEOUT_SECS = 180
+TURN_TIMEOUT_SECS = float(os.environ.get("PHASE2_SESSION_TIMEOUT", "180"))
 # Consider the game "done responding" once we see this much silence after
 # at least one chunk of output.
 IDLE_SECS = 3.0
@@ -34,11 +34,19 @@ ERROR_LINE_RE = re.compile(r"\[The line went dead|\[The narrator hesitates")
 
 
 class GameSession:
-    def __init__(self, api_key: str, log_path: Path) -> None:
+    def __init__(
+        self,
+        api_key: str,
+        log_path: Path,
+        game_args: list[str] | None = None,
+    ) -> None:
         env = os.environ.copy()
         env["PYTHONUNBUFFERED"] = "1"
+        cmd = [sys.executable, "-u", str(GAME), "--gemini-api-key", api_key]
+        if game_args:
+            cmd.extend(game_args)
         self.proc = subprocess.Popen(
-            [sys.executable, "-u", str(GAME), "--gemini-api-key", api_key],
+            cmd,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,

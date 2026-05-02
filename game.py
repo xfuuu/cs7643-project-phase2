@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -99,12 +100,18 @@ def run(
     gemini_api_key: str,
     assets_dir: str = "phase1/outputs",
     world_json: str = _WORLD_FILE,
+    llm_log_path: str = "phase2_llm.log",
+    llm_log_full: bool = False,
 ) -> None:
     print("Loading story assets…")
     case_bible, fact_triples, plot_plan, style_ref = load_assets(assets_dir)
 
     raw_backend = GeminiLLMBackend(api_key=gemini_api_key)
-    llm = LoggedLLMBackend(raw_backend, log_path="phase2_llm.log")
+    llm = LoggedLLMBackend(
+        raw_backend,
+        log_path=llm_log_path,
+        full_content=llm_log_full,
+    )
 
     builder = WorldBuilder(llm)
     if Path(world_json).exists():
@@ -401,11 +408,26 @@ def main() -> None:
     ap.add_argument("--gemini-api-key", required=True, help="Gemini API key")
     ap.add_argument("--assets-dir", default="phase1/outputs", help="Path to Phase I outputs")
     ap.add_argument("--world-json", default=_WORLD_FILE, help="Path to world.json")
+    ap.add_argument(
+        "--llm-log",
+        default=None,
+        help="JSONL path for LLM call log (default: env PHASE2_LLM_LOG or phase2_llm.log)",
+    )
+    ap.add_argument(
+        "--llm-log-full",
+        action="store_true",
+        help="Log full prompt and response text per call (large files; good for demos)",
+    )
     args = ap.parse_args()
+    llm_log = args.llm_log or os.environ.get("PHASE2_LLM_LOG", "phase2_llm.log")
     run(
         gemini_api_key=args.gemini_api_key,
         assets_dir=args.assets_dir,
         world_json=args.world_json,
+        llm_log_path=llm_log,
+        llm_log_full=args.llm_log_full or (
+            os.environ.get("PHASE2_LLM_FULL", "").lower() in ("1", "true", "yes")
+        ),
     )
 
 

@@ -75,6 +75,22 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--api-key", default=os.environ.get("GEMINI_API_KEY", ""))
     ap.add_argument(
+        "--llm-log",
+        default=None,
+        help="JSONL path forwarded to game.py --llm-log (default: game's phase2_llm.log).",
+    )
+    ap.add_argument(
+        "--llm-log-full",
+        action="store_true",
+        help="Forward game.py --llm-log-full (full prompts/responses in JSONL).",
+    )
+    ap.add_argument(
+        "--session-log",
+        default=None,
+        help="Where to save raw stdout from game.py subprocess "
+             f"(default: {LOG.relative_to(ROOT)}).",
+    )
+    ap.add_argument(
         "--command",
         default=DESTRUCTIVE_COMMAND,
         help=("destructive command to send (default: %(default)r). "
@@ -90,8 +106,19 @@ def main() -> None:
     original_titles = _load_original_titles()
     print(f"  {len(original_titles)} original step titles loaded.\n")
 
+    sess_log = Path(args.session_log) if args.session_log else LOG
+    game_args: list[str] = []
+    if args.llm_log:
+        game_args.extend(["--llm-log", args.llm_log])
+    if args.llm_log_full:
+        game_args.append("--llm-log-full")
+
     print("Booting game…")
-    session = GameSession(args.api_key, log_path=LOG)
+    session = GameSession(
+        args.api_key,
+        log_path=sess_log,
+        game_args=game_args or None,
+    )
     try:
         boot_out = session.read_until_idle(idle_secs=4, total_timeout=180)
         if "Loading existing world map" not in boot_out:
@@ -133,7 +160,7 @@ def main() -> None:
             print("FAIL: one or more guard messages appeared during the "
                   "EXCEPTIONAL turn. The accommodate / narrate pipeline "
                   "raised an exception. Review the session log:")
-            print(f"  {LOG.relative_to(ROOT)}")
+            print(f"  {sess_log.relative_to(ROOT)}")
             sys.exit(1)
         if new_title is None:
             print("FAIL: /hint did not return a parseable title after the "
@@ -157,7 +184,7 @@ def main() -> None:
         print("        - classifier returned ActionKind.EXCEPTIONAL;")
         print("        - DramaManager.accommodate ran (no exception);")
         print("        - classifier.update_plan swapped to the new plan.")
-        print(f"\nSession log: {LOG.relative_to(ROOT)}")
+        print(f"\nSession log: {sess_log.relative_to(ROOT)}")
         sys.exit(0)
     finally:
         session.quit_and_wait()
