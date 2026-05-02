@@ -1,0 +1,569 @@
+Presentation recorder — mode='full'
+Terminal transcript: /Users/xinyuefu/Downloads/ai-story/cs7643-project-phase2/presentation/logs/normal_terminal_20260502_153424.log
+LLM JSONL:           /Users/xinyuefu/Downloads/ai-story/cs7643-project-phase2/presentation/logs/normal_llm_20260502_153424.jsonl
+LLM full content:    True
+
+Booting game (full presentation run)…
+Checkpoint (--save-file): /Users/xinyuefu/Downloads/ai-story/cs7643-project-phase2/presentation/logs/presentation_checkpoint.json
+
+Loading story assets…
+Loading existing world map from world.json…
+
+╔══════════════════════════════════════════════════════╗
+║     THE BLACKWOOD MANOR MYSTERY — Investigation      ║
+║     Type your action.  /save  /load  /look  /quit   ║
+╚══════════════════════════════════════════════════════╝
+
+
+──────────────────────────────────────────────────────
+  The Study
+──────────────────────────────────────────────────────
+  The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.
+  Evidence visible: EV-01, EV-02, EV-04, EV-07, EV-08
+  Exits: The Library
+
+
+>   (world.json reused — no boot LLM cost)
+
+→ [1]  examine the desk → /hint = 'A Room Disturbed'
+
+Arthur’s fingers, steady as ever, traced the smooth mahogany, navigating the immediate horror of Sir Alistair's demise. Beyond the incriminating brandy flask, a more subtle detail caught his eye: tucked beneath the heavy crystal paperweight was a small, cream-coloured envelope, unsealed. Upon it, his own name was penned in Sir Alistair’s familiar, florid hand, suggesting a final, desperate confidence. The room, meanwhile, continued its silent vigil around the dead man.
+
+> 
+[Hint] Next beat: The Witness Fails to Appear — The Study
+
+>     > examine the desk
+    /hint -> 'The Witness Fails to Appear'
+    WARN expected /hint title 'A Room Disturbed' but got 'The Witness Fails to Appear'
+    => OK
+
+→ [2]  examine the flask → /hint = 'The Household Gathers'
+
+Arthur Penhaligon took up the silver flask, its cool, engraved weight feeling heavy in his hand. The unscrewed cap lay nearby, and closer inspection confirmed the faint, acrid scent of bitter almonds now mingled with the lingering aroma of brandy. A distinct smudge of white, crystalline residue clung stubbornly to the rim, a chilling testament to Sir Alistair's final draught. His gaze swept the desk; surely there were other clues to this grim reckoning.
+
+> 
+[Hint] Next beat: The Household Gathers — Drawing Room
+
+>     > examine the flask
+    /hint -> 'The Household Gathers'
+    => OK
+
+→ [3]  go library then drawing room (Study has no direct exit there)
+
+──────────────────────────────────────────────────────
+  The Library
+──────────────────────────────────────────────────────
+  The Library engulfs you in a rich embrace of dark, polished oak panelling, where candlelight struggles against the encroaching gloom. The insistent drumming of an autumn storm against the leaded windows seems to amplify the profound silence within, a silence heavy with the scent of old paper and inherited wealth.
+  Evidence visible: EV-06
+  Exits: The Study, Drawing Room
+
+
+> 
+──────────────────────────────────────────────────────
+  Drawing Room
+──────────────────────────────────────────────────────
+  Dark oak panels gleam faintly in the flickering candlelight, casting long, wavering shadows across the sumptuous velvet drapes. Outside, the autumn storm rattles the tall windows, a stark contrast to the room's hushed, heavy opulence. An air of expectant stillness hangs thick, as if holding its breath.
+  Exits: Ballroom, Conservatory, Main Entrance Hall, The Library
+
+
+> 
+[Hint] Next beat: The Household Gathers — Drawing Room
+
+>     > go library
+    > go drawing room
+    /hint -> 'The Household Gathers'
+    => OK
+
+→ [4]  interview Eleanor Vance (object must match NPC name)
+
+When Arthur addressed Eleanor Vance, her face, framed by a severe bob, remained impassive, betraying none of the raw distress Julian Thorne exhibited. Her gaze, however, held a peculiar, detached intensity, like a pathologist observing a specimen. The only sound she made was a faint, almost imperceptible rustle of her silk dress, a counterpoint to the thrumming silence that now pressed upon the room. Her composure, while remarkable, left Arthur with more questions than answers about her true feelings.
+
+> 
+[Hint] Next beat: The Silent Library — The Library
+
+>     > interview Eleanor Vance about the tragedy
+    /hint -> 'The Silent Library'
+    => OK
+
+→ [5]  go library → /hint stays 'The Silent Library' (NO auto-advance — EV-06 still required)
+
+──────────────────────────────────────────────────────
+  The Library
+──────────────────────────────────────────────────────
+  The Library engulfs you in a rich embrace of dark, polished oak panelling, where candlelight struggles against the encroaching gloom. The insistent drumming of an autumn storm against the leaded windows seems to amplify the profound silence within, a silence heavy with the scent of old paper and inherited wealth.
+  Evidence visible: EV-06
+  Exits: The Study, Drawing Room
+
+
+> 
+[Hint] Next beat: The Silent Library — The Library
+
+>     > go library
+    /hint -> 'The Silent Library'
+    => OK
+
+→ [6]  examine EV-06 (Silent Library beat)
+
+Arthur Penhaligon's gloved fingers lifted the delicate crystal wine glass from the low table. A distinct, deep crimson crescent, unmistakably Lady Elspeth’s preferred shade, stained the polished rim, a vivid declaration of her recent presence. Yet, the pristine layer of dust on the adjacent volume, untouched for weeks, presented a silent, undeniable contradiction to her claims. This room, it seemed, held more than just forgotten knowledge; what other details might reveal its true story?
+
+> 
+[Hint] Next beat: The Weapon in the Ashes — The Study
+
+>     > examine EV-06
+    /hint -> 'The Weapon in the Ashes'
+    => OK
+
+→ [7]  go study + examine EV-08 (knife in hearth)
+
+──────────────────────────────────────────────────────
+  The Study
+──────────────────────────────────────────────────────
+  The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.
+  Evidence visible: EV-02, EV-04, EV-07, EV-08
+  Exits: The Library
+
+
+> [GeminiLLMBackend] HTTP 503; retrying in 2.2s (attempt 2/4)…
+
+Arthur's examination of the silver flask confirmed what he already knew; the faint, crystalline residue still clung to its rim, offering no further immediate clues. The pervasive scent of damp paper and old leather settled heavily as his attention drifted to the hearth. There, tucked hastily beneath a half-burnt log, lay a heavy hunting knife, its blade wiped clean but for a faint, almost imperceptible smudge of ash near its polished hilt. Sir Alistair’s study, it seemed, was only just beginning to give up its morbid secrets.
+
+> 
+[Hint] Next beat: The Heir's Panic — Ballroom
+
+>     > go study
+    > examine EV-08
+    /hint -> "The Heir's Panic"
+    => OK
+
+→ [8]  multi-hop + interview Julian Thorne → /hint = 'The Muddy Terrace'
+
+──────────────────────────────────────────────────────
+  The Library
+──────────────────────────────────────────────────────
+  The Library engulfs you in a rich embrace of dark, polished oak panelling, where candlelight struggles against the encroaching gloom. The insistent drumming of an autumn storm against the leaded windows seems to amplify the profound silence within, a silence heavy with the scent of old paper and inherited wealth.
+  Evidence visible: EV-06
+  Exits: The Study, Drawing Room
+
+
+> 
+──────────────────────────────────────────────────────
+  Drawing Room
+──────────────────────────────────────────────────────
+  Dark oak panels gleam faintly in the flickering candlelight, casting long, wavering shadows across the sumptuous velvet drapes. Outside, the autumn storm rattles the tall windows, a stark contrast to the room's hushed, heavy opulence. An air of expectant stillness hangs thick, as if holding its breath.
+  Exits: Ballroom, Conservatory, Main Entrance Hall, The Library
+
+
+> 
+──────────────────────────────────────────────────────
+  Ballroom
+──────────────────────────────────────────────────────
+  You step into the cavernous ballroom, where towering wood panels rise to meet a ceiling lost in shadow. Flickering gaslights cast dancing patterns over the polished floor, hinting at grand balls long past, while the distant rumble of an autumn storm echoes through the empty space. A faint scent of beeswax and cold hearths hangs in the air, a silent testament to generations of quiet wealth.
+  Exits: Drawing Room, Main Entrance Hall, The Terrace
+
+
+> 
+The green ribbon, when mentioned, drew a sharp, almost guttural sound from Julian Thorne. His eyes, already wide with a nervous energy, seemed to narrow at your query, and a flush crept up his neck as he vehemently insisted upon his solitary vigil on the cold, rain-swept terrace. The very air in the ballroom seemed to crackle with his sudden, brittle defensiveness. Clearly, there was more to unearth beneath his bluster.
+
+> 
+[Hint] Next beat: The Heir's Panic — Ballroom
+
+>     > go library
+    > go drawing room
+    > go ballroom
+    > interview Julian Thorne about the green silk ribbon
+    /hint -> "The Heir's Panic"
+    WARN expected /hint title 'The Muddy Terrace' but got "The Heir's Panic"
+    => OK
+
+→ [9]  go terrace → AUTO-ADVANCE → /hint = 'The Motive of Debt'
+
+──────────────────────────────────────────────────────
+  The Terrace
+──────────────────────────────────────────────────────
+  You step through the grand French doors, the warm glow of the panelled ballroom spilling out onto the flagstone terrace. A blustery autumn storm lashes at the ancient stone balustrade, and the air is thick with the damp scent of fallen leaves and distant thunder. Beyond the flickering candlelight, only the vast, rain-swept darkness of the estate stretches out.
+  Exits: Ballroom
+
+
+> 
+[Hint] Next beat: The Heir's Panic — Ballroom
+
+>     > go terrace
+    /hint -> "The Heir's Panic"
+    WARN expected /hint title 'The Motive of Debt' but got "The Heir's Panic"
+    => OK
+
+→ [10] Julian's Bedroom — examine EV-05 (ledger) → /hint = 'The Bloodless Wound'
+
+──────────────────────────────────────────────────────
+  Ballroom
+──────────────────────────────────────────────────────
+  You step into the cavernous ballroom, where towering wood panels rise to meet a ceiling lost in shadow. Flickering gaslights cast dancing patterns over the polished floor, hinting at grand balls long past, while the distant rumble of an autumn storm echoes through the empty space. A faint scent of beeswax and cold hearths hangs in the air, a silent testament to generations of quiet wealth.
+  Exits: Drawing Room, Main Entrance Hall, The Terrace
+
+
+> 
+──────────────────────────────────────────────────────
+  Drawing Room
+──────────────────────────────────────────────────────
+  Dark oak panels gleam faintly in the flickering candlelight, casting long, wavering shadows across the sumptuous velvet drapes. Outside, the autumn storm rattles the tall windows, a stark contrast to the room's hushed, heavy opulence. An air of expectant stillness hangs thick, as if holding its breath.
+  Exits: Ballroom, Conservatory, Main Entrance Hall, The Library
+
+
+> 
+──────────────────────────────────────────────────────
+  Main Entrance Hall
+──────────────────────────────────────────────────────
+  The colossal oak doors swing shut behind you with a weighty thud, leaving you in the cavernous Main Entrance Hall, its dark wood panelling gleaming under the flickering, golden light of wall sconces. A chill permeates the air, carrying the faint scent of damp earth and polished antique as the distant rumble of thunder punctuates the silence, hinting at the tempest raging beyond these opulent, centuries-old walls.
+
+  Present: Sir Alistair Thorne, Eleanor Vance, Julian Thorne, Lady Elspeth Thorne, Dr. Percival Vance
+  Exits: Drawing Room, Ballroom, Main Corridor
+
+
+> 
+──────────────────────────────────────────────────────
+  Main Corridor
+──────────────────────────────────────────────────────
+  A long, hushed passageway runs the spine of the manor's east wing, its dark oak wainscoting rising to faded damask above. Wall sconces throw a tremulous, honey-coloured light across the worn Persian runner, while the distant rattle of the autumn storm against unseen windows is the only company. The air smells of beeswax polish and old paper, and every footfall seems amplified by the watchful silence.
+  Exits: Main Entrance Hall, Guest Wing
+
+
+> 
+──────────────────────────────────────────────────────
+  Guest Wing
+──────────────────────────────────────────────────────
+  The dark oak panelling of the guest wing gleams dully in the flickering light of a single sconce, casting long, dancing shadows down the corridor. A cold draft whispers through, carrying the distant sound of the autumn storm lashing against unseen windows and underscoring the profound silence that hangs in the air. This space feels both meticulously maintained and heavy with forgotten stories.
+  Exits: Julian's Bedroom, Main Corridor
+
+
+> 
+──────────────────────────────────────────────────────
+  Julian's Bedroom
+──────────────────────────────────────────────────────
+  The heavy oak door swings inward to reveal Julian's bedroom, a cavern of dark wood panelling where the only light comes from the flickering storm outside and the dim glow of a single sconce. Rich, aged fabrics and substantial furniture speak of generations of wealth, though the air feels uncommonly still. The only sound is the persistent drumming of rain against the tall windows, making the shadows dance.
+  Evidence visible: EV-05
+  Exits: Guest Wing
+
+
+> 
+Arthur's keen eye settled on a small, porcelain figurine adorning a nearby occasional table, its delicate shepherdess form tilted noticeably askew. A faint, perfectly circular ring of dust on the polished mahogany indicated it had been moved and hastily resettled. Julian’s bravado seemed to falter, a nervous tremor visible in his gloved hand as he instinctively adjusted his Robin Hood cuff. The grand ballroom, which hours earlier had vibrated with jazz and laughter, now held only the tense, expectant silence of a truth under duress.
+
+> 
+[Hint] Next beat: The Heir's Panic — Ballroom
+
+>     > go ballroom
+    > go drawing room
+    > go main entrance hall
+    > go main corridor
+    > go guest wing
+    > go julian's bedroom
+    > examine EV-05
+    /hint -> "The Heir's Panic"
+    WARN expected /hint title 'The Bloodless Wound' but got "The Heir's Panic"
+    => OK
+
+→ checkpoint /save after Layer-2 segment [10]
+
+
+── Game saved to /Users/xinyuefu/Downloads/ai-story/cs7643-project-phase2/presentation/logs/presentation_checkpoint.json. ──
+
+
+> → [FULL 11] Step 9 — reach Study & analyse bloodless wound (EV-08 + EV-01)
+
+──────────────────────────────────────────────────────
+  Guest Wing
+──────────────────────────────────────────────────────
+  The dark oak panelling of the guest wing gleams dully in the flickering light of a single sconce, casting long, dancing shadows down the corridor. A cold draft whispers through, carrying the distant sound of the autumn storm lashing against unseen windows and underscoring the profound silence that hangs in the air. This space feels both meticulously maintained and heavy with forgotten stories.
+  Exits: Julian's Bedroom, Main Corridor
+
+
+> 
+──────────────────────────────────────────────────────
+  Main Corridor
+──────────────────────────────────────────────────────
+  A long, hushed passageway runs the spine of the manor's east wing, its dark oak wainscoting rising to faded damask above. Wall sconces throw a tremulous, honey-coloured light across the worn Persian runner, while the distant rattle of the autumn storm against unseen windows is the only company. The air smells of beeswax polish and old paper, and every footfall seems amplified by the watchful silence.
+  Exits: Main Entrance Hall, Guest Wing
+
+
+> 
+──────────────────────────────────────────────────────
+  Main Entrance Hall
+──────────────────────────────────────────────────────
+  The colossal oak doors swing shut behind you with a weighty thud, leaving you in the cavernous Main Entrance Hall, its dark wood panelling gleaming under the flickering, golden light of wall sconces. A chill permeates the air, carrying the faint scent of damp earth and polished antique as the distant rumble of thunder punctuates the silence, hinting at the tempest raging beyond these opulent, centuries-old walls.
+
+  Present: Sir Alistair Thorne, Eleanor Vance, Julian Thorne, Lady Elspeth Thorne, Dr. Percival Vance
+  Exits: Drawing Room, Ballroom, Main Corridor
+
+
+> 
+──────────────────────────────────────────────────────
+  Drawing Room
+──────────────────────────────────────────────────────
+  Dark oak panels gleam faintly in the flickering candlelight, casting long, wavering shadows across the sumptuous velvet drapes. Outside, the autumn storm rattles the tall windows, a stark contrast to the room's hushed, heavy opulence. An air of expectant stillness hangs thick, as if holding its breath.
+  Exits: Ballroom, Conservatory, Main Entrance Hall, The Library
+
+
+> 
+──────────────────────────────────────────────────────
+  The Library
+──────────────────────────────────────────────────────
+  The Library engulfs you in a rich embrace of dark, polished oak panelling, where candlelight struggles against the encroaching gloom. The insistent drumming of an autumn storm against the leaded windows seems to amplify the profound silence within, a silence heavy with the scent of old paper and inherited wealth.
+  Evidence visible: EV-06
+  Exits: The Study, Drawing Room
+
+
+> 
+──────────────────────────────────────────────────────
+  The Study
+──────────────────────────────────────────────────────
+  The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.
+  Evidence visible: EV-02, EV-04, EV-07, EV-08
+  Exits: The Library
+
+
+> 
+As Julian's voice grew shriller, betraying his earlier composure, Arthur's gaze dropped to the polished parquet of the ballroom floor. There, almost imperceptible against the gleaming wood, was a faint, earthy smudge – a track of something that had certainly not originated within these gilded walls. Julian flinched, his eyes darting to the spot as if caught in a glaring transgression, and a bead of sweat traced a path down his temple, reflecting the ballroom's myriad lights. The undeniable scent of damp earth now seemed to mingle with the younger Thorne's palpable fear.
+
+> 
+The terrace offered little respite from the relentless onslaught of the storm, its flagstones slick with driving rain, the very air thick with the scent of sodden earth and bruised hydrangeas. A quick scan of the treacherous mud nearest the study door revealed only the uniform pockmarks of the downpour; not a single discernible footprint disturbed the surface. Indeed, anyone who had paused here to "clear their head" would have been drenched to the bone, a condition Julian Thorne had notably lacked. The terrace, it seemed, provided a rather porous foundation for his alibi; perhaps the drawing room might offer a more illuminating conversation, or a re-examination of the study, now that the immediate scene had been surveyed.
+
+> 
+[Hint] Next beat: The Muddy Terrace — The Terrace
+
+>     > go guest wing
+    > go main corridor
+    > go main entrance hall
+    > go drawing room
+    > go library
+    > go study
+    > examine EV-08
+    > examine EV-01
+    /hint -> 'The Muddy Terrace'
+    WARN expected /hint title "The Doctor's Deception" but got 'The Muddy Terrace'
+    => OK
+
+→ [FULL 12] Step 10 — Guest Wing / Dr Vance interference
+
+──────────────────────────────────────────────────────
+  The Library
+──────────────────────────────────────────────────────
+  The Library engulfs you in a rich embrace of dark, polished oak panelling, where candlelight struggles against the encroaching gloom. The insistent drumming of an autumn storm against the leaded windows seems to amplify the profound silence within, a silence heavy with the scent of old paper and inherited wealth.
+  Evidence visible: EV-06
+  Exits: The Study, Drawing Room
+
+
+> 
+──────────────────────────────────────────────────────
+  Drawing Room
+──────────────────────────────────────────────────────
+  Dark oak panels gleam faintly in the flickering candlelight, casting long, wavering shadows across the sumptuous velvet drapes. Outside, the autumn storm rattles the tall windows, a stark contrast to the room's hushed, heavy opulence. An air of expectant stillness hangs thick, as if holding its breath.
+  Exits: Ballroom, Conservatory, Main Entrance Hall, The Library
+
+
+> 
+──────────────────────────────────────────────────────
+  Main Entrance Hall
+──────────────────────────────────────────────────────
+  The colossal oak doors swing shut behind you with a weighty thud, leaving you in the cavernous Main Entrance Hall, its dark wood panelling gleaming under the flickering, golden light of wall sconces. A chill permeates the air, carrying the faint scent of damp earth and polished antique as the distant rumble of thunder punctuates the silence, hinting at the tempest raging beyond these opulent, centuries-old walls.
+
+  Present: Sir Alistair Thorne, Eleanor Vance, Julian Thorne, Lady Elspeth Thorne, Dr. Percival Vance
+  Exits: Drawing Room, Ballroom, Main Corridor
+
+
+> 
+──────────────────────────────────────────────────────
+  Main Corridor
+──────────────────────────────────────────────────────
+  A long, hushed passageway runs the spine of the manor's east wing, its dark oak wainscoting rising to faded damask above. Wall sconces throw a tremulous, honey-coloured light across the worn Persian runner, while the distant rattle of the autumn storm against unseen windows is the only company. The air smells of beeswax polish and old paper, and every footfall seems amplified by the watchful silence.
+  Exits: Main Entrance Hall, Guest Wing
+
+
+> 
+──────────────────────────────────────────────────────
+  Guest Wing
+──────────────────────────────────────────────────────
+  The dark oak panelling of the guest wing gleams dully in the flickering light of a single sconce, casting long, dancing shadows down the corridor. A cold draft whispers through, carrying the distant sound of the autumn storm lashing against unseen windows and underscoring the profound silence that hangs in the air. This space feels both meticulously maintained and heavy with forgotten stories.
+  Exits: Julian's Bedroom, Main Corridor
+
+
+> 
+Dr. Vance, ever the picture of clinical detachment, merely offered a tight-lipped shrug, his gaze impassively fixed upon the rain-lashed garden beyond the drawing room windows. His calculated silence yielded no new information, leaving Arthur to return to the damning observations from the terrace. Julian Thorne’s facile claim of clearing his head was starkly contradicted by the pristine, rain-pitted mud by the patio door; not a single impression, boot or otherwise, disturbed the soft earth, and the storm’s relentless fury would have drenched anyone within moments. The ceaseless drumming of the deluge against the panes was a gloomy counterpoint to the manor’s escalating unease. With Julian's alibi so visibly compromised, where might the trail of suspicion lead him next?
+
+> 
+[Hint] Next beat: The Muddy Terrace — The Terrace
+
+>     > go library
+    > go drawing room
+    > go main entrance hall
+    > go main corridor
+    > go guest wing
+    > interview Dr Percival Vance about the paper hidden in his medical bag
+    /hint -> 'The Muddy Terrace'
+    WARN expected /hint title 'The Loyal Wife' but got 'The Muddy Terrace'
+    => OK
+
+→ [FULL 13] Step 11 — Drawing Room / Eleanor interview
+
+──────────────────────────────────────────────────────
+  Main Corridor
+──────────────────────────────────────────────────────
+  A long, hushed passageway runs the spine of the manor's east wing, its dark oak wainscoting rising to faded damask above. Wall sconces throw a tremulous, honey-coloured light across the worn Persian runner, while the distant rattle of the autumn storm against unseen windows is the only company. The air smells of beeswax polish and old paper, and every footfall seems amplified by the watchful silence.
+  Exits: Main Entrance Hall, Guest Wing
+
+
+> 
+──────────────────────────────────────────────────────
+  Main Entrance Hall
+──────────────────────────────────────────────────────
+  The colossal oak doors swing shut behind you with a weighty thud, leaving you in the cavernous Main Entrance Hall, its dark wood panelling gleaming under the flickering, golden light of wall sconces. A chill permeates the air, carrying the faint scent of damp earth and polished antique as the distant rumble of thunder punctuates the silence, hinting at the tempest raging beyond these opulent, centuries-old walls.
+
+  Present: Sir Alistair Thorne, Eleanor Vance, Julian Thorne, Lady Elspeth Thorne, Dr. Percival Vance
+  Exits: Drawing Room, Ballroom, Main Corridor
+
+
+> 
+──────────────────────────────────────────────────────
+  Drawing Room
+──────────────────────────────────────────────────────
+  Dark oak panels gleam faintly in the flickering candlelight, casting long, wavering shadows across the sumptuous velvet drapes. Outside, the autumn storm rattles the tall windows, a stark contrast to the room's hushed, heavy opulence. An air of expectant stillness hangs thick, as if holding its breath.
+  Exits: Ballroom, Conservatory, Main Entrance Hall, The Library
+
+
+> 
+Arthur’s inquiry of Eleanor Vance was met with a polite, if somewhat vapid, smile. She offered little beyond a lament concerning the inclement weather and vague assurances of her husband's unimpeachable character, her voice a reedy counterpoint to the distant moan of the wind. Clearly, no immediate enlightenment would be found in her company, but the chill that now permeated the drawing-room seemed to draw one's attention toward the terrace door, where the storm had truly begun its work.
+
+> 
+[Hint] Next beat: The Muddy Terrace — The Terrace
+
+>     > go main corridor
+    > go main entrance hall
+    > go drawing room
+    > interview Eleanor Vance about her movements during the masquerade
+    /hint -> 'The Muddy Terrace'
+    WARN expected /hint title "The Gardener's Secret" but got 'The Muddy Terrace'
+    => OK
+
+→ [FULL 14] Step 12 — Conservatory / monkshood glove (EV-03)
+
+──────────────────────────────────────────────────────
+  Conservatory
+──────────────────────────────────────────────────────
+  Stepping from the hushed wood-panelled Drawing Room, the Conservatory greets you with a rush of humid air and the rhythmic patter of rain against its vast glass ceiling. Exotic plants, bathed in the soft glow of what little light penetrates the stormy night, cast eerie, shifting silhouettes across the tiled floor, their leaves glistening with moisture.
+  Evidence visible: EV-03
+  Exits: Drawing Room
+
+
+> 
+The terrace flagstones, slick and dark, reflected the incessant, drumming rain. One could scarcely imagine a less inviting spot for quiet contemplation, yet Julian Thorne had claimed to have sought solace here. Despite the sodden earth bordering the stone, there was not a single imprint of a shoe, nor any indication that a soul had lingered in this exposed and dripping space for even a moment. Julian's alibi, it seemed, was as ill-suited to the storm as a lace parasol.
+
+> 
+[Hint] Next beat: The Muddy Terrace — The Terrace
+
+>     > go conservatory
+    > examine EV-03
+    /hint -> 'The Muddy Terrace'
+    WARN expected /hint title 'The Beaded Handbag' but got 'The Muddy Terrace'
+    => OK
+
+→ [FULL 15] Step 13 — Main Entrance Hall / handbag petal (EV-07)
+
+──────────────────────────────────────────────────────
+  Drawing Room
+──────────────────────────────────────────────────────
+  Dark oak panels gleam faintly in the flickering candlelight, casting long, wavering shadows across the sumptuous velvet drapes. Outside, the autumn storm rattles the tall windows, a stark contrast to the room's hushed, heavy opulence. An air of expectant stillness hangs thick, as if holding its breath.
+  Exits: Ballroom, Conservatory, Main Entrance Hall, The Library
+
+
+> 
+──────────────────────────────────────────────────────
+  Main Entrance Hall
+──────────────────────────────────────────────────────
+  The colossal oak doors swing shut behind you with a weighty thud, leaving you in the cavernous Main Entrance Hall, its dark wood panelling gleaming under the flickering, golden light of wall sconces. A chill permeates the air, carrying the faint scent of damp earth and polished antique as the distant rumble of thunder punctuates the silence, hinting at the tempest raging beyond these opulent, centuries-old walls.
+
+  Present: Sir Alistair Thorne, Eleanor Vance, Julian Thorne, Lady Elspeth Thorne, Dr. Percival Vance
+  Exits: Drawing Room, Ballroom, Main Corridor
+
+
+> 
+Arthur stepped onto the terrace, where the driving rain lashed against the flagstones and churned the flowerbeds into a dark, viscous mud. A keen eye scanned the ground near the door; despite Julian’s recent declaration of having sought fresh air, not a single boot print marred the sodden earth. Indeed, the relentless deluge would have thoroughly drenched anyone who had stood exposed to its fury for more than a mere moment.
+
+> 
+[Hint] Next beat: The Muddy Terrace — The Terrace
+
+>     > go drawing room
+    > go main entrance hall
+    > examine EV-07
+    /hint -> 'The Muddy Terrace'
+    WARN expected /hint title 'The Midnight Reckoning' but got 'The Muddy Terrace'
+    => OK
+
+→ [FULL 16] Step 14 — Library / midnight reckoning (touch chain evidence)
+
+──────────────────────────────────────────────────────
+  Drawing Room
+──────────────────────────────────────────────────────
+  Dark oak panels gleam faintly in the flickering candlelight, casting long, wavering shadows across the sumptuous velvet drapes. Outside, the autumn storm rattles the tall windows, a stark contrast to the room's hushed, heavy opulence. An air of expectant stillness hangs thick, as if holding its breath.
+  Exits: Ballroom, Conservatory, Main Entrance Hall, The Library
+
+
+> 
+──────────────────────────────────────────────────────
+  The Library
+──────────────────────────────────────────────────────
+  The Library engulfs you in a rich embrace of dark, polished oak panelling, where candlelight struggles against the encroaching gloom. The insistent drumming of an autumn storm against the leaded windows seems to amplify the profound silence within, a silence heavy with the scent of old paper and inherited wealth.
+  Evidence visible: EV-06
+  Exits: The Study, Drawing Room
+
+
+> 
+The rain continued its relentless assault upon the flagstones, creating a slick, dark sheen across the terrace. Arthur scanned the ground near the door Julian had ostensibly used. The mud, churned to a viscous paste by the storm, showed no discernable boot print, only the random spatters of the downpour; to stand here for more than a moment would invite a thorough drenching, yet Julian’s coat remained conspicuously dry. It seemed Julian Thorne had not, in fact, sought to clear his head out here.
+
+> 
+[Hint] Next beat: The Muddy Terrace — The Terrace
+
+>     > go drawing room
+    > go library
+    > examine EV-04
+    /hint -> 'The Muddy Terrace'
+    WARN expected /hint title 'The Final Mask Removed' but got 'The Muddy Terrace'
+    => OK
+
+→ [FULL 17] Step 15 — Study / confrontation (examine EV-01 advances beat; game exits on resolution)
+
+──────────────────────────────────────────────────────
+  The Study
+──────────────────────────────────────────────────────
+  The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.
+  Evidence visible: EV-02, EV-04, EV-07, EV-08
+  Exits: The Library
+
+
+> 
+Arthur stepped onto the terrace, the bitter spray of the deluge immediately meeting him. The flagstones were awash, and the meticulously raked gravel beyond had surrendered entirely to a churned quagmire. He scrutinised the muddy expanse near the door; despite Julian's assertion of clearing his head here, there was not a single impression of a boot in the saturated earth. Anyone standing out in this relentless downpour for more than a moment would have been drenched to the bone, a detail that Penhaligon filed away with a distinct sense of unease.
+
+> 
+[Hint] Next beat: The Muddy Terrace — The Terrace
+
+>     > go study
+    > examine EV-01
+    /hint -> 'The Muddy Terrace'
+    => OK
+
+→ final /save before recorder exits …
+
+
+── Game saved to /Users/xinyuefu/Downloads/ai-story/cs7643-project-phase2/presentation/logs/presentation_checkpoint.json. ──
+
+
+> ========================================================================
+Full-run LLM JSONL: presentation/logs/normal_llm_20260502_153424.jsonl
+Raw game stdout:    tests/presentation_full_session.log
+Checkpoint JSON:    /Users/xinyuefu/Downloads/ai-story/cs7643-project-phase2/presentation/logs/presentation_checkpoint.json
+
+Resume second half only with:
+  python3 -u tests/run_presentation_record.py --mode resume \
+    --checkpoint /Users/xinyuefu/Downloads/ai-story/cs7643-project-phase2/presentation/logs/presentation_checkpoint.json \
+    --terminal-log presentation/logs/normal_terminal_part2.log \
+    --llm-log presentation/logs/normal_llm_part2.jsonl --llm-log-full
+
+
+Note: one or more /hint titles drifted from expected (parser variance). Review terminal + JSONL — gameplay may still be fine.

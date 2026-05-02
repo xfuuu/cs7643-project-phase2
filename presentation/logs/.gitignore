@@ -1,3 +1,6 @@
-# Presentation recordings (terminal + LLM JSONL) — keep local only.
+# Ignore everything here by default; un-ignore committed presentation artefacts.
 *
 !.gitignore
+!*.log
+!*.jsonl
+!presentation_checkpoint.json

@@ -1,0 +1,36 @@
+Presentation recorder — mode='exception'
+Terminal transcript: /Users/xinyuefu/Downloads/ai-story/cs7643-project-phase2/presentation/logs/exception_terminal_20260502_131346.log
+LLM JSONL:           /Users/xinyuefu/Downloads/ai-story/cs7643-project-phase2/presentation/logs/exception_llm_20260502_131346.jsonl
+LLM full content:    True
+
+Booting game (exception / accommodate demo)…
+Loading story assets…
+Loading existing world map from world.json…
+
+╔══════════════════════════════════════════════════════╗
+║     THE BLACKWOOD MANOR MYSTERY — Investigation      ║
+║     Type your action.  /save  /load  /look  /quit   ║
+╚══════════════════════════════════════════════════════╝
+
+
+──────────────────────────────────────────────────────
+  The Study
+──────────────────────────────────────────────────────
+  The study is a sanctuary of dark oak panels, where the only illumination comes from a single candelabra flickering against the persistent drumming of autumn rain on the leaded windows. A rich scent of aged leather and extinguished pipe tobacco hangs heavy in the air, casting long, dancing shadows that seem to cling to the room's silent, watchful corners.
+  Evidence visible: EV-01, EV-02, EV-04, EV-07, EV-08
+  Exits: The Library
+
+
+> 
+[Hint] Next beat: The Witness Fails to Appear — The Study
+
+> Baseline /hint: 'The Witness Fails to Appear'
+
+→ destructive turn: 'destroy the silver flask completely'
+
+With a sharp, decisive motion, Arthur brought the silver flask down upon the desk's edge. It shattered with a muffled crack, sending splinters of metal and a plume of dark liquid across the polished mahogany. The bitter, almond-like scent intensified, mingling with the rain-heavy air as the last vestiges of its deadly contents seeped into the wood grain, leaving a dark, damp stain and a scattering of gleaming fragments. The study now smelled distinctly of spilled poison, its secrets irrevocably scattered. What further damning details did this room conceal?
+
+> 
+[Hint] Next beat: The Witness Fails to Appear — The Study
+
+> FAIL: /hint still an ORIGINAL plot title — parser likely did not emit a destructive StateChange. Try a different --destructive-command.
