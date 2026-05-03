@@ -2,7 +2,7 @@
 
 **Team Name:** Dreamy Whales  
 **System Name:** Intervention and Accommodation  
-**Project Template:** Template 3 — Story Planning with LLMs, extended with an interactive game engine that uses real-time plan repair (accommodation) to handle unexpected player actions.
+**Project Template:** Template 2 — Intervention and Accommodation
 
 ---
 
